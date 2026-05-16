@@ -1,0 +1,6 @@
+{
+  "budget_limit": 1000000,
+  "estimated_used": 25000,
+  "sprint_costs": {"0": 25000},
+  "last_checkpoint": "Sprint 0"
+}

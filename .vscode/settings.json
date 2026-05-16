@@ -7,5 +7,7 @@
   "chat.tools.urls.autoApprove": { "https://**": true, "http://**": true },
   "chat.tools.terminal.autoApprove": true,
   "chat.tools.autoApprove.enabled": true,
-  "chat.subagents.maxDepth": 0
+"chat.subagents.maxDepth": 0,
+"chat.exploreAgent.defaultModel": "Claude Opus 4.6 (copilot)",
+"chat.planAgent.defaultModel": "Claude Opus 4.6 (copilot)"
 }
