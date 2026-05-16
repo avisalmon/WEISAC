@@ -14,6 +14,51 @@ file is the process that walks the compass.
 
 ---
 
+## Safety Rules (MANDATORY — read before EVERY iteration)
+
+These rules exist because a previous agent run falsely marked all sprints complete without
+building anything. These rules prevent that from ever happening again.
+
+### Rule 1: One Sprint Per Iteration
+Each iteration works on **exactly ONE sprint**. Determine the current sprint by running:
+```
+python verify_sprint.py --next
+```
+Work ONLY on that sprint. Do NOT touch backlog status for any other sprint.
+
+### Rule 2: Files Are Truth, Not Status Markers
+NEVER determine sprint completion by reading `[x]` markers in `backlog.md` or
+`knowledge.md`. Instead, check whether the actual source files exist and contain
+real code. Run `python verify_sprint.py N` to check sprint N.
+
+### Rule 3: Verification Gate Before Completion
+Before marking ANY sprint feature `[x]` in the backlog:
+1. Run `python verify_sprint.py N` for the current sprint
+2. ALL checks must pass
+3. Run `git diff --stat HEAD` — the diff MUST show the expected source files changed
+4. If verification fails, you are NOT done. Fix the code first.
+
+### Rule 4: Dashboard Is Auto-Generated
+NEVER edit `docs/dashboard.html` directly. Instead run:
+```
+python build_dashboard.py
+```
+This generates the dashboard from the verification results. The agent cannot fake this.
+
+### Rule 5: Evidence In Knowledge
+When writing to `state/knowledge.md`, include EVIDENCE:
+- List the actual files created/modified with line counts
+- Paste the output of `python verify_sprint.py N`
+- Paste the output of `git diff --stat HEAD`
+Do NOT write "all acceptance criteria met" without this evidence.
+
+### Rule 6: No Bulk Status Updates
+NEVER change more than one sprint's worth of `[x]` markers in a single iteration.
+If you find yourself marking features `[x]` for a sprint you didn't code in this
+iteration, STOP. You are hallucinating.
+
+---
+
 ## Environment
 
 - **Project root:** `c:\Projects\VEIZAC`
@@ -66,10 +111,12 @@ For EACH sprint (0 through 12), execute these phases in order:
 
 ### Phase 1: UNDERSTAND
 
-1. Read `docs/backlog.md` — find the current sprint section.
-2. Read every spec reference listed in the sprint's features (the "Spec Ref" column).
-3. Read `state/knowledge.md` for any context from previous sprints.
-4. Confirm you understand:
+1. Run `python verify_sprint.py --next` to determine the current sprint. Do NOT read backlog
+   status markers to determine what's done — the verification script checks actual files.
+2. Read `docs/backlog.md` — find the current sprint section.
+3. Read every spec reference listed in the sprint's features (the "Spec Ref" column).
+4. Read `state/knowledge.md` for any context from previous sprints.
+5. Confirm you understand:
    - The sprint goal (one sentence at top of sprint section)
    - Every feature's acceptance criteria
    - What files will be created or modified
@@ -152,69 +199,40 @@ After all features in a sprint pass:
    - Open `docs/index.html` in browser.
    - Verify no regressions on previously completed tabs.
 
-### Phase 5: QUALITY REVIEW
+### Phase 5: QUALITY REVIEW (VERIFICATION GATE)
 
-Before marking a sprint complete:
+Before marking a sprint complete, you MUST pass the verification gate:
 
-1. **Re-read every acceptance criterion** in the backlog for this sprint.
+1. **Run the verification script:**
+   ```
+   python verify_sprint.py N
+   ```
+   where N is the current sprint number. ALL checks must pass (✅).
+   If ANY check fails (❌), fix the code and re-run until all pass.
+
+2. **Run git diff:**
+   ```
+   git diff --stat HEAD
+   ```
+   The diff MUST show the expected source files (JS, HTML, CSS) with real line additions.
+   If the diff only shows `backlog.md`, `knowledge.md`, `budget.json`, or `dashboard.html`,
+   you have NOT done any real work. STOP and actually implement the code.
+
+3. **Re-read every acceptance criterion** in the backlog for this sprint.
    For each one, verify it is met. Not "probably met" — actually verify.
-2. **Check file sizes.** No single JS file over 500 lines. Split if needed.
-3. **Check for hardcoded values.** Constants should use named values from simulator spec.
-4. **Accessibility spot-check:** Run through tab navigation. Verify labels exist.
-5. **Cross-browser sanity:** The site must work in Chrome and Firefox at minimum.
+4. **Check file sizes.** No single JS file over 500 lines. Split if needed.
+5. **Check for hardcoded values.** Constants should use named values from simulator spec.
+6. **Accessibility spot-check:** Run through tab navigation. Verify labels exist.
+7. **Cross-browser sanity:** The site must work in Chrome and Firefox at minimum.
    (We cannot automate this — note any browser-specific code for manual check.)
 
-### Phase 6: DASHBOARD UPDATE
+### Phase 6: DASHBOARD UPDATE (AUTO-GENERATED)
 
-Update `docs/dashboard.html` after every sprint. The dashboard is a simple HTML page that shows:
-
+Run the dashboard generator — do NOT edit dashboard.html manually:
 ```
-┌─────────────────────────────────────────────┐
-│           VEIZAC Build Dashboard            │
-├─────────────────────────────────────────────┤
-│                                             │
-│  Overall Progress: ████████░░░░░  7/13      │
-│                                             │
-│  Sprint 0: Skeleton .............. ✅ DONE  │
-│  Sprint 1: Home Tab .............. ✅ DONE  │
-│  Sprint 2: History ............... ✅ DONE  │
-│  Sprint 3: Training 1-3 ......... ✅ DONE  │
-│  Sprint 4: Training 4-6 ......... ✅ DONE  │
-│  Sprint 5: Simulator Core ........ ✅ DONE  │
-│  Sprint 6: Assembler ............. 🔄 ACTIVE│
-│  Sprint 7: Panel UI .............. ⬚ TODO  │
-│  Sprint 8: Sound ................. ⬚ TODO  │
-│  Sprint 9: Paper Tape ............ ⬚ TODO  │
-│  Sprint 10: Tools ................ ⬚ TODO  │
-│  Sprint 11: Examples ............. ⬚ TODO  │
-│  Sprint 12: Polish ............... ⬚ TODO  │
-│                                             │
-│  Tests: 47 pass / 0 fail                   │
-│  Budget: 423,000 / 1,000,000 tokens        │
-│                                             │
-│  Last updated: 2026-05-17 14:23            │
-├─────────────────────────────────────────────┤
-│  Sprint 6 Details:                          │
-│  [x] 6.1 Parsing                           │
-│  [x] 6.2 Two-pass                          │
-│  [~] 6.3 Smart labels                      │
-│  [ ] 6.4 Error reporting                   │
-│  [ ] 6.5 Disassemble                       │
-│  [ ] 6.6 Example programs                  │
-│                                             │
-│  Post-mortems:                              │
-│  Sprint 5: "BigInt conversion tricky..."    │
-└─────────────────────────────────────────────┘
+python build_dashboard.py
 ```
-
-The dashboard must:
-- Be a valid standalone HTML file (no dependencies)
-- Show all 13 sprints with status (done/active/todo)
-- Show the active sprint's feature breakdown with checkbox status
-- Show total test count (pass/fail)
-- Show token budget used/remaining
-- Show timestamp of last update
-- Link to the post-mortem section for completed sprints
+This reads verification results and budget data to generate an honest dashboard.
 
 ### Phase 7: BUDGET CHECKPOINT
 
@@ -224,10 +242,26 @@ The dashboard must:
 
 ### Phase 8: POST-MORTEM
 
-At the end of each sprint, write a brief post-mortem to `state/knowledge.md`:
+At the end of each sprint, write a brief post-mortem to `state/knowledge.md`.
+Include EVIDENCE — not just claims:
 
 ```
 ### Sprint N Post-Mortem
+
+**Files created/modified:**
+- docs/js/simulator.js (287 lines)
+- docs/index.html (+45 lines)
+
+**Verification output:**
+  Sprint 5: Simulator Core — ✅ PASSED
+  ✓ [5.1] simulator.js exists: OK (287 lines)
+  ✓ [5.2] Instruction decode: Decode logic found
+  ...
+
+**Git diff summary:**
+  docs/js/simulator.js | 287 ++++++++++
+  docs/index.html      |  45 ++
+  2 files changed, 332 insertions(+)
 
 **What went well:**
 - <bullet>

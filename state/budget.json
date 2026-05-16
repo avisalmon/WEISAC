@@ -1,6 +1,6 @@
-﻿{
+{
   "budget_limit": 1000000,
-  "estimated_used": 950000,
-  "sprint_costs": {"0": 25000, "1": 60000, "2": 80000, "3": 90000, "4": 80000, "5": 120000, "6": 100000, "7": 110000, "8": 70000, "9": 65000, "10": 80000, "11": 40000, "12": 30000},
-  "last_checkpoint": "Sprint 12 - PROJECT COMPLETE"
+  "estimated_used": 25000,
+  "sprint_costs": {"0": 25000},
+  "last_checkpoint": "Sprint 0 - Skeleton complete. Sprints 1-12 NOT started."
 }
