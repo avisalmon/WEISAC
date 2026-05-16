@@ -1,0 +1,11 @@
+{
+  "python.analysis.mcp.enabled": true,
+  "chat.mcp.access": "all",
+  "chat.tools.global.autoApprove": true,
+  "chat.tools.edits.autoApprove": { "**/*": true },
+  "chat.editing.autoAcceptDelay": 0,
+  "chat.tools.urls.autoApprove": { "https://**": true, "http://**": true },
+  "chat.tools.terminal.autoApprove": true,
+  "chat.tools.autoApprove.enabled": true,
+  "chat.subagents.maxDepth": 0
+}

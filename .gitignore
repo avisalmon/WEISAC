@@ -1,0 +1,24 @@
+# Python
+env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# AutoAgent state (regenerated each run)
+state/agent_raw.jsonl
+
+# VS Code
+.vs/
+
+# Node
+node_modules/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local overrides
+*.local.md
+*.local.json
