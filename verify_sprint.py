@@ -21,10 +21,10 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-DOCS = ROOT / "docs"
-JS = DOCS / "js"
-CSS = DOCS / "css"
-IMAGES = DOCS / "images"
+DOCS = ROOT  # Site files live at project root (index.html, css/, js/, images/)
+JS = ROOT / "js"
+CSS = ROOT / "css"
+IMAGES = ROOT / "images"
 TESTS = ROOT / "tests"
 STATE = ROOT / "state"
 
@@ -123,7 +123,7 @@ def verify_sprint_0():
     if os.path.isfile(DOCS / "index.html"):
         ok, missing = file_contains(DOCS / "index.html", [])
         # Check for CDN links (should NOT exist)
-        with open(DOCS / "index.html", "r") as f:
+        with open(DOCS / "index.html", "r", encoding="utf-8") as f:
             html = f.read()
         has_cdn = "cdn" in html.lower() or "unpkg" in html.lower() or "jsdelivr" in html.lower()
         checks.append({"id": "0.6", "name": "No-framework rule", "pass": not has_cdn,
@@ -268,22 +268,30 @@ def verify_sprint_4():
     with open(DOCS / "index.html", "r", encoding="utf-8") as f:
         html = f.read()
     
+    # Also read JS files for lesson content (lessons are rendered from JS)
+    js_content = ""
+    if os.path.isdir(JS):
+        for fname in os.listdir(JS):
+            if fname.endswith(".js") and os.path.isfile(JS / fname):
+                js_content += open(JS / fname, "r", encoding="utf-8", errors="ignore").read()
+    combined = html.lower() + js_content.lower()
+    
     # Check for lessons 4-6 content (arithmetic, branching, self-modifying)
-    has_arithmetic = any(word in html.lower() for word in ["arithmetic", "add", "multiply", "lesson 4"])
+    has_arithmetic = any(word in combined for word in ["arithmetic", "add m(x)", "multiply", "lesson 4"])
     checks.append({"id": "4.1", "name": "Lesson 4: Arithmetic", "pass": has_arithmetic,
                    "detail": "Arithmetic lesson content found" if has_arithmetic else "No arithmetic lesson"})
     
-    has_branching = any(word in html.lower() for word in ["branch", "jump", "lesson 5"])
+    has_branching = any(word in combined for word in ["branch", "jump", "lesson 5"])
     checks.append({"id": "4.2", "name": "Lesson 5: Branching", "pass": has_branching,
                    "detail": "Branching lesson content found" if has_branching else "No branching lesson"})
     
-    has_selfmod = any(word in html.lower() for word in ["self-modif", "lesson 6", "address modification"])
+    has_selfmod = any(word in combined for word in ["self-modif", "lesson 6", "address modification"])
     checks.append({"id": "4.3", "name": "Lesson 6: Self-modifying", "pass": has_selfmod,
                    "detail": "Self-modifying lesson found" if has_selfmod else "No self-modifying lesson"})
     
     # 4.4 localStorage progress
     has_progress = "localStorage" in html or any(
-        "localStorage" in open(JS / f, "r").read() 
+        "localStorage" in open(JS / f, "r", encoding="utf-8", errors="ignore").read() 
         for f in os.listdir(JS) if f.endswith(".js") and os.path.isfile(JS / f)
     ) if os.path.isdir(JS) else False
     checks.append({"id": "4.4", "name": "Progress persistence", "pass": has_progress,
@@ -545,12 +553,12 @@ def verify_sprint_12():
     checks.append({"id": "12.3", "name": "ARIA labels", "pass": has_aria,
                    "detail": "ARIA attributes found" if has_aria else "No ARIA labels"})
     
-    has_responsive = "@media" in open(CSS / "style.css", "r").read() if os.path.isfile(CSS / "style.css") else False
+    has_responsive = "@media" in open(CSS / "style.css", "r", encoding="utf-8").read() if os.path.isfile(CSS / "style.css") else False
     checks.append({"id": "12.1", "name": "Responsive layout", "pass": has_responsive,
                    "detail": "Media queries found" if has_responsive else "No media queries"})
     
     has_reduced_motion = "prefers-reduced-motion" in (
-        open(CSS / "style.css", "r").read() if os.path.isfile(CSS / "style.css") else ""
+        open(CSS / "style.css", "r", encoding="utf-8").read() if os.path.isfile(CSS / "style.css") else ""
     )
     checks.append({"id": "12.5", "name": "Reduced motion support", "pass": has_reduced_motion,
                    "detail": "prefers-reduced-motion found" if has_reduced_motion else "No reduced motion support"})

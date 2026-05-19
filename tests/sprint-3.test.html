@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 3 Tests — Training Lessons 1-3</title>
+    <style>
+        body { font-family: monospace; padding: 2rem; background: #111; color: #0f0; }
+        .pass { color: #0f0; }
+        .fail { color: #f00; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Sprint 3: Training Lessons 1-3</h1>
+<pre id="results"></pre>
+
+<script type="module">
+import { MiniSimulator, mask40, extractLeft, extractRight, LESSONS } from '../js/training.js';
+
+let passes = 0, failures = 0;
+const results = document.getElementById('results');
+
+function log(msg) {
+    console.log(msg);
+    results.innerHTML += msg + '\n';
+}
+
+function assert(condition, message) {
+    if (!condition) throw new Error(message);
+}
+
+function assertBigInt(actual, expected, message) {
+    if (actual !== expected) {
+        throw new Error(message + ` (expected ${expected}, got ${actual})`);
+    }
+}
+
+function test(name, fn) {
+    try {
+        fn();
+        log('<span class="pass">✅ ' + name + '</span>');
+        passes++;
+    } catch (e) {
+        log('<span class="fail">❌ ' + name + ' — ' + e.message + '</span>');
+        failures++;
+    }
+}
+
+// ============================================================================
+// 3.5 — Mini-Simulator Engine
+// ============================================================================
+
+test('MiniSimulator initializes with zeroed state', () => {
+    const sim = new MiniSimulator();
+    assertBigInt(sim.AC, 0n, 'AC should be 0');
+    assertBigInt(sim.MQ, 0n, 'MQ should be 0');
+    assert(sim.PC === 0, 'PC should be 0');
+    assert(sim.side === 'left', 'Side should be left');
+    assert(sim.memory.length === 1024, 'Memory should be 1024 words');
+});
+
+test('mask40 truncates values to 40 bits', () => {
+    assertBigInt(mask40(0x10000000001n), 1n, 'Should truncate high bits');
+    assertBigInt(mask40(0xFFFFFFFFFFn), -1n, 'All 1s should be -1 (sign extend)');
+    assertBigInt(mask40(42n), 42n, 'Small positive unchanged');
+    assertBigInt(mask40(-5n), -5n, 'Small negative preserved');
+});
+
+test('extractLeft extracts opcode and address from 40-bit word', () => {
+    // Word: left opcode=0x01, left addr=0x0C8 (200)
+    const word = 0x01_0C8_00_000n;
+    const left = extractLeft(word);
+    assert(left.opcode === 0x01, `Left opcode should be 0x01, got ${left.opcode}`);
+    assert(left.address === 0x0C8, `Left address should be 200, got ${left.address}`);
+});
+
+test('extractRight extracts opcode and address from 40-bit word', () => {
+    // Word: right opcode=0x05, right addr=0x0C9 (201)
+    const word = 0x00_000_05_0C9n;
+    const right = extractRight(word);
+    assert(right.opcode === 0x05, `Right opcode should be 0x05, got ${right.opcode}`);
+    assert(right.address === 0x0C9, `Right address should be 201, got ${right.address}`);
+});
+
+test('extractLeft and extractRight parse a packed word correctly', () => {
+    // LOAD M(100) | ADD M(101) => opcode 0x01 addr 0x064 | opcode 0x05 addr 0x065
+    const word = (0x01n << 32n) | (0x064n << 20n) | (0x05n << 12n) | 0x065n;
+    const left = extractLeft(word);
+    const right = extractRight(word);
+    assert(left.opcode === 0x01, 'Left opcode should be LOAD (0x01)');
+    assert(left.address === 100, 'Left address should be 100');
+    assert(right.opcode === 0x05, 'Right opcode should be ADD (0x05)');
+    assert(right.address === 101, 'Right address should be 101');
+});
+
+// ============================================================================
+// 3.4 — Data Transfer Instructions (Lesson 3)
+// ============================================================================
+
+test('LOAD M(X): AC <- M(X)', () => {
+    const sim = new MiniSimulator();
+    sim.memory[100] = 42n;
+    sim.execute(0x01, 100);
+    assertBigInt(sim.AC, 42n, 'AC should be 42');
+});
+
+test('LOAD -M(X): AC <- -M(X)', () => {
+    const sim = new MiniSimulator();
+    sim.memory[100] = 42n;
+    sim.execute(0x02, 100);
+    assertBigInt(sim.AC, -42n, 'AC should be -42');
+});
+
+test('LOAD |M(X)|: AC <- |M(X)|', () => {
+    const sim = new MiniSimulator();
+    sim.memory[100] = -7n;
+    sim.execute(0x03, 100);
+    assertBigInt(sim.AC, 7n, 'AC should be 7');
+});
+
+test('LOAD -|M(X)|: AC <- -|M(X)|', () => {
+    const sim = new MiniSimulator();
+    sim.memory[100] = 7n;
+    sim.execute(0x04, 100);
+    assertBigInt(sim.AC, -7n, 'AC should be -7');
+});
+
+test('LOAD MQ,M(X): MQ <- M(X)', () => {
+    const sim = new MiniSimulator();
+    sim.memory[100] = 99n;
+    sim.execute(0x09, 100);
+    assertBigInt(sim.MQ, 99n, 'MQ should be 99');
+});
+
+test('LOAD MQ: AC <- MQ', () => {
+    const sim = new MiniSimulator();
+    sim.MQ = 55n;
+    sim.execute(0x0A, 0);
+    assertBigInt(sim.AC, 55n, 'AC should be 55');
+});
+
+test('STOR M(X): M(X) <- AC', () => {
+    const sim = new MiniSimulator();
+    sim.AC = 123n;
+    sim.execute(0x21, 200);
+    assertBigInt(sim.memory[200], 123n, 'M(200) should be 123');
+});
+
+// ============================================================================
+// 3.5 — Step Execution (Mini-Simulator)
+// ============================================================================
+
+test('step() executes left then right instruction', () => {
+    const sim = new MiniSimulator();
+    // Word 0: LOAD M(100) | HALT
+    sim.memory[0] = (0x01n << 32n) | (0x064n << 20n); // left: LOAD M(100), right: HALT
+    sim.memory[100] = 77n;
+    sim.step(); // executes left: LOAD M(100)
+    assertBigInt(sim.AC, 77n, 'After left step, AC should be 77');
+    assert(sim.side === 'right', 'Should advance to right side');
+});
+
+test('step() halts on opcode 0x00', () => {
+    const sim = new MiniSimulator();
+    sim.memory[0] = 0n; // both sides are HALT (0x00)
+    sim.step();
+    assert(sim.halted === true, 'Should halt on opcode 0x00');
+});
+
+test('HALT instruction (opcode 0x00) stops execution', () => {
+    const sim = new MiniSimulator();
+    // LOAD M(100) | HALT
+    sim.memory[0] = (0x01n << 32n) | (0x064n << 20n);
+    sim.memory[100] = 5n;
+    sim.step(); // LOAD M(100) -> AC=5
+    sim.step(); // HALT
+    assert(sim.halted === true, 'Should be halted');
+    assertBigInt(sim.AC, 5n, 'AC should still be 5');
+});
+
+// ============================================================================
+// 3.1 — Lesson Framework
+// ============================================================================
+
+test('LESSONS array exists with at least 3 lessons', () => {
+    assert(Array.isArray(LESSONS), 'LESSONS should be an array');
+    assert(LESSONS.length >= 3, `Should have at least 3 lessons, got ${LESSONS.length}`);
+});
+
+test('Each lesson has required fields', () => {
+    for (let i = 0; i < 3; i++) {
+        const lesson = LESSONS[i];
+        assert(lesson.id !== undefined, `Lesson ${i} should have id`);
+        assert(typeof lesson.title === 'string', `Lesson ${i} should have title string`);
+        assert(typeof lesson.content === 'string' || Array.isArray(lesson.sections),
+            `Lesson ${i} should have content or sections`);
+        assert(Array.isArray(lesson.exercises), `Lesson ${i} should have exercises array`);
+    }
+});
+
+test('Lesson 1 covers architecture concepts', () => {
+    const lesson = LESSONS[0];
+    const text = JSON.stringify(lesson).toLowerCase();
+    assert(text.includes('40-bit') || text.includes('40 bit'), 'Lesson 1 should mention 40-bit word');
+    assert(text.includes('register') || text.includes('ac'), 'Lesson 1 should mention registers');
+    assert(text.includes('memory') || text.includes('1024'), 'Lesson 1 should mention memory');
+});
+
+test('Lesson 2 covers instruction format', () => {
+    const lesson = LESSONS[1];
+    const text = JSON.stringify(lesson).toLowerCase();
+    assert(text.includes('opcode'), 'Lesson 2 should mention opcode');
+    assert(text.includes('address'), 'Lesson 2 should mention address');
+    assert(text.includes('20-bit') || text.includes('20 bit') || text.includes('instruction'),
+        'Lesson 2 should mention instruction format');
+});
+
+test('Lesson 3 covers data transfer', () => {
+    const lesson = LESSONS[2];
+    const text = JSON.stringify(lesson).toLowerCase();
+    assert(text.includes('load') || text.includes('stor'), 'Lesson 3 should mention LOAD/STOR');
+    assert(text.includes('transfer') || text.includes('data'), 'Lesson 3 should mention data transfer');
+});
+
+test('Each lesson has at least 1 exercise', () => {
+    for (let i = 0; i < 3; i++) {
+        assert(LESSONS[i].exercises.length >= 1,
+            `Lesson ${i+1} should have at least 1 exercise, got ${LESSONS[i].exercises.length}`);
+    }
+});
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+log('\n' + '='.repeat(50));
+log(`Results: ${passes} passed, ${failures} failed`);
+log('='.repeat(50));
+if (failures > 0) {
+    log('<span class="fail">SPRINT 3 TESTS: FAILED</span>');
+} else {
+    log('<span class="pass">SPRINT 3 TESTS: ALL PASSED</span>');
+}
+</script>
+</body>
+</html>

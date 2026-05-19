@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 250">
+  <defs>
+    <linearGradient id="medal-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0d060"/>
+      <stop offset="50%" stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#a08020"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="800" height="250" fill="#1a1a2e"/>
+  
+  <!-- IEEE logo area -->
+  <rect x="50" y="60" width="100" height="100" fill="#fff" rx="5"/>
+  <text x="100" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#006699" font-weight="bold">IEEE</text>
+  <text x="100" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#333">Milestone in</text>
+  <text x="100" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#333">Electrical Engineering</text>
+  <text x="100" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#333">and Computing</text>
+  
+  <!-- Medal -->
+  <circle cx="680" cy="110" r="50" fill="url(#medal-gold)" stroke="#a08020" stroke-width="3"/>
+  <circle cx="680" cy="110" r="42" fill="none" stroke="#f0d060" stroke-width="1"/>
+  <text x="680" y="100" text-anchor="middle" font-family="serif" font-size="14" fill="#5a4010" font-weight="bold">WEIZAC</text>
+  <text x="680" y="118" text-anchor="middle" font-family="serif" font-size="10" fill="#5a4010">MEDAL</text>
+  <text x="680" y="135" text-anchor="middle" font-family="serif" font-size="9" fill="#6a5020">2006</text>
+  <!-- Ribbon -->
+  <path d="M655 155 L665 190 L680 175 L695 190 L705 155" fill="#003366" stroke="#004488" stroke-width="1"/>
+  
+  <!-- Quote -->
+  <text x="200" y="85" font-family="Georgia, serif" font-size="13" fill="#eee" font-style="italic">"We have gathered here today to bring you,</text>
+  <text x="200" y="105" font-family="Georgia, serif" font-size="13" fill="#eee" font-style="italic">the true pioneers of the computing industry in Israel,</text>
+  <text x="200" y="125" font-family="Georgia, serif" font-size="13" fill="#eee" font-style="italic">our appreciation and gratitude for your courage</text>
+  <text x="200" y="145" font-family="Georgia, serif" font-size="13" fill="#eee" font-style="italic">and vision all those years ago..."</text>
+  <text x="200" y="175" font-family="Georgia, serif" font-size="11" fill="#c9a227">— Prof. Michael R. Lightner, IEEE President, 2006</text>
+  
+  <!-- Date -->
+  <text x="400" y="225" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#aaa">December 5, 2006 — Weizmann Institute of Science</text>
+</svg>

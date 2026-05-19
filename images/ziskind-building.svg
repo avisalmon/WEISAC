@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#E0F0FF"/>
+    </linearGradient>
+    <linearGradient id="bldg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d4c5a0"/>
+      <stop offset="100%" stop-color="#c2b28a"/>
+    </linearGradient>
+  </defs>
+  <!-- Sky -->
+  <rect width="800" height="400" fill="url(#sky)"/>
+  <!-- Ground -->
+  <rect y="320" width="800" height="80" fill="#8B9A6B"/>
+  <!-- Path -->
+  <path d="M0 360 Q200 340 400 355 Q600 370 800 350" fill="none" stroke="#c2a87a" stroke-width="12"/>
+  <!-- Ziskind Building -->
+  <rect x="200" y="140" width="400" height="180" fill="url(#bldg)" rx="2"/>
+  <!-- Basement highlight -->
+  <rect x="200" y="270" width="400" height="50" fill="#b8a87a" opacity="0.5"/>
+  <text x="400" y="300" text-anchor="middle" font-family="serif" font-size="11" fill="#5a4a2a" font-style="italic">Basement — where WEIZAC was built</text>
+  <!-- Roof -->
+  <polygon points="190,140 400,80 610,140" fill="#a0522d"/>
+  <!-- Windows row 1 -->
+  <rect x="240" y="160" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="310" y="160" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="380" y="160" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="450" y="160" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="520" y="160" width="40" height="35" fill="#7ab" rx="1"/>
+  <!-- Windows row 2 -->
+  <rect x="240" y="215" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="310" y="215" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="450" y="215" width="40" height="35" fill="#7ab" rx="1"/>
+  <rect x="520" y="215" width="40" height="35" fill="#7ab" rx="1"/>
+  <!-- Door -->
+  <rect x="375" y="230" width="50" height="90" fill="#5a3a1a" rx="2"/>
+  <circle cx="418" cy="280" r="3" fill="#c9a227"/>
+  <!-- Steps -->
+  <rect x="365" y="318" width="70" height="6" fill="#b8a87a"/>
+  <rect x="370" y="312" width="60" height="6" fill="#c2b28a"/>
+  <!-- Trees -->
+  <circle cx="130" cy="280" r="40" fill="#5a8a4a"/>
+  <rect x="125" y="310" width="10" height="30" fill="#6a4a2a"/>
+  <circle cx="670" cy="270" r="50" fill="#4a7a3a"/>
+  <rect x="665" y="310" width="10" height="30" fill="#6a4a2a"/>
+  <!-- Palm tree -->
+  <rect x="95" y="260" width="6" height="60" fill="#8B6914"/>
+  <ellipse cx="98" cy="250" rx="30" ry="15" fill="#3a7a2a" transform="rotate(-20,98,250)"/>
+  <ellipse cx="98" cy="255" rx="28" ry="12" fill="#4a8a3a" transform="rotate(15,98,255)"/>
+  <!-- Sign -->
+  <rect x="160" y="310" width="30" height="20" fill="#fff" stroke="#333" stroke-width="1"/>
+  <text x="175" y="324" text-anchor="middle" font-family="sans-serif" font-size="6" fill="#333">W.I.S.</text>
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#2c2c2c">The Ziskind Building, Weizmann Institute of Science, Rehovot</text>
+  <text x="400" y="48" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#666" font-style="italic">Where WEIZAC was born in the basement, 1952–1955</text>
+</svg>

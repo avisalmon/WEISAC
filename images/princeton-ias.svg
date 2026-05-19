@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 350">
+  <defs>
+    <linearGradient id="nassau" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c7956d"/>
+      <stop offset="100%" stop-color="#a87d5a"/>
+    </linearGradient>
+  </defs>
+  <!-- Sky -->
+  <rect width="800" height="350" fill="#c5d8e8"/>
+  <!-- Ground / lawn -->
+  <rect y="260" width="800" height="90" fill="#5a8a4a"/>
+  <!-- Path -->
+  <rect x="350" y="260" width="100" height="90" fill="#d4c5a0"/>
+  <!-- Nassau Hall (IAS) -->
+  <rect x="180" y="100" width="440" height="160" fill="url(#nassau)" rx="2"/>
+  <!-- Central tower -->
+  <rect x="350" y="50" width="100" height="50" fill="#b8855a"/>
+  <polygon points="350,50 400,20 450,50" fill="#7a5a3a"/>
+  <!-- Cupola -->
+  <rect x="385" y="30" width="30" height="20" fill="#666"/>
+  <ellipse cx="400" cy="28" rx="18" ry="10" fill="#777"/>
+  <line x1="400" y1="18" x2="400" y2="5" stroke="#888" stroke-width="2"/>
+  <!-- Windows - main floor -->
+  <g fill="#445566">
+    <rect x="200" y="130" width="25" height="40" rx="1"/>
+    <rect x="240" y="130" width="25" height="40" rx="1"/>
+    <rect x="280" y="130" width="25" height="40" rx="1"/>
+    <rect x="320" y="130" width="25" height="40" rx="1"/>
+    <rect x="455" y="130" width="25" height="40" rx="1"/>
+    <rect x="495" y="130" width="25" height="40" rx="1"/>
+    <rect x="535" y="130" width="25" height="40" rx="1"/>
+    <rect x="575" y="130" width="25" height="40" rx="1"/>
+  </g>
+  <!-- Central arch -->
+  <path d="M370 260 L370 180 Q400 150 430 180 L430 260" fill="#3a2a1a"/>
+  <path d="M375 255 L375 185 Q400 160 425 185 L425 255" fill="#445566"/>
+  <!-- Upper windows -->
+  <g fill="#4a5a6a">
+    <rect x="200" y="190" width="25" height="30" rx="1"/>
+    <rect x="240" y="190" width="25" height="30" rx="1"/>
+    <rect x="280" y="190" width="25" height="30" rx="1"/>
+    <rect x="495" y="190" width="25" height="30" rx="1"/>
+    <rect x="535" y="190" width="25" height="30" rx="1"/>
+    <rect x="575" y="190" width="25" height="30" rx="1"/>
+  </g>
+  <!-- Roofline -->
+  <line x1="180" y1="100" x2="620" y2="100" stroke="#6a4a2a" stroke-width="3"/>
+  <!-- Trees -->
+  <circle cx="120" cy="220" r="40" fill="#3a7a2a" opacity="0.9"/>
+  <circle cx="105" cy="235" r="30" fill="#4a8a3a"/>
+  <rect x="117" y="250" width="6" height="20" fill="#5a3a1a"/>
+  <circle cx="680" cy="210" r="45" fill="#3a7a2a" opacity="0.9"/>
+  <circle cx="695" cy="230" r="35" fill="#4a8a3a"/>
+  <rect x="687" y="255" width="6" height="15" fill="#5a3a1a"/>
+  <!-- Text labels -->
+  <text x="400" y="300" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#2c2c2c">Institute for Advanced Study, Princeton, 1945</text>
+  <text x="400" y="320" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="#555" font-style="italic">Where von Neumann built the IAS machine — the blueprint for WEIZAC</text>
+</svg>

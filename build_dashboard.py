@@ -16,7 +16,7 @@ from datetime import datetime
 
 ROOT = Path(__file__).parent
 STATE = ROOT / "state"
-DOCS = ROOT / "docs"
+DOCS = ROOT / "docs"  # Dashboard stays in docs/
 
 # Run verification first
 sys.path.insert(0, str(ROOT))

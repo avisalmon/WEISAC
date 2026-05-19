@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-05-16T15:22:26.341209",
+  "timestamp": "2026-05-18T16:08:59.245456",
   "summary": {
     "total": 13,
-    "passed": 1,
-    "failed": 12
+    "passed": 4,
+    "failed": 9
   },
   "sprints": {
     "0": {
@@ -14,7 +14,7 @@
           "id": "0.1",
           "name": "HTML skeleton",
           "pass": true,
-          "detail": "OK (44 lines): C:\\Projects\\VEIZAC\\docs\\index.html"
+          "detail": "OK (631 lines): C:\\Projects\\VEIZAC\\index.html"
         },
         {
           "id": "0.2",
@@ -26,7 +26,7 @@
           "id": "0.3",
           "name": "CSS foundation",
           "pass": true,
-          "detail": "OK (102 lines): C:\\Projects\\VEIZAC\\docs\\css\\style.css"
+          "detail": "OK (815 lines): C:\\Projects\\VEIZAC\\css\\style.css"
         },
         {
           "id": "0.4",
@@ -50,19 +50,19 @@
           "id": "0.2b",
           "name": "Tab JS file",
           "pass": true,
-          "detail": "OK (24 lines): C:\\Projects\\VEIZAC\\docs\\js\\main.js"
+          "detail": "OK (53 lines): C:\\Projects\\VEIZAC\\js\\main.js"
         }
       ]
     },
     "1": {
       "name": "Home Tab",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "1.0",
           "name": "index.html has content",
           "pass": true,
-          "detail": "OK (44 lines): C:\\Projects\\VEIZAC\\docs\\index.html"
+          "detail": "OK (631 lines): C:\\Projects\\VEIZAC\\index.html"
         },
         {
           "id": "1.1",
@@ -79,14 +79,14 @@
         {
           "id": "1.3",
           "name": "Historical images",
-          "pass": false,
-          "detail": "Need 2+ images, found 0"
+          "pass": true,
+          "detail": "8 images found"
         },
         {
           "id": "1.4",
           "name": "Credits and links",
-          "pass": false,
-          "detail": "No Weizmann/IEEE links"
+          "pass": true,
+          "detail": "External links found"
         },
         {
           "id": "1.5",
@@ -98,67 +98,67 @@
     },
     "2": {
       "name": "History Tab",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "2.1",
           "name": "English narrative",
-          "pass": false,
-          "detail": "Too short (16 chars)"
+          "pass": true,
+          "detail": "History section: 37754 chars"
         },
         {
           "id": "2.2",
           "name": "Hebrew narrative",
-          "pass": false,
-          "detail": "No Hebrew text"
+          "pass": true,
+          "detail": "Hebrew text found"
         },
         {
           "id": "2.3",
           "name": "Timeline",
-          "pass": false,
-          "detail": "No timeline"
+          "pass": true,
+          "detail": "Timeline content found"
         },
         {
           "id": "2.4",
           "name": "Key people",
-          "pass": false,
-          "detail": "No key people section"
+          "pass": true,
+          "detail": "Key people mentioned"
         },
         {
           "id": "2.5",
           "name": "Technical specs",
-          "pass": false,
-          "detail": "No specs table"
+          "pass": true,
+          "detail": "Technical specs found"
         }
       ]
     },
     "3": {
       "name": "Training 1-3",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "3.1",
           "name": "Lesson framework",
-          "pass": false,
-          "detail": "No lesson content"
+          "pass": true,
+          "detail": "Lesson framework found"
         },
         {
           "id": "3.2-3.4",
           "name": "Lessons 1-3 content",
-          "pass": false,
-          "detail": "No lesson JS or interactive content"
+          "pass": true,
+          "detail": "Lesson logic found"
         },
         {
           "id": "3.5",
           "name": "Mini-simulator engine",
-          "pass": false,
-          "detail": "No mini-simulator JS file"
+          "pass": true,
+          "detail": "Exercise engine JS found"
         },
         {
           "id": "3.T",
           "name": "Sprint 3 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-3.test.html"
+          "pass": true,
+          "detail": "OK (213 lines): C:\\Projects\\VEIZAC\\tests\\sprint-3.test.html"
         }
       ]
     },
@@ -169,14 +169,14 @@
         {
           "id": "4.1",
           "name": "Lesson 4: Arithmetic",
-          "pass": false,
-          "detail": "No arithmetic lesson"
+          "pass": true,
+          "detail": "Arithmetic lesson content found"
         },
         {
           "id": "4.2",
           "name": "Lesson 5: Branching",
-          "pass": false,
-          "detail": "No branching lesson"
+          "pass": true,
+          "detail": "Branching lesson content found"
         },
         {
           "id": "4.3",
@@ -187,14 +187,14 @@
         {
           "id": "4.4",
           "name": "Progress persistence",
-          "pass": false,
-          "detail": "No localStorage"
+          "pass": true,
+          "detail": "localStorage used"
         },
         {
           "id": "4.T",
           "name": "Sprint 4 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-4.test.html"
+          "pass": true,
+          "detail": "OK (225 lines): C:\\Projects\\VEIZAC\\tests\\sprint-4.test.html"
         }
       ]
     },
@@ -206,7 +206,7 @@
           "id": "5.1",
           "name": "simulator.js exists",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\simulator.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\simulator.js"
         },
         {
           "id": "5.1b",
@@ -260,7 +260,7 @@
           "id": "6.1",
           "name": "assembler.js exists",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\assembler.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\assembler.js"
         },
         {
           "id": "6.1b",
@@ -302,7 +302,7 @@
           "id": "7.1",
           "name": "ui.js exists",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\ui.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\ui.js"
         },
         {
           "id": "7.1b",
@@ -344,7 +344,7 @@
           "id": "8.1",
           "name": "audio.js exists",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\audio.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\audio.js"
         },
         {
           "id": "8.1b",
@@ -368,7 +368,7 @@
           "id": "9.1",
           "name": "tape.js exists",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\tape.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\tape.js"
         },
         {
           "id": "9.2",
@@ -386,7 +386,7 @@
           "id": "10.1",
           "name": "tools.js exists",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\tools.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\tools.js"
         },
         {
           "id": "10.2",
@@ -416,7 +416,7 @@
           "id": "11.1",
           "name": "Example programs exist",
           "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\docs\\js\\examples.js"
+          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\examples.js"
         },
         {
           "id": "11.T",

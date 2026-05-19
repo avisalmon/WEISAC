@@ -63,9 +63,9 @@ iteration, STOP. You are hallucinating.
 
 - **Project root:** `c:\Projects\VEIZAC`
 - **Python venv:** `.\env\Scripts\activate` (for any tooling scripts)
-- **Output:** Project root (`index.html`, `css/`, `js/`, `images/`)
+- **Output:** `docs/` folder (GitHub Pages root)
 - **Test location:** `tests/` folder (not deployed)
-- **Dashboard:** `docs/dashboard.html` (reference only)
+- **Dashboard:** `docs/dashboard.html` (deployed, always current)
 - **Git:** Commit after each sprint passes. Message: `"Sprint N: <goal from backlog>"`
 
 ---

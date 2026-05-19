@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEIZAC</title>
+    <meta name="description" content="VEIZAC - The WEIZAC Computer: History and Simulator. Israel's first computer, built in 1955.">
+    <meta property="og:title" content="VEIZAC">
+    <meta property="og:description" content="VEIZAC - The WEIZAC Computer: History and Simulator. Israel's first computer, built in 1955.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="images/favicon.ico">
+</head>
+<body>
+    <header>
+        <h1>VEIZAC</h1>
+        <p>The WEIZAC Computer: History and Simulator</p>
+    </header>
+
+    <nav class="tab-bar">
+        <button data-tab="home" class="active">Home</button>
+        <button data-tab="history">History</button>
+        <button data-tab="training">Training</button>
+        <button data-tab="simulator">Simulator</button>
+    </nav>
+
+    <main>
+        <section class="tab-panel active" id="tab-home">
+            <div class="hero">
+                <h2 class="hero-title">VEIZAC</h2>
+                <p class="hero-subtitle">The WEIZAC Computer: History and Simulator</p>
+            </div>
+
+            <div class="home-intro">
+                <p>
+                    The WEIZAC (Weizmann Automatic Computer) was <strong>Israel's first computer</strong>,
+                    completed in 1955 at the Weizmann Institute of Science in Rehovot. Based on the
+                    IAS architecture designed by John von Neumann at Princeton, it was built largely
+                    from schematics — without access to many standard parts — by a small team of
+                    dedicated scientists and engineers in the basement of the Ziskind Building.
+                </p>
+                <p>
+                    Key facts: <strong>40-bit word length</strong>, <strong>21 instructions</strong>,
+                    1024 words of magnetic drum memory (later expanded to 4096, then 12,288 words).
+                    It operated from 1955 until its retirement in 1963, performing groundbreaking
+                    calculations in tidal prediction, quantum mechanics, and numerical analysis.
+                </p>
+            </div>
+
+            <div class="home-gallery">
+                <figure>
+                    <img src="images/weizac-engineering-group.jpg" alt="Members of the WEIZAC engineering group with the completed machine in the background" width="400" height="300" loading="lazy">
+                    <figcaption>WEIZAC engineering group with the completed machine (Weizmann archive)</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/weizac-console.jpg" alt="The WEIZAC operator console" width="400" height="300" loading="lazy">
+                    <figcaption>WEIZAC operator console (Weizmann archive)</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/weizac-cpu.jpg" alt="Central processing unit of the WEIZAC computer" width="400" height="300" loading="lazy">
+                    <figcaption>Central processing unit of WEIZAC (Weizmann archive)</figcaption>
+                </figure>
+            </div>
+
+            <div class="home-credits">
+                <h3>Credits &amp; References</h3>
+                <ul>
+                    <li><a href="https://www.weizmann.ac.il" target="_blank" rel="noopener">Weizmann Institute of Science</a></li>
+                    <li><a href="https://ethw.org/Milestones:WEIZAC_Computer,_1955" target="_blank" rel="noopener">IEEE Milestone: WEIZAC Computer, 1955</a></li>
+                </ul>
+                <p class="attribution">
+                    Historical photographs courtesy of the Weizmann Institute WEIZAC archive.
+                </p>
+            </div>
+
+            <div class="home-nav-hints">
+                <h3>Explore</h3>
+                <div class="nav-cards">
+                    <a href="#history" class="nav-card">
+                        <strong>History</strong>
+                        <span>The full story of Israel's first computer</span>
+                    </a>
+                    <a href="#training" class="nav-card">
+                        <strong>Training</strong>
+                        <span>Learn to program the IAS architecture</span>
+                    </a>
+                    <a href="#simulator" class="nav-card">
+                        <strong>Simulator</strong>
+                        <span>Run code on a virtual WEIZAC</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+        <section class="tab-panel" id="tab-history">
+
+            <!-- Language Toggle -->
+            <div class="lang-toggle">
+                <button class="lang-btn active" data-lang="en">English</button>
+                <button class="lang-btn" data-lang="he">עברית</button>
+            </div>
+
+            <!-- ==================== ENGLISH ==================== -->
+            <div class="history-content lang-en active">
+
+                <h2 class="history-title">The Story of WEIZAC</h2>
+                <p class="history-lead">Building a computer while building a country</p>
+                <p class="history-photo-credit">Historical photos in this section are from the Weizmann Institute WEIZAC archive.</p>
+
+                <!-- Chapter 1: Birth -->
+                <article class="history-chapter">
+                    <h3>The Birth of a Computer in a Nation Being Born</h3>
+                    <p>
+                        In 1948, the State of Israel had just come into existence through the
+                        <a href="https://en.wikipedia.org/wiki/1948_Arab%E2%80%93Israeli_War" target="_blank" rel="noopener">War of Independence</a>.
+                        The country lacked housing, roads, and basic infrastructure. Hundreds of thousands of
+                        immigrants were flooding in. Food production was barely functional. And yet, at the
+                        <a href="https://en.wikipedia.org/wiki/Weizmann_Institute_of_Science" target="_blank" rel="noopener">Weizmann Institute of Science</a>
+                        in Rehovot, a small group of visionaries decided this was exactly the right time to build
+                        one of the world's most advanced computing machines.
+                    </p>
+                    <p>
+                        The result was <strong>WEIZAC</strong> (Weizmann Automatic Computer), Israel's first
+                        computer and one of the first large-scale stored-program electronic computers in the
+                        world.<sup><a href="#ref-1">1</a></sup><sup><a href="#ref-2">2</a></sup>
+                    </p>
+                </article>
+
+                <!-- Chapter 2: Princeton -->
+                <article class="history-chapter">
+                    <h3>Princeton, 1945: Where It All Started</h3>
+
+                    <figure class="history-figure history-figure--wide">
+                        <img src="images/weizac-ias-team.jpg" alt="WEIZAC project leaders and engineers at the Institute for Advanced Study, including John von Neumann and Gerald Estrin" loading="lazy">
+                        <figcaption>WEIZAC project leaders and engineers at the Institute for Advanced Study (photo1, Weizmann archive)</figcaption>
+                    </figure>
+
+                    <p>
+                        The story begins at <a href="https://en.wikipedia.org/wiki/Princeton_University" target="_blank" rel="noopener">Princeton University</a>
+                        in the mid-1940s. The Institute for Advanced Study housed some of the greatest minds of
+                        the twentieth century, including Albert Einstein and John von Neumann.
+                    </p>
+                    <p>
+                        Von Neumann was leading the construction of a revolutionary new machine: the
+                        <a href="https://en.wikipedia.org/wiki/IAS_machine" target="_blank" rel="noopener">IAS computer</a>,
+                        one of the first stored-program electronic computers ever built. Working alongside him was
+                        <strong>Chaim L. Pekeris</strong>, a Lithuanian-born Jewish physicist specializing in
+                        computational methods for solving physical problems. Pekeris was one of the earliest
+                        serious users of computers for scientific calculation.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                    <p>
+                        In 1945, the Weizmann Institute asked Pekeris to come to Israel and establish a Department
+                        of Applied Mathematics. Pekeris had one condition: <em>the Institute must build a computer
+                        similar to the IAS machine</em>. His driving motivation was to solve
+                        <a href="https://en.wikipedia.org/wiki/Theory_of_tides" target="_blank" rel="noopener">Laplace's tidal equations</a>
+                        for the Earth's oceans — a computational problem far too complex for hand
+                        calculation.<sup><a href="#ref-1">1</a></sup>
+                    </p>
+                </article>
+
+                <!-- Chapter 3: Committee -->
+                <article class="history-chapter">
+                    <h3>The Advisory Committee: Einstein Says No, Von Neumann Says Yes</h3>
+                    <p>
+                        In July 1947, an advisory committee met to discuss Pekeris' plan. Its members included
+                        both Einstein and von Neumann.
+                    </p>
+                    <p>
+                        Einstein was skeptical. Computers were experimental and expensive, he argued. The idea
+                        seemed impractical for a country still struggling to feed its
+                        people.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                    <p>
+                        Von Neumann, on the other hand, was enthusiastic. When someone asked, "What will that
+                        tiny country do with an electric computer?", von Neumann replied:
+                    </p>
+                    <blockquote class="history-quote">
+                        "Don't worry about that problem. If nobody else uses the computer, Pekeris will use it
+                        full time!"
+                        <cite>— John von Neumann, 1947<sup><a href="#ref-4">4</a></sup></cite>
+                    </blockquote>
+                    <p>
+                        Einstein was eventually persuaded to give his seal of approval.
+                        <a href="https://en.wikipedia.org/wiki/Chaim_Weizmann" target="_blank" rel="noopener">Chaim Weizmann</a>,
+                        Israel's first president and head of the Weizmann Institute, assigned <strong>US$50,000</strong>
+                        to the project — 20% of the Institute's entire budget.<sup><a href="#ref-5">5</a></sup>
+                    </p>
+                </article>
+
+                <!-- Chapter 4: Estrin -->
+                <article class="history-chapter">
+                    <h3>Gerald Estrin: Schematics But No Parts</h3>
+
+                    <figure class="history-figure history-figure--right">
+                        <img src="images/weizac-construction.jpg" alt="Constructing and checking WEIZAC during its build phase at the Weizmann Institute" loading="lazy">
+                        <figcaption>Constructing and checking WEIZAC (photoa, Weizmann archive)</figcaption>
+                    </figure>
+
+                    <p>
+                        In 1952, <a href="https://en.wikipedia.org/wiki/Gerald_Estrin" target="_blank" rel="noopener">Gerald Estrin</a>,
+                        a research engineer who had worked on the von Neumann IAS project at Princeton, was chosen
+                        to lead the WEIZAC construction. He came to Israel together with his wife
+                        <a href="https://en.wikipedia.org/wiki/Thelma_Estrin" target="_blank" rel="noopener">Thelma Estrin</a>,
+                        also an electrical engineer. They arrived on a ship carrying immigrants from North
+                        Africa.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                    <p>They brought <strong>schematics</strong> of the IAS machine, but <strong>no physical parts</strong>.</p>
+                    <blockquote class="history-quote">
+                        "As I look back now, if we had systematically laid out a detailed plan of execution we
+                        would probably have aborted the project."
+                        <cite>— Gerald Estrin<sup><a href="#ref-1">1</a></sup></cite>
+                    </blockquote>
+                    <p>
+                        Upon arrival, Estrin's impression was that aside from Pekeris, other Israeli scientists
+                        thought it ridiculous to build a computer in Israel. He was placed in three rooms in
+                        the basement of the Ziskind Building.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                </article>
+
+                <!-- Chapter 5: Building -->
+                <article class="history-chapter">
+                    <h3>Building It: Improvisation and Determination</h3>
+                    <p>
+                        With no supply chain and no electronics industry to speak of, the team improvised.
+                    </p>
+                    <p>
+                        <strong>Micha Kedem</strong>, an Israeli electrical engineer, joined Pekeris in roaming the
+                        streets of Tel Aviv searching for parts to construct a tube tester. When precision machinery
+                        was needed, they turned to a shop that produced fans and bicycle parts, owned by recent
+                        immigrants from Bulgaria.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                    <p>
+                        To recruit skilled staff, a newspaper advertisement was posted. <strong>Zvi Riesel</strong>,
+                        who had been in charge of the IDF radar workshop, saw the ad and applied. Most applicants
+                        had no records of prior education, because those documents were lost in the Holocaust or
+                        during immigration. But in Israel's small technical community, everyone knew everyone
+                        else.<sup><a href="#ref-3">3</a></sup><sup><a href="#ref-6">6</a></sup>
+                    </p>
+                    <p>
+                        <strong>Phillip Rabinowitz</strong>, who had worked on the Whirlwind Computer project at MIT,
+                        began teaching programming courses at Weizmann. His students became Israel's first generation
+                        of computer experts.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                    <p>
+                        <strong>Hans Jarosch</strong>, a new immigrant with a Ph.D. in Aeronautical Engineering from
+                        Queen Mary College, London, who had just finished three years in the Israeli Air Force, was
+                        assigned to write application programs.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                </article>
+
+                <!-- Chapter 6: First Calculation -->
+                <article class="history-chapter">
+                    <h3>First Calculation: October 1955</h3>
+
+                    <figure class="history-figure history-figure--wide">
+                        <img src="images/weizac-cpu.jpg" alt="Central processing unit of WEIZAC" loading="lazy">
+                        <figcaption>Central processing unit of WEIZAC (w2, Weizmann archive)</figcaption>
+                    </figure>
+
+                    <p>
+                        As the computer neared completion, the Estrins returned to the United States. Shortly after,
+                        in <strong>October 1955</strong>, WEIZAC performed its first calculation.<sup><a href="#ref-7">7</a></sup>
+                        By early 1958, WEIZAC was in full operation.<sup><a href="#ref-3">3</a></sup>
+                    </p>
+                </article>
+
+                <!-- Technical Specs -->
+                <article class="history-chapter">
+                    <h3>Technical Specifications</h3>
+                    <p>WEIZAC was based on the <a href="https://en.wikipedia.org/wiki/IAS_machine" target="_blank" rel="noopener">IAS architecture</a>:</p>
+                    <div class="specs-table-wrap">
+                        <table class="specs-table">
+                            <thead>
+                                <tr><th>Feature</th><th>Specification</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Word size</td><td>40 bits</td></tr>
+                                <tr><td>Instruction format</td><td>20 bits (8-bit opcode + 12-bit address)</td></tr>
+                                <tr><td>Instructions per word</td><td>2</td></tr>
+                                <tr><td>Operation mode</td><td>Asynchronous (no central clock)</td></tr>
+                                <tr><td>Registers</td><td>Accumulator (AC), Multiplier/Quotient (MQ)</td></tr>
+                                <tr><td>Primary input</td><td>Punched paper tape</td></tr>
+                                <tr><td>Later I/O</td><td>Magnetic tape (added 1958)</td></tr>
+                                <tr class="specs-highlight"><td>Initial memory</td><td>1,024 words — electrostatic storage</td></tr>
+                                <tr class="specs-highlight"><td>Upgraded memory</td><td>4,096 words — magnetic-core</td></tr>
+                                <tr class="specs-highlight"><td>Final memory (1961)</td><td>12,288 words (3 × 4,096 modules)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <!-- Scientific Breakthroughs -->
+                <article class="history-chapter">
+                    <h3>Scientific Breakthroughs</h3>
+
+                    <figure class="history-figure history-figure--wide">
+                        <img src="images/pekeris-ocean-tides.jpg" alt="Chaim Pekeris and colleagues discussing an ocean tides model" loading="lazy">
+                        <figcaption>Chaim Pekeris and colleagues discussing an ocean tides model (photo11, Weizmann archive)</figcaption>
+                    </figure>
+
+                    <p>WEIZAC proved its worth immediately:</p>
+                    <ul class="history-list">
+                        <li>
+                            <strong>Ocean tides:</strong> Solving Laplace's tidal equations, WEIZAC discovered an
+                            <a href="https://en.wikipedia.org/wiki/Amphidromic_point" target="_blank" rel="noopener">amphidromic point</a>
+                            in the South Atlantic where the tide does not change.<sup><a href="#ref-1">1</a></sup>
+                        </li>
+                        <li>
+                            <strong>Quantum mechanics:</strong> Yigal Accad programmed Pekeris' mathematical development
+                            of the two-electron atom quantum system into machine code. WEIZAC numerically calculated the
+                            eigenvalues. These results were later experimentally confirmed by Brookhaven National
+                            Laboratory, verifying Schrödinger's equations.<sup><a href="#ref-8">8</a></sup>
+                        </li>
+                        <li>
+                            <strong>Other fields:</strong> Earthquake analysis, atomic spectroscopy, X-ray
+                            crystallography, random walk methods, and numerical analysis.<sup><a href="#ref-1">1</a></sup>
+                        </li>
+                    </ul>
+                </article>
+
+                <!-- Only Computer -->
+                <article class="history-chapter">
+                    <h3>Israel's Only Computer</h3>
+                    <p>
+                        Until 1961, WEIZAC was the <strong>only computer in the entire State of Israel</strong>.
+                        It was kept constantly busy. Users from other institutions became frustrated with not being
+                        able to get computing time, and demanded more
+                        computers.<sup><a href="#ref-1">1</a></sup><sup><a href="#ref-6">6</a></sup>
+                    </p>
+                </article>
+
+                <!-- End of Era -->
+                <article class="history-chapter">
+                    <h3>End of an Era</h3>
+                    <p>
+                        WEIZAC operated until <strong>December 29, 1963</strong>. It was replaced by a commercially
+                        built <a href="https://en.wikipedia.org/wiki/CDC_1604" target="_blank" rel="noopener">CDC 1604A</a>.
+                        At the same time, the institute's staff began constructing a locally designed successor called
+                        <strong>GOLEM</strong>, based on the
+                        <a href="https://en.wikipedia.org/wiki/ILLIAC_II" target="_blank" rel="noopener">ILLIAC II</a>
+                        architecture.<sup><a href="#ref-1">1</a></sup>
+                    </p>
+                </article>
+
+                <!-- Legacy -->
+                <article class="history-chapter">
+                    <h3>Legacy</h3>
+                    <blockquote class="history-quote">
+                        "Remarkable changes in Israel were evident. New roads, new buildings, new people, new problems.
+                        Before the start of the WEIZAC project there were no digital electronic computers in Israel.
+                        No electronic digital engineers. No programmers and no support personnel. The WEIZAC people
+                        succeeded in creating the technological know-how necessary for Israel to play a strong role
+                        in the information revolution."
+                        <cite>— Gerald Estrin, 1963<sup><a href="#ref-3">3</a></sup></cite>
+                    </blockquote>
+                    <p>
+                        WEIZAC's success led to the recognition of the demand for computers and digital technology
+                        in Israel, and ultimately provided the foundation for Israel's computer and technology
+                        industries.<sup><a href="#ref-6">6</a></sup>
+                    </p>
+
+                    <figure class="history-figure history-figure--wide">
+                        <img src="images/kedem-ben-gurion.jpg" alt="Micha Kedem, Amos De-Shalit, and David Ben-Gurion" loading="lazy">
+                        <figcaption>Micha Kedem, Amos De-Shalit, and David Ben-Gurion (photo12, Weizmann archive)</figcaption>
+                    </figure>
+                </article>
+
+                <!-- ===== TIMELINE ===== -->
+                <article class="history-chapter">
+                    <h3>Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">1945</div>
+                            <div class="timeline-content">
+                                <strong>Pekeris at Princeton</strong>
+                                <p>Chaim Pekeris works alongside von Neumann on the IAS machine. Seeds of WEIZAC are planted.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1947</div>
+                            <div class="timeline-content">
+                                <strong>Advisory Committee</strong>
+                                <p>Einstein and von Neumann debate the plan. $50,000 allocated — 20% of the Institute's budget.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1952</div>
+                            <div class="timeline-content">
+                                <strong>Estrins Arrive</strong>
+                                <p>Gerald and Thelma Estrin arrive in Israel with IAS schematics but no parts. Construction begins in the Ziskind basement.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item timeline-item--highlight">
+                            <div class="timeline-date">1955</div>
+                            <div class="timeline-content">
+                                <strong>First Calculation</strong>
+                                <p>WEIZAC performs its first computation in October. Israel's first computer is alive.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1956</div>
+                            <div class="timeline-content">
+                                <strong>Tidal Equations Solved</strong>
+                                <p>WEIZAC discovers an amphidromic point in the South Atlantic — Pekeris' dream realized.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1958</div>
+                            <div class="timeline-content">
+                                <strong>Full Operation</strong>
+                                <p>WEIZAC reaches full operational capacity. Memory upgraded to 4,096 words. Magnetic tape I/O added.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">1963</div>
+                            <div class="timeline-content">
+                                <strong>Retirement</strong>
+                                <p>WEIZAC operates its last day on December 29. Replaced by CDC 1604A. GOLEM successor begins construction.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-date">2006</div>
+                            <div class="timeline-content">
+                                <strong>IEEE Milestone</strong>
+                                <p>IEEE recognizes WEIZAC as a Milestone in Electrical Engineering and Computing. The builders receive the WEIZAC Medal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ===== KEY PEOPLE ===== -->
+                <article class="history-chapter">
+                    <h3>The People Who Built WEIZAC</h3>
+                    <div class="people-grid">
+                        <div class="person-card">
+                            <div class="person-avatar">CLP</div>
+                            <h4>Chaim L. Pekeris</h4>
+                            <p class="person-role">Visionary &amp; Initiator</p>
+                            <p>Lithuanian-born physicist who insisted on building a computer as a condition for joining the Weizmann Institute. His dream: solve Laplace's tidal equations.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">JvN</div>
+                            <h4>John von Neumann</h4>
+                            <p class="person-role">Architect of the IAS Machine</p>
+                            <p>Designed the stored-program architecture that WEIZAC was based on. Championed the project when Einstein was skeptical.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">AE</div>
+                            <h4>Albert Einstein</h4>
+                            <p class="person-role">Advisory Committee Member</p>
+                            <p>Initially skeptical of the project's feasibility for a young nation. Eventually gave his approval and blessing.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">GE</div>
+                            <h4>Gerald Estrin</h4>
+                            <p class="person-role">Construction Lead</p>
+                            <p>Princeton engineer who led WEIZAC's physical construction. Brought IAS schematics to Israel. Later reflected it was "impossible" yet they did it.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">TE</div>
+                            <h4>Thelma Estrin</h4>
+                            <p class="person-role">Electrical Engineer</p>
+                            <p>Came to Israel with Gerald. One of the earliest women in computer engineering. Later pioneered biomedical engineering at UCLA.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">MK</div>
+                            <h4>Micha Kedem</h4>
+                            <p class="person-role">Electrical Engineer</p>
+                            <p>Israeli engineer who roamed Tel Aviv streets with Pekeris searching for parts. Built the tube tester from scratch.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">ZR</div>
+                            <h4>Zvi Riesel</h4>
+                            <p class="person-role">Electronics Technician</p>
+                            <p>Former IDF radar workshop chief who answered a newspaper ad. His records were lost in the Holocaust, but his skills were proven.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">PR</div>
+                            <h4>Phillip Rabinowitz</h4>
+                            <p class="person-role">Programming Instructor</p>
+                            <p>Whirlwind veteran from MIT who taught Israel's first programming courses at Weizmann. His students became the nation's first computer experts.</p>
+                        </div>
+                        <div class="person-card">
+                            <div class="person-avatar">HJ</div>
+                            <h4>Hans Jarosch</h4>
+                            <p class="person-role">Application Programmer</p>
+                            <p>Ph.D. in Aeronautical Engineering, Queen Mary College. New immigrant who served 3 years in the Israeli Air Force before joining the project.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- ===== REFERENCES ===== -->
+                <article class="history-chapter">
+                    <h3>References</h3>
+                    <ol class="references-list">
+                        <li id="ref-1"><a href="https://en.wikipedia.org/wiki/WEIZAC" target="_blank" rel="noopener">Wikipedia: WEIZAC</a></li>
+                        <li id="ref-2"><a href="https://wis-wander.weizmann.ac.il/content/computer-studies" target="_blank" rel="noopener">Weizmann Institute: Computer Studies</a></li>
+                        <li id="ref-3"><a href="https://www.wisdom.weizmann.ac.il/weizac/weizac.html" target="_blank" rel="noopener">Weizmann Institute: The WEIZAC</a> (from <em>Interface</em>, Spring/Summer 1998)</li>
+                        <li id="ref-4">Corry, Leo; Leviathan, Raya (2023). <em>Chaim L. Pekeris and the Art of Applying Mathematics with WEIZAC, 1955–1963</em>. Springer Nature. ISBN 978-3-031-27125-0</li>
+                        <li id="ref-5"><a href="https://www.wisdom.weizmann.ac.il/weizac/invitation.pdf" target="_blank" rel="noopener">Weizmann Institute: WEIZAC IEEE Milestone Invitation</a></li>
+                        <li id="ref-6"><a href="http://www.ieeeghn.org/wiki/index.php/Milestones:WEIZAC_Computer,_1955" target="_blank" rel="noopener">IEEE Milestone: WEIZAC Computer, 1955</a></li>
+                        <li id="ref-7">Weizmann Institute Scientific Activities (1962), p. 19</li>
+                        <li id="ref-8">Koutschan, Christoph; Zeilberger, Doron (2011). "The 1958 Pekeris-Accad-WEIZAC Ground-Breaking Collaboration." <em>The Mathematical Intelligencer</em> 33(2): 52–57. <a href="https://arxiv.org/abs/1006.0200" target="_blank" rel="noopener">arXiv:1006.0200</a></li>
+                        <li id="ref-9">Bogdanowicz, Anna (2006). <a href="https://web.archive.org/web/20070715083222/http://www.ieee.org/portal/site/tionline/menuitem.130a3558587d56e8fb2275875bac26c8/index.jsp?&pName=institute_level1_article&TheCat=1008&article=tionline/legacy/inst2006/dec06/history.xml&" target="_blank" rel="noopener">Middle East's First Computer Named History Milestone</a>. IEEE.</li>
+                        <li id="ref-10">Estrin, Gerald (1991). "The WEIZAC Years (1954–1963)." <em>IEEE Annals of the History of Computing</em> 13(4): 317–339.</li>
+                        <li id="ref-11">Corry, Leo; Leviathan, Raya (2019). <a href="https://link.springer.com/book/10.1007/978-3-030-25734-7" target="_blank" rel="noopener">WEIZAC: An Israeli Pioneering Adventure in Electronic Computing (1945–1963)</a>. Springer Verlag.</li>
+                        <li id="ref-12"><a href="https://googleblog.blogspot.com/2013/06/remembering-weizac-beginning-of.html" target="_blank" rel="noopener">Google Blog: Remembering WEIZAC</a></li>
+                        <li id="ref-13"><a href="https://www.youtube.com/watch?v=I9QVx_fc4OY" target="_blank" rel="noopener">YouTube: Prof. Aviezri Fraenkel recounts WEIZAC</a></li>
+                    </ol>
+                </article>
+
+            </div><!-- /lang-en -->
+
+            <!-- ==================== HEBREW ==================== -->
+            <div class="history-content lang-he" dir="rtl" lang="he">
+
+                <h2 class="history-title">סיפור ה-WEIZAC</h2>
+                <p class="history-lead">בניית מחשב תוך כדי בניית מדינה</p>
+
+                <article class="history-chapter">
+                    <h3>לידת מחשב בתוך לידת מדינה</h3>
+                    <p>
+                        ב-1948, מדינת ישראל זה עתה קמה דרך
+                        <a href="https://he.wikipedia.org/wiki/%D7%9E%D7%9C%D7%97%D7%9E%D7%AA_%D7%94%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA" target="_blank" rel="noopener">מלחמת העצמאות</a>.
+                        המדינה חסרה דיור, כבישים ותשתיות בסיסיות. מאות אלפי עולים הציפו את הארץ.
+                        ייצור המזון בקושי תפקד. ובכל זאת,
+                        ב<a href="https://he.wikipedia.org/wiki/%D7%9E%D7%9B%D7%95%D7%9F_%D7%95%D7%99%D7%A6%D7%9E%D7%9F_%D7%9C%D7%9E%D7%93%D7%A2" target="_blank" rel="noopener">מכון ויצמן למדע</a>
+                        ברחובות, קבוצה קטנה של בעלי חזון החליטה שזה בדיוק הזמן הנכון לבנות אחד ממכונות
+                        החישוב המתקדמות בעולם.
+                    </p>
+                    <p>
+                        התוצאה היתה <strong>WEIZAC</strong> (Weizmann Automatic Computer), המחשב הראשון בישראל
+                        ואחד המחשבים האלקטרוניים הראשונים בעולם עם תוכנית שמורה בזיכרון.
+                    </p>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>פרינסטון, 1945: איפה הכל התחיל</h3>
+                    <p>
+                        הסיפור מתחיל באוניברסיטת פרינסטון באמצע שנות ה-40. המכון למחקר מתקדם (IAS) אירח
+                        כמה מהמוחות הגדולים ביותר של המאה העשרים, ובהם אלברט איינשטיין וג'ון פון נוימן.
+                    </p>
+                    <p>
+                        פון נוימן הוביל את בניית מחשב ה-IAS. לצידו עבד <strong>חיים ל. פקריס</strong>,
+                        פיזיקאי יהודי יליד ליטא שהתמחה בשיטות חישוביות. פקריס היה אחד המשתמשים הרציניים
+                        הראשונים במחשבים לחישובים מדעיים.
+                    </p>
+                    <p>
+                        ב-1945, מכון ויצמן ביקש מפקריס לבוא לישראל ולהקים מחלקה למתמטיקה שימושית.
+                        לפקריס היה תנאי אחד: <em>המכון חייב לבנות מחשב דומה למחשב ה-IAS</em>.
+                        המוטיבציה המרכזית שלו היתה לפתור את משוואות הגאות של לפלס עבור אוקיינוסי כדור הארץ.
+                    </p>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>הוועדה המייעצת: איינשטיין אומר לא, פון נוימן אומר כן</h3>
+                    <p>
+                        ביולי 1947, הוועדה המייעצת התכנסה לדון בתוכנית של פקריס. בין חבריה היו
+                        איינשטיין ופון נוימן.
+                    </p>
+                    <p>איינשטיין היה סקפטי. מחשבים הם ניסיוניים ויקרים, טען.</p>
+                    <blockquote class="history-quote">
+                        "אל תדאגו לבעיה הזו. אם אף אחד אחר לא ישתמש במחשב, פקריס ישתמש בו במשרה מלאה!"
+                        <cite>— ג'ון פון נוימן, 1947</cite>
+                    </blockquote>
+                    <p>
+                        איינשטיין שוכנע לבסוף. חיים ויצמן הקצה <strong>50,000 דולר</strong> לפרויקט —
+                        20% מתקציב המכון כולו.
+                    </p>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>ג'רלד אסטרין: שרטוטים בלי חלקים</h3>
+                    <p>
+                        ב-1952, ג'רלד אסטרין, מהנדס מחקר שעבד בפרויקט ה-IAS בפרינסטון, נבחר להוביל את
+                        בניית ה-WEIZAC. הוא הגיע לישראל יחד עם אשתו תלמה אסטרין, גם היא מהנדסת חשמל.
+                        הם הגיעו על אוניית עולים מצפון אפריקה.
+                    </p>
+                    <p>הם הביאו איתם <strong>שרטוטים</strong> של מחשב ה-IAS, אך <strong>ללא חלקים פיזיים</strong>.</p>
+                    <blockquote class="history-quote">
+                        "כשאני מסתכל אחורה, אם היינו מתכננים באופן שיטתי תוכנית ביצוע מפורטת, כנראה היינו מבטלים את הפרויקט."
+                        <cite>— ג'רלד אסטרין</cite>
+                    </blockquote>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>הבנייה: אלתור ונחישות</h3>
+                    <p>
+                        ללא שרשרת אספקה וללא תעשיית אלקטרוניקה, הצוות אלתר.
+                        <strong>מיכה קדם</strong> הצטרף לפקריס בשוטטות ברחובות תל אביב בחיפוש אחר חלקים.
+                        <strong>צבי ריזל</strong>, שהיה אחראי על סדנת המכ"ם של צה"ל, ראה מודעה בעיתון ופנה.
+                        <strong>פיליפ רבינוביץ'</strong> התחיל ללמד קורסים בתכנות בוויצמן.
+                        <strong>הנס ירוש</strong> הוקצה לכתיבת תוכניות יישום.
+                    </p>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>החישוב הראשון: אוקטובר 1955</h3>
+                    <p>
+                        ב<strong>אוקטובר 1955</strong>, ה-WEIZAC ביצע את החישוב הראשון שלו.
+                        עד תחילת 1958, ה-WEIZAC היה בפעולה מלאה.
+                    </p>
+
+                    <h3>מפרט טכני</h3>
+                    <div class="specs-table-wrap">
+                        <table class="specs-table">
+                            <thead><tr><th>תכונה</th><th>מפרט</th></tr></thead>
+                            <tbody>
+                                <tr><td>גודל מילה</td><td>40 סיביות</td></tr>
+                                <tr><td>פורמט הוראה</td><td>20 סיביות (8 קוד פעולה + 12 כתובת)</td></tr>
+                                <tr><td>הוראות למילה</td><td>2</td></tr>
+                                <tr><td>מצב פעולה</td><td>א-סינכרוני (ללא שעון מרכזי)</td></tr>
+                                <tr><td>אוגרים</td><td>צובר (AC), מכפל/מנה (MQ)</td></tr>
+                                <tr><td>אמצעי קלט ראשי</td><td>סרט נייר מנוקב</td></tr>
+                                <tr class="specs-highlight"><td>זיכרון ראשוני</td><td>1,024 מילים</td></tr>
+                                <tr class="specs-highlight"><td>זיכרון משודרג</td><td>4,096 מילים</td></tr>
+                                <tr class="specs-highlight"><td>זיכרון סופי (1961)</td><td>12,288 מילים</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>פריצות דרך מדעיות</h3>
+                    <ul class="history-list">
+                        <li><strong>גאות ושפל:</strong> פתרון משוואות הגאות של לפלס חשף נקודה אמפידרומית בדרום האוקיינוס האטלנטי.</li>
+                        <li><strong>מכניקת הקוונטים:</strong> יגאל עקד תכנת את הפיתוח המתמטי של פקריס למערכת הקוונטית של אטום דו-אלקטרוני. התוצאות אומתו על ידי מעבדת ברוקהייבן.</li>
+                        <li><strong>תחומים נוספים:</strong> רעידות אדמה, ספקטרוסקופיה אטומית, קריסטלוגרפיית רנטגן, ואנליזה נומרית.</li>
+                    </ul>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>המחשב היחיד בישראל</h3>
+                    <p>
+                        עד 1961, ה-WEIZAC היה <strong>המחשב היחיד בכל מדינת ישראל</strong>.
+                        הוא היה תפוס כל הזמן. משתמשים ממוסדות אחרים דרשו מחשבים נוספים.
+                    </p>
+                </article>
+
+                <article class="history-chapter">
+                    <h3>מורשת</h3>
+                    <blockquote class="history-quote">
+                        "שינויים מרשימים בישראל היו ניכרים. לפני תחילת פרויקט ה-WEIZAC לא היו בישראל
+                        מחשבים אלקטרוניים דיגיטליים. לא היו מהנדסי אלקטרוניקה דיגיטלית. לא היו מתכנתים
+                        ולא צוות תמיכה. אנשי ה-WEIZAC הצליחו ליצור את הידע הטכנולוגי הדרוש לישראל כדי
+                        למלא תפקיד חזק במהפכת המידע."
+                        <cite>— ג'רלד אסטרין, 1963</cite>
+                    </blockquote>
+                    <p>
+                        ב-5 בדצמבר 2006, ה-IEEE הכיר ב-WEIZAC כאבן דרך בהיסטוריה של ההנדסה החשמלית
+                        והמחשוב. הצוות שבנה אותו קיבל את "מדליית ה-WEIZAC".
+                    </p>
+                </article>
+
+            </div><!-- /lang-he -->
+
+        </section>
+        <section class="tab-panel" id="tab-training">
+            <div id="training-container" class="training-wrapper">
+                <!-- Lesson content rendered by js/training.js -->
+                <!-- Static fallback for non-JS / verification -->
+                <noscript>
+                    <h2>Interactive Training Lessons</h2>
+                    <p>This section requires JavaScript to display interactive lessons and exercises.</p>
+                </noscript>
+                <p class="loading-msg">Loading lesson framework...</p>
+            </div>
+        </section>
+        <section class="tab-panel" id="tab-simulator">
+            <h2>Simulator</h2>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 VEIZAC Project. All rights reserved.</p>
+    </footer>
+
+    <script src="js/training.global.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

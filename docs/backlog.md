@@ -30,11 +30,11 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 1.1 | Hero section | Title "VEIZAC" (stylized), subtitle "The WEIZAC Computer: History and Simulator" | [spec.md](spec.md) �Header | `[x]` |
-| 1.2 | Intro paragraph | Brief text: Israel's first computer, 1955, IAS architecture. Key facts: 40-bit word, 21 instructions, built from schematics without parts | [spec.md](spec.md) �Tab: Home | `[x]` |
-| 1.3 | Historical images | 2-3 images with captions. Images in `docs/images/`, public domain or credited. Alt text on all images. | [spec.md](spec.md) �Tab: Home | `[x]` |
-| 1.4 | Credits and links | Link to Weizmann Institute and IEEE Milestone. Attribution for images. | [spec.md](spec.md) �Tab: Home, [history.md](history.md) �References | `[x]` |
-| 1.5 | Navigation hints | Visual cues directing users to History, Training, and Simulator tabs | [spec.md](spec.md) �Tab: Home | `[x]` |
+| 1.1 | Hero section | Title "VEIZAC" (stylized), subtitle "The WEIZAC Computer: History and Simulator" | [spec.md](spec.md) �Header | `[x]` |
+| 1.2 | Intro paragraph | Brief text: Israel's first computer, 1955, IAS architecture. Key facts: 40-bit word, 21 instructions, built from schematics without parts | [spec.md](spec.md) �Tab: Home | `[x]` |
+| 1.3 | Historical images | 2-3 images with captions. Images in `docs/images/`, public domain or credited. Alt text on all images. | [spec.md](spec.md) �Tab: Home | `[x]` |
+| 1.4 | Credits and links | Link to Weizmann Institute and IEEE Milestone. Attribution for images. | [spec.md](spec.md) �Tab: Home, [history.md](history.md) �References | `[x]` |
+| 1.5 | Navigation hints | Visual cues directing users to History, Training, and Simulator tabs | [spec.md](spec.md) �Tab: Home | `[x]` |
 
 ---
 
@@ -44,14 +44,14 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 2.1 | English narrative | Full story rendered from history.md: Birth of WEIZAC, Princeton origins, advisory committee, Estrin arrival, improvised construction, first calculation, specs, scientific achievements, legacy | [history.md](history.md) §English, [spec.md](spec.md) §Tab: History | `[ ]` |
-| 2.2 | Hebrew narrative | Full Hebrew section rendered below English (or as a toggle). RTL text direction correct. | [history.md](history.md) §Hebrew | `[ ]` |
-| 2.3 | Timeline visualization | Visual timeline covering 1945-2006: key dates (1947 committee, 1952 Estrin arrives, 1955 first calc, 1958 full operation, 1963 retired, 2006 IEEE milestone) | [spec.md](spec.md) §Tab: History, [history.md](history.md) §Timeline | `[ ]` |
-| 2.4 | Key people section | Names, roles, photos where available: Pekeris, von Neumann, Einstein, Gerald Estrin, Thelma Estrin, Micha Kedem, Zvi Riesel, Phillip Rabinowitz, Hans Jarosch | [history.md](history.md) §English (people subsections) | `[ ]` |
-| 2.5 | Technical specs table | Rendered table: word size, instruction format, registers, I/O, memory evolution (1024→4096→12288 words) | [history.md](history.md) §Technical Specifications | `[ ]` |
-| 2.6 | Photos with captions | Historical images: machine room, Estrins, paper tape, Ziskind Building basement. Responsive sizing. | [spec.md](spec.md) §Tab: History | `[ ]` |
-| 2.7 | References | All 13 references from history.md rendered as footnotes or endnotes with working links | [history.md](history.md) §References | `[ ]` |
-| 2.8 | Scientific achievements | Tidal equations story, quantum mechanics calculations, impact on Israel's tech industry | [history.md](history.md) §Scientific Achievements, §Legacy | `[ ]` |
+| 2.1 | English narrative | Full story rendered from history.md: Birth of WEIZAC, Princeton origins, advisory committee, Estrin arrival, improvised construction, first calculation, specs, scientific achievements, legacy | [history.md](history.md) §English, [spec.md](spec.md) §Tab: History | `[x]` |
+| 2.2 | Hebrew narrative | Full Hebrew section rendered below English (or as a toggle). RTL text direction correct. | [history.md](history.md) §Hebrew | `[x]` |
+| 2.3 | Timeline visualization | Visual timeline covering 1945-2006: key dates (1947 committee, 1952 Estrin arrives, 1955 first calc, 1958 full operation, 1963 retired, 2006 IEEE milestone) | [spec.md](spec.md) §Tab: History, [history.md](history.md) §Timeline | `[x]` |
+| 2.4 | Key people section | Names, roles, photos where available: Pekeris, von Neumann, Einstein, Gerald Estrin, Thelma Estrin, Micha Kedem, Zvi Riesel, Phillip Rabinowitz, Hans Jarosch | [history.md](history.md) §English (people subsections) | `[x]` |
+| 2.5 | Technical specs table | Rendered table: word size, instruction format, registers, I/O, memory evolution (1024→4096→12288 words) | [history.md](history.md) §Technical Specifications | `[x]` |
+| 2.6 | Photos with captions | Historical images: machine room, Estrins, paper tape, Ziskind Building basement. Responsive sizing. | [spec.md](spec.md) §Tab: History | `[x]` |
+| 2.7 | References | All 13 references from history.md rendered as footnotes or endnotes with working links | [history.md](history.md) §References | `[x]` |
+| 2.8 | Scientific achievements | Tidal equations story, quantum mechanics calculations, impact on Israel's tech industry | [history.md](history.md) §Scientific Achievements, §Legacy | `[x]` |
 
 ---
 
@@ -61,11 +61,11 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 3.1 | Lesson framework | Reusable lesson renderer: title, explanation text, interactive exercise area, expected-result checker. Lesson nav (prev/next). Progress indicator. | [spec.md](spec.md) §Tab: Training | `[ ]` |
-| 3.2 | Lesson 1: Architecture | Teaches: 40-bit word, two 20-bit instructions per word, registers (AC, MQ, PC), 1024-word memory. Diagram of word format. Interactive: click to identify word parts. | [spec.md](spec.md) §Tab: Training (Lesson 1), [simulator.md](simulator.md) §Machine Model | `[ ]` |
-| 3.3 | Lesson 2: Instruction format | Teaches: 8-bit opcode + 12-bit address, left/right instruction layout, bit positions. Interactive: given a hex word, identify opcode and address of each half. | [spec.md](spec.md) §Tab: Training (Lesson 2), [simulator.md](simulator.md) §Instruction Encoding | `[ ]` |
-| 3.4 | Lesson 3: Data transfer | Teaches: LOAD M(X), LOAD -M(X), LOAD |M(X)|, LOAD -|M(X)|, LOAD MQ,M(X), LOAD MQ, STOR M(X). Interactive: write instructions, predict register/memory state after execution. | [spec.md](spec.md) §Tab: Training (Lesson 3), [simulator.md](simulator.md) §Data Transfer | `[ ]` |
-| 3.5 | Mini-simulator for exercises | Lightweight step-through engine for Training exercises: shows registers + small memory, executes student-written instructions, checks result against expected answer. | [spec.md](spec.md) §Tab: Training ("Exercises let user write instructions and see expected result") | `[ ]` |
+| 3.1 | Lesson framework | Reusable lesson renderer: title, explanation text, interactive exercise area, expected-result checker. Lesson nav (prev/next). Progress indicator. | [spec.md](spec.md) §Tab: Training | `[x]` |
+| 3.2 | Lesson 1: Architecture | Teaches: 40-bit word, two 20-bit instructions per word, registers (AC, MQ, PC), 1024-word memory. Diagram of word format. Interactive: click to identify word parts. | [spec.md](spec.md) §Tab: Training (Lesson 1), [simulator.md](simulator.md) §Machine Model | `[x]` |
+| 3.3 | Lesson 2: Instruction format | Teaches: 8-bit opcode + 12-bit address, left/right instruction layout, bit positions. Interactive: given a hex word, identify opcode and address of each half. | [spec.md](spec.md) §Tab: Training (Lesson 2), [simulator.md](simulator.md) §Instruction Encoding | `[x]` |
+| 3.4 | Lesson 3: Data transfer | Teaches: LOAD M(X), LOAD -M(X), LOAD |M(X)|, LOAD -|M(X)|, LOAD MQ,M(X), LOAD MQ, STOR M(X). Interactive: write instructions, predict register/memory state after execution. | [spec.md](spec.md) §Tab: Training (Lesson 3), [simulator.md](simulator.md) §Data Transfer | `[x]` |
+| 3.5 | Mini-simulator for exercises | Lightweight step-through engine for Training exercises: shows registers + small memory, executes student-written instructions, checks result against expected answer. | [spec.md](spec.md) §Tab: Training ("Exercises let user write instructions and see expected result") | `[x]` |
 
 ---
 

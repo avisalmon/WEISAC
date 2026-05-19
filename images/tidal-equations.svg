@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300">
+  <defs>
+    <linearGradient id="ocean" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a5276"/>
+      <stop offset="40%" stop-color="#2471a3"/>
+      <stop offset="100%" stop-color="#154360"/>
+    </linearGradient>
+  </defs>
+  <!-- Ocean background -->
+  <rect width="800" height="300" fill="url(#ocean)"/>
+  <!-- Continents silhouette -->
+  <!-- South America -->
+  <path d="M200 60 Q190 80 180 110 Q170 140 175 170 Q180 200 190 220 Q200 240 195 260 L210 260 Q215 240 220 220 Q230 200 235 170 Q240 140 235 110 Q230 80 215 60 Z" fill="#2e8b57" opacity="0.4"/>
+  <!-- Africa -->
+  <path d="M450 30 Q440 50 435 80 Q430 110 440 140 Q445 170 460 200 Q470 220 480 230 L500 220 Q510 200 515 170 Q520 140 510 110 Q500 80 490 50 Q480 30 470 25 Z" fill="#2e8b57" opacity="0.4"/>
+  
+  <!-- Tidal wave patterns -->
+  <g opacity="0.3" fill="none" stroke="#fff" stroke-width="1">
+    <path d="M50 100 Q150 80 250 100 Q350 120 450 100 Q550 80 650 100 Q750 120 800 105"/>
+    <path d="M50 130 Q150 110 250 130 Q350 150 450 130 Q550 110 650 130 Q750 150 800 135"/>
+    <path d="M50 160 Q150 140 250 160 Q350 180 450 160 Q550 140 650 160 Q750 180 800 165"/>
+    <path d="M50 190 Q150 170 250 190 Q350 210 450 190 Q550 170 650 190 Q750 210 800 195"/>
+  </g>
+  
+  <!-- Amphidromic point - the discovery! -->
+  <circle cx="340" cy="180" r="25" fill="none" stroke="#ff6" stroke-width="2" stroke-dasharray="4,4"/>
+  <circle cx="340" cy="180" r="4" fill="#ff6"/>
+  <circle cx="340" cy="180" r="15" fill="none" stroke="#ff6" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Co-tidal lines radiating -->
+  <g opacity="0.4" stroke="#ff6" stroke-width="1" fill="none">
+    <path d="M340 180 Q300 150 260 120"/>
+    <path d="M340 180 Q310 160 280 150"/>
+    <path d="M340 180 Q320 200 300 220"/>
+    <path d="M340 180 Q360 200 380 220"/>
+    <path d="M340 180 Q370 160 400 150"/>
+    <path d="M340 180 Q380 170 420 160"/>
+    <path d="M340 180 Q350 150 360 120"/>
+    <path d="M340 180 Q330 210 320 240"/>
+  </g>
+  
+  <!-- Annotation -->
+  <line x1="340" y1="155" x2="340" y2="80" stroke="#ff6" stroke-width="1" stroke-dasharray="2,3"/>
+  <rect x="270" y="50" width="140" height="30" fill="#154360" stroke="#ff6" stroke-width="1" rx="3"/>
+  <text x="340" y="70" text-anchor="middle" font-family="Georgia, serif" font-size="12" fill="#ff6">Amphidromic Point</text>
+  
+  <!-- Equation hint -->
+  <text x="650" y="50" text-anchor="middle" font-family="serif" font-size="14" fill="#fff" opacity="0.6">∇²η + f(η) = 0</text>
+  <text x="650" y="70" text-anchor="middle" font-family="serif" font-size="10" fill="#aac" opacity="0.5" font-style="italic">Laplace's Tidal Equations</text>
+  
+  <!-- Labels -->
+  <text x="400" y="280" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#fff">WEIZAC's First Triumph: Discovering a Tidal Amphidromic Point</text>
+  <text x="400" y="296" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#aac" font-style="italic">South Atlantic Ocean — where the tide stands still, computed 1956</text>
+</svg>
