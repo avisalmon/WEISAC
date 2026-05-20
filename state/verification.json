@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-05-18T16:08:59.245456",
+  "timestamp": "2026-05-20T11:57:27.416003",
   "summary": {
     "total": 13,
-    "passed": 4,
-    "failed": 9
+    "passed": 5,
+    "failed": 8
   },
   "sprints": {
     "0": {
@@ -50,7 +50,7 @@
           "id": "0.2b",
           "name": "Tab JS file",
           "pass": true,
-          "detail": "OK (53 lines): C:\\Projects\\VEIZAC\\js\\main.js"
+          "detail": "OK (97 lines): C:\\Projects\\VEIZAC\\js\\main.js"
         }
       ]
     },
@@ -164,7 +164,7 @@
     },
     "4": {
       "name": "Training 4-6",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "4.1",
@@ -181,8 +181,8 @@
         {
           "id": "4.3",
           "name": "Lesson 6: Self-modifying",
-          "pass": false,
-          "detail": "No self-modifying lesson"
+          "pass": true,
+          "detail": "Self-modifying lesson found"
         },
         {
           "id": "4.4",

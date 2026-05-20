@@ -667,9 +667,95 @@ code, pre, .mono {
 
 /* ===== TRAINING TAB ===== */
 .training-wrapper {
-    max-width: 800px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 1rem;
+}
+
+.training-layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.training-main {
+    min-width: 0;
+}
+
+.lesson-tracker {
+    position: sticky;
+    top: 1rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 0.9rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.lesson-tracker h3 {
+    margin-bottom: 0.65rem;
+    font-size: 1rem;
+    color: var(--color-header-bg);
+}
+
+.lesson-tracker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.lesson-tracker-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 0.6rem;
+    align-items: center;
+    border: 1px solid #ddd;
+    background: #fafafa;
+    color: #333;
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+}
+
+.lesson-tracker-item:hover {
+    background: #f0f0f0;
+}
+
+.lesson-tracker-item.active {
+    border-color: var(--color-accent);
+    background: #fff9e7;
+}
+
+.lesson-tracker-item.completed {
+    border-color: #4caf50;
+}
+
+.lesson-tracker-index {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ececec;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.lesson-tracker-item.active .lesson-tracker-index {
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.lesson-tracker-item.completed .lesson-tracker-index {
+    background: #4caf50;
+    color: #fff;
+}
+
+.lesson-tracker-title {
+    font-size: 0.9rem;
+    line-height: 1.2;
 }
 
 .lesson-nav-top {
@@ -684,6 +770,17 @@ code, pre, .mono {
 .lesson-progress {
     font-size: 0.9rem;
     color: #666;
+}
+
+.lesson-progress-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.lesson-nav-top-buttons {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .progress-dots {
@@ -951,6 +1048,25 @@ code, pre, .mono {
 @media (max-width: 768px) {
     .training-wrapper {
         padding: 0.5rem;
+    }
+
+    .training-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-tracker {
+        position: static;
+    }
+
+    .lesson-tracker-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .lesson-nav-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
     }
 
     .lesson-title {

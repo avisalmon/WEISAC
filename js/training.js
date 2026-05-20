@@ -479,6 +479,395 @@ Bit:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
                 explanation: 'LOAD MQ,M(50) puts 99 into MQ. LOAD MQ copies MQ into AC. Both end up 99.'
             }
         ]
+    },
+
+    // Lesson 4: Arithmetic Instructions
+    {
+        id: 4,
+        title: 'Arithmetic Instructions',
+        sections: [
+            {
+                heading: 'Addition and Subtraction',
+                text: `The WEIZAC can add and subtract numbers, with variants for absolute values.
+                    <table class="opcode-table">
+                        <tr><th>Mnemonic</th><th>Hex</th><th>Operation</th></tr>
+                        <tr><td><code>ADD M(X)</code></td><td>0x05</td><td>AC ← AC + M(X)</td></tr>
+                        <tr><td><code>SUB M(X)</code></td><td>0x06</td><td>AC ← AC - M(X)</td></tr>
+                        <tr><td><code>ADD |M(X)|</code></td><td>0x07</td><td>AC ← AC + |M(X)|</td></tr>
+                        <tr><td><code>SUB |M(X)|</code></td><td>0x08</td><td>AC ← AC - |M(X)|</td></tr>
+                    </table>
+                    The accumulator is updated with the result. If the result exceeds 40 bits, it wraps (truncates).`
+            },
+            {
+                heading: 'Multiplication',
+                text: `<code>MUL M(X)</code> multiplies MQ by the value at address X.
+                    The result is 80 bits (up to twice the width):
+                    <ul>
+                        <li><strong>High 40 bits</strong> → AC</li>
+                        <li><strong>Low 40 bits</strong> → MQ</li>
+                    </ul>
+                    Example: 2^40 × 2^40 produces a 2^80 result, split between AC (high) and MQ (low).
+                    For smaller products, AC is usually 0.`
+            },
+            {
+                heading: 'Division',
+                text: `<code>DIV M(X)</code> divides AC by the value at address X.
+                    <ul>
+                        <li><strong>Quotient</strong> → MQ</li>
+                        <li><strong>Remainder</strong> → AC</li>
+                    </ul>
+                    Example: AC = 17, M(X) = 5 → MQ = 3 (quotient), AC = 2 (remainder).
+                    <strong>Division by zero causes an ERROR</strong> — the machine halts and displays an error message.`
+            },
+            {
+                heading: 'Shifts',
+                text: `The WEIZAC can shift the accumulator left or right by 1 bit (no address needed):
+                    <table class="opcode-table">
+                        <tr><th>Mnemonic</th><th>Hex</th><th>Operation</th></tr>
+                        <tr><td><code>LSH</code></td><td>0x14</td><td>AC ← AC &lt;&lt; 1 (logical left shift)</td></tr>
+                        <tr><td><code>RSH</code></td><td>0x15</td><td>AC ← AC &gt;&gt; 1 (arithmetic right shift)</td></tr>
+                    </table>
+                    <strong>LSH</strong> (logical left shift): shift left, fill with zeros on the right.
+                    <strong>RSH</strong> (arithmetic right shift): shift right, preserve the sign bit (bit 39).`
+            },
+            {
+                heading: 'Overflow and Truncation',
+                text: `When the result of arithmetic exceeds 40 bits, the WEIZAC silently truncates it to 40 bits.
+                    There is no overflow flag; the result simply wraps.
+                    <ul>
+                        <li>ADD or SUB: result masked to 40 bits</li>
+                        <li>MUL: 80-bit result split into AC (high) and MQ (low)</li>
+                        <li>DIV: both quotient and remainder are 40 bits</li>
+                    </ul>`
+            }
+        ],
+        exercises: [
+            {
+                id: 'arith-1',
+                question: 'If AC = 10 and M(50) = 7, what is AC after ADD M(50)?',
+                type: 'multiple-choice',
+                options: ['3', '7', '17', '70'],
+                answer: 2, // 17
+                explanation: 'ADD M(X) adds: AC = AC + M(X) = 10 + 7 = 17.'
+            },
+            {
+                id: 'arith-2',
+                question: 'If AC = 10 and M(50) = 7, what is AC after SUB M(50)?',
+                type: 'multiple-choice',
+                options: ['3', '17', '-3', 'Error'],
+                answer: 0, // 3
+                explanation: 'SUB M(X) subtracts: AC = AC - M(X) = 10 - 7 = 3.'
+            },
+            {
+                id: 'arith-3',
+                question: 'After MUL M(X) where MQ = 2^40 and M(X) = 2^40, which register holds the high 40 bits?',
+                type: 'multiple-choice',
+                options: ['MQ', 'AC', 'PC', 'Both'],
+                answer: 1, // AC
+                explanation: 'MUL M(X) produces up to 80 bits. High 40 bits go to AC, low 40 bits go to MQ.'
+            },
+            {
+                id: 'arith-4',
+                question: 'If AC = 17 and M(50) = 5, after DIV M(50), what are MQ and AC?',
+                type: 'multiple-choice',
+                options: ['MQ=3, AC=2', 'MQ=2, AC=3', 'MQ=17, AC=5', 'Error'],
+                answer: 0, // MQ=3, AC=2
+                explanation: 'DIV M(X): quotient (17÷5=3) goes to MQ, remainder (17%5=2) goes to AC.'
+            },
+            {
+                id: 'arith-5',
+                type: 'simulate',
+                question: 'After LSH (when AC = 5), what is AC?',
+                setup: { AC: 5 },
+                program: [
+                    { opcode: 0x14, address: 0 }  // LSH
+                ],
+                expectedAC: 10n,
+                explanation: 'LSH left-shifts AC by 1: AC = 5 << 1 = 10.'
+            },
+            {
+                id: 'arith-6',
+                type: 'simulate',
+                question: 'After RSH (when AC = 10), what is AC?',
+                setup: { AC: 10 },
+                program: [
+                    { opcode: 0x15, address: 0 }  // RSH
+                ],
+                expectedAC: 5n,
+                explanation: 'RSH right-shifts AC by 1 (preserving sign): AC = 10 >> 1 = 5.'
+            }
+        ]
+    },
+
+    // Lesson 5: Branching and Jumps
+    {
+        id: 5,
+        title: 'Branching and Jumps',
+        sections: [
+            {
+                heading: 'Unconditional Jumps',
+                text: `A <strong>jump</strong> changes the program counter (PC) to a new location.
+                    The WEIZAC has two unconditional jump instructions (always jump):
+                    <table class="opcode-table">
+                        <tr><th>Mnemonic</th><th>Hex</th><th>Operation</th></tr>
+                        <tr><td><code>JUMP M(X,0:19)</code></td><td>0x0F</td><td>PC ← X, execute left instruction</td></tr>
+                        <tr><td><code>JUMP M(X,20:39)</code></td><td>0x10</td><td>PC ← X, execute right instruction</td></tr>
+                    </table>
+                    The notation <code>M(X,0:19)</code> means "the left half of the word at address X".
+                    <code>M(X,20:39)</code> means "the right half". The machine jumps to word address X,
+                    but chooses whether to start with the left or right instruction.`
+            },
+            {
+                heading: 'Conditional Jumps',
+                text: `Conditional jumps check the sign of the accumulator:
+                    <table class="opcode-table">
+                        <tr><th>Mnemonic</th><th>Hex</th><th>Operation</th></tr>
+                        <tr><td><code>JUMP+ M(X,0:19)</code></td><td>0x0D</td><td>if AC ≥ 0: PC ← X, execute left; else continue</td></tr>
+                        <tr><td><code>JUMP+ M(X,20:39)</code></td><td>0x0E</td><td>if AC ≥ 0: PC ← X, execute right; else continue</td></tr>
+                    </table>
+                    <strong>JUMP+</strong> means "jump if positive (or zero)". The condition is AC ≥ 0.
+                    If AC is negative, the JUMP+ instruction has no effect — execution continues to the next instruction.`
+            },
+            {
+                heading: 'PC is Composite: Address + Side',
+                text: `The Program Counter (PC) is not just a word address; it also tracks which half of the word to execute:
+                    <ul>
+                        <li><strong>PC.addr</strong>: word address (12 bits, 0–1023)</li>
+                        <li><strong>PC.side</strong>: 'left' or 'right'</li>
+                    </ul>
+                    When the machine boots, PC = { addr: 0, side: 'left' }.
+                    After executing the left instruction, PC.side becomes 'right'.
+                    After executing the right instruction, PC advances to { addr + 1, side: 'left' }.`
+            },
+            {
+                heading: 'Using Jumps for Loops',
+                text: `Loops are built by jumping backward to an earlier instruction.
+                    Example: countdown from 10 to 0:
+                    <pre>
+ORG 100
+            LOAD M(200)      ; left:  load counter into AC
+            ADD -1           ; right: subtract 1
+
+COUNT_LOOP: STOR M(200)      ; left:  save counter
+            JUMP+ M(101, 0)  ; right: if AC ≥ 0, jump back to word 101 left
+
+101:        [next code]      ; if AC < 0, fall through
+                    </pre>
+                    The <strong>JUMP+ M(101, 0:19)</strong> re-executes the LOAD and ADD,
+                    creating a loop that runs until AC becomes negative.`
+            }
+        ],
+        exercises: [
+            {
+                id: 'branch-1',
+                question: 'What does JUMP M(50, 0:19) do?',
+                type: 'multiple-choice',
+                options: [
+                    'Jump to address 50, execute the right instruction',
+                    'Jump to address 50, execute the left instruction',
+                    'Jump to bit 50',
+                    'Nothing (invalid instruction)'
+                ],
+                answer: 1, // Jump to address 50, execute the left instruction
+                explanation: 'JUMP M(X, 0:19) sets PC to { addr: X, side: "left" }.'
+            },
+            {
+                id: 'branch-2',
+                question: 'When will JUMP+ M(50, 0:19) actually jump?',
+                type: 'multiple-choice',
+                options: [
+                    'Always',
+                    'Only if AC is positive (> 0)',
+                    'Only if AC is non-negative (≥ 0)',
+                    'Only if AC equals 50'
+                ],
+                answer: 2, // Only if AC is non-negative (≥ 0)
+                explanation: 'JUMP+ jumps if AC ≥ 0 (positive or zero). If AC < 0, it does nothing.'
+            },
+            {
+                id: 'branch-3',
+                question: 'If AC = -5 and you execute JUMP+ M(75, 0:19), what happens?',
+                type: 'multiple-choice',
+                options: [
+                    'PC jumps to 75, execute left',
+                    'PC does not change, execution continues to next instruction',
+                    'AC becomes 75',
+                    'Error'
+                ],
+                answer: 1, // PC does not change
+                explanation: 'AC = -5 < 0, so the JUMP+ condition is false. PC does not change.'
+            },
+            {
+                id: 'branch-4',
+                question: 'Assuming a JUMP at address 50 that jumps to address 40, what is executed after the jump?',
+                type: 'multiple-choice',
+                options: [
+                    'The instruction at address 51',
+                    'The left instruction at address 40',
+                    'The right instruction at address 50',
+                    'Depends on the jump type'
+                ],
+                answer: 1, // The left instruction at address 40 (or right, depends on jump type)
+                explanation: 'After JUMP M(X, 0:19), PC = { addr: X, side: "left" }, so the next instruction is the left half of word X.'
+            },
+            {
+                id: 'branch-5',
+                type: 'simulate',
+                question: 'With AC = 1, after JUMP+ M(10, 0:19), what is PC.addr and PC.side?',
+                setup: { AC: 1 },
+                program: [
+                    { opcode: 0x0D, address: 10 }  // JUMP+ M(10, 0:19)
+                ],
+                expectedPC_addr: 10,
+                expectedPC_side: 'left',
+                explanation: 'AC = 1 ≥ 0, so jump happens. PC = { addr: 10, side: "left" }.'
+            },
+            {
+                id: 'branch-6',
+                type: 'simulate',
+                question: 'With AC = -1, after JUMP+ M(10, 0:19), does PC change?',
+                setup: { AC: -1 },
+                program: [
+                    { opcode: 0x0D, address: 10 }  // JUMP+ M(10, 0:19)
+                ],
+                expectedPC_unchanged: true,
+                explanation: 'AC = -1 < 0, so the jump does not happen. PC remains unchanged.'
+            }
+        ]
+    },
+
+    // Lesson 6: Self-Modifying Code
+    {
+        id: 6,
+        title: 'Self-Modifying Code',
+        sections: [
+            {
+                heading: 'What is Self-Modifying Code?',
+                text: `<strong>Self-modifying code</strong> means a program that changes its own instructions at runtime.
+                    While this sounds dangerous (and it is!), it was essential on early computers with limited memory.
+                    By modifying the address field of a LOAD or STORE instruction, a program can iterate
+                    over an array without a separate index counter.`
+            },
+            {
+                heading: 'Address Modify Instructions',
+                text: `The WEIZAC has two instructions specifically for self-modifying code:
+                    <table class="opcode-table">
+                        <tr><th>Mnemonic</th><th>Hex</th><th>Operation</th></tr>
+                        <tr><td><code>STOR M(X,8:19)</code></td><td>0x12</td><td>M(X)[bits 8-19] ← AC[bits 28-39]</td></tr>
+                        <tr><td><code>STOR M(X,28:39)</code></td><td>0x13</td><td>M(X)[bits 28-39] ← AC[bits 28-39]</td></tr>
+                    </table>
+                    Instead of storing all 40 bits of AC to memory, these instructions store only the lowest 12 bits
+                    into a specific address field of the word at M(X).
+                    <ul>
+                        <li><strong>0x12</strong>: Replace the address field of the <em>left</em> instruction (bits 8-19)</li>
+                        <li><strong>0x13</strong>: Replace the address field of the <em>right</em> instruction (bits 28-39)</li>
+                    </ul>`
+            },
+            {
+                heading: 'Patching Instructions On The Fly',
+                text: `Here's a concrete example: loading 3 values from consecutive addresses (array):
+                    <pre>
+; Array at addresses 100, 101, 102
+DATA 10              ; M(100) = 10
+DATA 20              ; M(101) = 20
+DATA 30              ; M(102) = 30
+
+ORG 50
+SUM:    LOAD M(100)  ; Load first element (hardcoded address 100)
+        ADD M(101)   ; Add second element (hardcoded address 101)
+        ADD M(102)   ; Add third element (hardcoded address 102)
+        STOR M(0)    ; Save result
+        HALT
+                    </pre>
+                    
+                    With self-modifying code, we can write a <strong>loop</strong> that increments the address:
+                    <pre>
+LOOP:   LOAD M(100)  ; Load from address (starts at 100)
+        ADD M(101)   ; Add to accumulator
+        
+NEXT:   LOAD M(200)  ; Load current address into AC
+        ADD M(1)     ; Increment by 1
+        STOR M(LOAD_ADDR, 8:19)  ; Patch the LOAD address
+        STOR M(ADD_ADDR, 8:19)   ; Patch the ADD address
+        
+        JUMP+ M(LOOP_AGAIN, 0)   ; Jump back if AC still ≥ 0
+                    </pre>
+                    This avoids hardcoding every address and works for arrays of any length.`
+            },
+            {
+                heading: 'Live-Memory Semantics',
+                text: `When the left instruction modifies the current word's right half,
+                    the right instruction sees the <strong>new value immediately</strong>.
+                    This is because the WEIZAC re-reads memory for each instruction (no instruction buffer).
+                    This behavior is both a feature and a trap — you must be careful not to corrupt
+                    the very instruction you are about to execute!`
+            }
+        ],
+        exercises: [
+            {
+                id: 'selfmod-1',
+                question: 'What is the purpose of STOR M(X, 8:19)?',
+                type: 'multiple-choice',
+                options: [
+                    'Store AC into memory at address X',
+                    'Patch the address field of the left instruction at M(X)',
+                    'Patch the address field of the right instruction at M(X)',
+                    'Clear bits 8-19 of memory location X'
+                ],
+                answer: 1, // Patch the address field of the left instruction at M(X)
+                explanation: 'STOR M(X, 8:19) replaces bits 8-19 (the address of the left instruction) with AC[28-39].'
+            },
+            {
+                id: 'selfmod-2',
+                question: 'Which bits of AC are used when executing STOR M(X, 8:19)?',
+                type: 'multiple-choice',
+                options: [
+                    'All 40 bits',
+                    'Bits 0-7 (low byte)',
+                    'Bits 28-39 (lowest 12 bits)',
+                    'Bits 8-19'
+                ],
+                answer: 2, // Bits 28-39 (lowest 12 bits)
+                explanation: 'Only the lowest 12 bits of AC (bits 28-39) are extracted and used to patch the address field.'
+            },
+            {
+                id: 'selfmod-3',
+                question: 'If you execute "STOR M(X, 8:19)" with AC = 205, what address gets patched into the left instruction?',
+                type: 'multiple-choice',
+                options: [
+                    '0',
+                    '205',
+                    '205 & 0xFFF (205 masked to 12 bits)',
+                    'Depends on memory layout'
+                ],
+                answer: 2, // 205 & 0xFFF
+                explanation: 'The lowest 12 bits of AC (205 = 0x0CD, which is 12 bits) patch the address field.'
+            },
+            {
+                id: 'selfmod-4',
+                question: 'Why is self-modifying code useful for array iteration?',
+                type: 'multiple-choice',
+                options: [
+                    'It saves memory by avoiding hardcoded addresses',
+                    'It runs faster than using index registers',
+                    'It allows arrays of unlimited size',
+                    'All of the above (sort of)'
+                ],
+                answer: 0, // It saves memory by avoiding hardcoded addresses
+                explanation: 'Early computers had no index registers. Self-modifying code let you loop over arrays without an extra register.'
+            },
+            {
+                id: 'selfmod-5',
+                type: 'simulate',
+                question: 'If M(50) = 0x05_064_21_0C8 and we execute STOR M(50, 8:19) with AC = 0x12 (address 18), what is the new left address?',
+                setup: { memory: { 50: 0x050640210C8n } },
+                program: [
+                    { opcode: 0x12, address: 50 }  // STOR M(50, 8:19)
+                ],
+                expectedLeftAddr: 18,
+                explanation: 'STOR M(X, 8:19) patches the left address field (bits 8-19) with the lowest 12 bits of AC.'
+            }
+        ]
     }
 ];
 
@@ -511,32 +900,54 @@ export class LessonRenderer {
 
         this.container.innerHTML = `
             <div class="training-wrapper">
-                <div class="lesson-nav-top">
-                    <span class="lesson-progress">Lesson ${this.currentLesson + 1} of ${LESSONS.length}</span>
-                    <div class="progress-dots">
-                        ${LESSONS.map((_, i) => `<span class="dot${i === this.currentLesson ? ' active' : ''}${this.progress[i] ? ' completed' : ''}"></span>`).join('')}
+                <div class="training-layout">
+                    <aside class="lesson-tracker" aria-label="Lesson tracker">
+                        <h3>Lessons</h3>
+                        <div class="lesson-tracker-list">
+                            ${LESSONS.map((l, i) => `
+                                <button class="lesson-tracker-item${i === this.currentLesson ? ' active' : ''}${this.progress[i] && this.progress[i]._complete ? ' completed' : ''}" data-lesson-index="${i}">
+                                    <span class="lesson-tracker-index">${l.id}</span>
+                                    <span class="lesson-tracker-title">${l.title}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </aside>
+
+                    <div class="training-main">
+                        <div class="lesson-nav-top">
+                            <div class="lesson-progress-wrap">
+                                <span class="lesson-progress">Lesson ${this.currentLesson + 1} of ${LESSONS.length}</span>
+                                <div class="progress-dots">
+                                    ${LESSONS.map((_, i) => `<span class="dot${i === this.currentLesson ? ' active' : ''}${this.progress[i] ? ' completed' : ''}"></span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="lesson-nav-top-buttons">
+                                <button class="btn-prev btn-prev-top" ${this.currentLesson === 0 ? 'disabled' : ''}>← Previous</button>
+                                <button class="btn-next btn-next-top" ${this.currentLesson >= LESSONS.length - 1 ? 'disabled' : ''}>Next →</button>
+                            </div>
+                        </div>
+
+                        <h2 class="lesson-title">Lesson ${lesson.id}: ${lesson.title}</h2>
+
+                        <div class="lesson-content">
+                            ${(lesson.sections || []).map(s => `
+                                <section class="lesson-section">
+                                    <h3>${s.heading}</h3>
+                                    <div class="section-text">${s.text}</div>
+                                </section>
+                            `).join('')}
+                        </div>
+
+                        <div class="exercises">
+                            <h3>Exercises</h3>
+                            ${lesson.exercises.map((ex, i) => this.renderExercise(ex, i)).join('')}
+                        </div>
+
+                        <div class="lesson-nav-bottom">
+                            <button class="btn-prev" ${this.currentLesson === 0 ? 'disabled' : ''}>← Previous</button>
+                            <button class="btn-next" ${this.currentLesson >= LESSONS.length - 1 ? 'disabled' : ''}>Next →</button>
+                        </div>
                     </div>
-                </div>
-
-                <h2 class="lesson-title">Lesson ${lesson.id}: ${lesson.title}</h2>
-
-                <div class="lesson-content">
-                    ${(lesson.sections || []).map(s => `
-                        <section class="lesson-section">
-                            <h3>${s.heading}</h3>
-                            <div class="section-text">${s.text}</div>
-                        </section>
-                    `).join('')}
-                </div>
-
-                <div class="exercises">
-                    <h3>Exercises</h3>
-                    ${lesson.exercises.map((ex, i) => this.renderExercise(ex, i)).join('')}
-                </div>
-
-                <div class="lesson-nav-bottom">
-                    <button class="btn-prev" ${this.currentLesson === 0 ? 'disabled' : ''}>← Previous</button>
-                    <button class="btn-next" ${this.currentLesson >= LESSONS.length - 1 ? 'disabled' : ''}>Next →</button>
                 </div>
             </div>
         `;
@@ -576,11 +987,19 @@ export class LessonRenderer {
     }
 
     attachEvents() {
-        const prev = this.container.querySelector('.btn-prev');
-        const next = this.container.querySelector('.btn-next');
+        this.container.querySelectorAll('.btn-prev').forEach(btn => {
+            btn.addEventListener('click', () => this.goTo(this.currentLesson - 1));
+        });
+        this.container.querySelectorAll('.btn-next').forEach(btn => {
+            btn.addEventListener('click', () => this.goTo(this.currentLesson + 1));
+        });
 
-        if (prev) prev.addEventListener('click', () => this.goTo(this.currentLesson - 1));
-        if (next) next.addEventListener('click', () => this.goTo(this.currentLesson + 1));
+        this.container.querySelectorAll('.lesson-tracker-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.dataset.lessonIndex, 10);
+                this.goTo(idx);
+            });
+        });
 
         // Check buttons for multiple-choice
         this.container.querySelectorAll('.btn-check').forEach(btn => {

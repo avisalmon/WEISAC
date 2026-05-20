@@ -107,3 +107,20 @@ Fix:
 Validation:
 - No JS errors.
 - Sprint 3 verification passes.
+
+## Iteration Note — Training UX Enhancements
+Issue: User reported only Lessons 1-3 visible on site and requested top navigation and side lesson tracker.
+Fix:
+- Updated LessonRenderer layout in js/training.js to include:
+  - Top Previous/Next buttons (in addition to bottom buttons)
+  - Left-side lesson tracker with clickable lesson items and active/completed states
+- Updated css/style.css with training layout/tracker styling and responsive behavior.
+- Expanded file:// fallback summary in js/main.js to include Lessons 1-6.
+- Regenerated js/training.global.js so file explorer mode gets all changes.
+Validation:
+- No JS/CSS errors.
+- Sprint 3 and Sprint 4 verifications pass.
+# Sprint 4 — Training Tab (Lessons 4-6)
+Plan: Add Lesson 4 (arithmetic opcodes: ADD, SUB, MUL, DIV, LSH, RSH), Lesson 5 (branching: JUMP, JUMP+), and Lesson 6 (self-modifying: STOR M(X,8:19) and STOR M(X,28:39)). Each lesson includes explanations and interactive exercises. Mini-simulator already supports these opcodes, so exercises will focus on predicting results.
+Files: js/training.js, js/training.global.js (regenerated), tests/sprint-4.test.html (TDD)
+Tests needed: yes

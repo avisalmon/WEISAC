@@ -85,7 +85,40 @@ function renderTrainingFallback(container) {
                         <li>LOAD MQ,M(X), LOAD MQ</li>
                         <li>STOR M(X)</li>
                     </ul>
-                    <p>To enable full interactive exercises, open this site from a local web server instead of file://.</p>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h3>Lesson 4: Arithmetic</h3>
+                <div class="section-text">
+                    <ul>
+                        <li>ADD, SUB, MUL, DIV, LSH, RSH</li>
+                        <li>40-bit overflow masking behavior</li>
+                        <li>MUL split result across AC:MQ</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h3>Lesson 5: Branching</h3>
+                <div class="section-text">
+                    <ul>
+                        <li>JUMP left/right targets</li>
+                        <li>JUMP+ conditional behavior when AC >= 0</li>
+                        <li>PC side transitions and control flow</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="lesson-section">
+                <h3>Lesson 6: Self-Modifying Code</h3>
+                <div class="section-text">
+                    <ul>
+                        <li>STOR M(X, 8:19) and STOR M(X, 28:39)</li>
+                        <li>Patching instruction addresses during execution</li>
+                        <li>Array traversal loop patterns</li>
+                    </ul>
+                    <p>Interactive exercises are available when the training module loads successfully.</p>
                 </div>
             </section>
         </div>
