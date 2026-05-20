@@ -140,3 +140,14 @@ if (trainingContainer) {
             });
     }
 }
+
+const simulatorMount = document.getElementById('sim-ui-mount');
+if (simulatorMount) {
+    import('./ui.js')
+        .then(({ initSimulatorUI }) => {
+            initSimulatorUI();
+        })
+        .catch(() => {
+            simulatorMount.textContent = 'Simulator module could not be loaded in this browser context.';
+        });
+}

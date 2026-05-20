@@ -666,7 +666,65 @@
             </div>
         </section>
         <section class="tab-panel" id="tab-simulator">
-            <h2>Simulator</h2>
+            <div class="simulator-shell">
+                <header class="sim-titlebar">
+                    <h2>WEIZAC Simulator Panel</h2>
+                    <p>Operate the machine with power, load, step, run, stop, and reset controls.</p>
+                </header>
+
+                <div class="sim-panel-grid" id="sim-panel-grid">
+                    <div class="sim-registers" aria-label="Registers">
+                        <h3>Registers</h3>
+                        <div class="sim-register-row"><span>AC</span><code id="sim-reg-ac">0000000000</code></div>
+                        <div class="sim-register-row"><span>MQ</span><code id="sim-reg-mq">0000000000</code></div>
+                        <div class="sim-register-row"><span>PC</span><code id="sim-reg-pc">000 L</code></div>
+                        <div class="sim-register-row"><span>State</span><code id="sim-reg-state">off</code></div>
+                    </div>
+
+                    <div class="sim-memory" aria-label="Memory">
+                        <h3>Memory</h3>
+                        <div class="sim-memory-head">
+                            <span>Addr</span>
+                            <span>Hex (40-bit)</span>
+                            <span>Left Instr</span>
+                            <span>Right Instr</span>
+                        </div>
+                        <div id="sim-memory-rows" class="sim-memory-rows"></div>
+                    </div>
+
+                    <div class="sim-tape" aria-label="Paper tape">
+                        <h3>Paper Tape</h3>
+                        <p>Placeholder for tape animation in upcoming sprint.</p>
+                    </div>
+                </div>
+
+                <div class="sim-indicators" aria-label="Indicator lights">
+                    <span id="light-power" class="sim-light">POWER</span>
+                    <span id="light-fetch" class="sim-light">FETCH</span>
+                    <span id="light-exec" class="sim-light">EXEC</span>
+                    <span id="light-store" class="sim-light">STORE</span>
+                    <span id="light-halt" class="sim-light">HALT</span>
+                    <span id="light-error" class="sim-light">ERROR</span>
+                    <span id="light-left" class="sim-light">LEFT</span>
+                    <span id="light-right" class="sim-light">RIGHT</span>
+                </div>
+
+                <div class="sim-controls" aria-label="Controls">
+                    <button id="sim-btn-power" type="button">POWER</button>
+                    <button id="sim-btn-load" type="button">LOAD</button>
+                    <button id="sim-btn-step" type="button">STEP</button>
+                    <button id="sim-btn-run" type="button">RUN</button>
+                    <button id="sim-btn-stop" type="button">STOP</button>
+                    <button id="sim-btn-reset" type="button">RESET</button>
+                </div>
+
+                <div class="sim-log" aria-label="Execution log">
+                    <h3>Execution Log</h3>
+                    <div id="sim-log-rows" class="sim-log-rows"></div>
+                </div>
+
+                <div id="sim-ui-mount"></div>
+            </div>
         </section>
     </main>
 

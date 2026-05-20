@@ -206,3 +206,63 @@ tests/sprint-6.test.html | 263 ++++++++++++++++++++++++++++
 **Lessons for future sprints:**
 - Keep the simulator and assembler interfaces aligned early, then test via end-to-end assembly+execution scenarios.
 - Stage files before collecting diff evidence so new files appear in git stats.
+
+## Sprint 7 — Simulator Panel UI
+Plan: Build the initial simulator panel layer by adding panel HTML in index.html, creating js/ui.js for control wiring to simulator.js, and styling the panel in css/style.css. Add tests/sprint-7.test.html to validate UI bootstrap and basic control presence.
+Files: index.html, js/ui.js, js/main.js, css/style.css, tests/sprint-7.test.html, docs/backlog.md, docs/dashboard.html
+Tests needed: yes
+
+### Sprint 7 Post-Mortem
+
+**Files created/modified:**
+- js/ui.js (new, 225 lines)
+- tests/sprint-7.test.html (new, 98 lines)
+- index.html (simulator panel structure and controls)
+- js/main.js (dynamic UI module initialization)
+- css/style.css (simulator panel styling)
+- docs/backlog.md (Sprint 7 statuses updated with x/~)
+- docs/dashboard.html (regenerated)
+
+**Verification output:**
+```
+Sprint 7: Panel UI — PASSED
+  ✓ [7.1] ui.js exists: OK (225 lines)
+  ✓ [7.1b] Panel layout HTML: Simulator section: 3175 chars
+  ✓ [7.3] Register display: Register elements found
+  ✓ [7.4] Memory view: Memory view found
+  ✓ [7.6] Control buttons: Control buttons found
+  ✓ [7.T] Sprint 7 tests exist: OK (98 lines)
+```
+
+**Regression verification output:**
+```
+Sprint 3: PASSED
+Sprint 4: PASSED
+Sprint 5: PASSED
+Sprint 6: PASSED
+```
+
+**Git diff summary:**
+```
+css/style.css            | 199 ++++++++++++++++++++++++++++++++++++
+docs/backlog.md          |  16 +--
+docs/dashboard.html      |  21 ++--
+index.html               |  60 ++++++++++-
+js/main.js               |  11 ++
+js/ui.js                 | 257 +++++++++++++++++++++++++++++++++++++++++++++++
+tests/sprint-7.test.html | 110 ++++++++++++++++++++
+7 files changed, 653 insertions(+), 21 deletions(-)
+```
+
+**What went well:**
+- Sprint 7 verifier checks are now fully green.
+- Simulator tab now has a real panel shell, memory view, register display, control buttons, and execution log.
+- UI module is isolated in js/ui.js and wired from main.js without breaking training behavior.
+
+**What needs improvement:**
+- Several Sprint 7 backlog items remain partial: speed dial, keyboard shortcuts, and richer power-on animation.
+- Memory grid currently renders an initial window and can be optimized further for large-scale updates.
+
+**Lessons for future sprints:**
+- Avoid nested section tags inside a tab panel when verifier regex extracts content by first closing section tag.
+- Apply large CSS patches at file end to reduce structural merge risks.

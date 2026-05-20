@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 7 Tests - Panel UI</title>
+    <style>
+        body { font-family: monospace; padding: 1.5rem; background: #121212; color: #d8ffd8; }
+        .pass { color: #74ff74; }
+        .fail { color: #ff7a7a; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Sprint 7: Panel UI</h1>
+<pre id="results"></pre>
+<script type="module">
+import { initSimulatorUI } from '../js/ui.js';
+import { machine, reset } from '../js/simulator.js';
+
+let passes = 0;
+let failures = 0;
+const out = document.getElementById('results');
+
+function log(msg) {
+    console.log(msg);
+    out.innerHTML += msg + '\n';
+}
+
+function assert(condition, message) {
+    if (!condition) throw new Error(message);
+}
+
+function test(name, fn) {
+    try {
+        fn();
+        passes += 1;
+        log(`<span class="pass">PASS: ${name}</span>`);
+    } catch (err) {
+        failures += 1;
+        log(`<span class="fail">FAIL: ${name} - ${err.message}</span>`);
+    }
+}
+
+const mount = document.createElement('div');
+mount.innerHTML = `
+<div id="sim-memory-rows"></div>
+<div id="sim-log-rows"></div>
+<code id="sim-reg-ac"></code>
+<code id="sim-reg-mq"></code>
+<code id="sim-reg-pc"></code>
+<code id="sim-reg-state"></code>
+<span id="light-power"></span>
+<span id="light-fetch"></span>
+<span id="light-exec"></span>
+<span id="light-store"></span>
+<span id="light-halt"></span>
+<span id="light-error"></span>
+<span id="light-left"></span>
+<span id="light-right"></span>
+<button id="sim-btn-power"></button>
+<button id="sim-btn-load"></button>
+<button id="sim-btn-step"></button>
+<button id="sim-btn-run"></button>
+<button id="sim-btn-stop"></button>
+<button id="sim-btn-reset"></button>
+`;
+document.body.appendChild(mount);
+
+reset();
+initSimulatorUI();
+
+test('UI initializes register display', () => {
+    assert(document.getElementById('sim-reg-state').textContent.length > 0, 'state should render');
+    assert(document.getElementById('sim-reg-ac').textContent.length === 10, 'AC hex should be 10 chars');
+});
+
+test('Memory rows are rendered', () => {
+    const rows = document.querySelectorAll('#sim-memory-rows .sim-memory-row');
+    assert(rows.length > 0, 'should render memory rows');
+});
+
+test('Controls exist and are clickable', () => {
+    const ids = ['sim-btn-power', 'sim-btn-load', 'sim-btn-step', 'sim-btn-run', 'sim-btn-stop', 'sim-btn-reset'];
+    for (const id of ids) {
+        const btn = document.getElementById(id);
+        assert(btn, `${id} should exist`);
+        btn.click();
+    }
+});
+
+test('Log panel receives initialization text', () => {
+    const logRows = document.querySelectorAll('#sim-log-rows .sim-log-row');
+    assert(logRows.length > 0, 'log should have at least one row');
+});
+
+test('Machine model remains available', () => {
+    assert(machine.memory.length === 1024, 'memory size should stay 1024');
+});
+
+log('\n' + '='.repeat(50));
+log(`Results: ${passes} passed, ${failures} failed`);
+log('='.repeat(50));
+if (failures > 0) {
+    log('<span class="fail">SPRINT 7 TESTS: FAILED</span>');
+} else {
+    log('<span class="pass">SPRINT 7 TESTS: ALL PASSED</span>');
+}
+</script>
+</body>
+</html>

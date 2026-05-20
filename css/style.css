@@ -1082,3 +1082,202 @@ code, pre, .mono {
         border-bottom: 2px solid #333;
     }
 }
+
+/* ===== SIMULATOR TAB (SPRINT 7) ===== */
+.simulator-shell {
+    background: linear-gradient(145deg, #575757, #464646);
+    border: 2px solid #2c2c2c;
+    border-radius: 14px;
+    padding: 1rem;
+    color: #f4f4f4;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.sim-titlebar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+}
+
+.sim-titlebar h2 {
+    margin: 0;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.sim-titlebar p {
+    margin-top: 0.4rem;
+    color: #d8d8d8;
+}
+
+.sim-panel-grid {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 220px;
+    gap: 0.8rem;
+    align-items: start;
+}
+
+.sim-registers,
+.sim-memory,
+.sim-tape,
+.sim-log {
+    background: #2f2f2f;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 0.75rem;
+}
+
+.sim-registers h3,
+.sim-memory h3,
+.sim-tape h3,
+.sim-log h3 {
+    margin: 0 0 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.92rem;
+    color: #f0d97b;
+}
+
+.sim-register-row {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+    align-items: center;
+}
+
+.sim-register-row code {
+    background: #151515;
+    border: 1px solid #666;
+    color: #8de28d;
+    padding: 0.25rem 0.4rem;
+    border-radius: 6px;
+}
+
+.sim-memory-head,
+.sim-memory-row {
+    display: grid;
+    grid-template-columns: 60px 160px minmax(180px, 1fr) minmax(180px, 1fr);
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.sim-memory-head {
+    color: #d3d3d3;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 0.35rem;
+}
+
+.sim-memory-rows {
+    margin-top: 0.45rem;
+    max-height: 340px;
+    overflow: auto;
+    font-family: var(--color-mono);
+    font-size: 0.76rem;
+}
+
+.sim-memory-row {
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.sim-memory-row.pc-left {
+    background: rgba(255, 220, 96, 0.18);
+}
+
+.sim-memory-row.pc-right {
+    background: rgba(98, 175, 255, 0.2);
+}
+
+.sim-memory-row code {
+    color: #9eea9e;
+}
+
+.sim-indicators {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+}
+
+.sim-light {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    text-align: center;
+    font-size: 0.72rem;
+    padding: 0.2rem 0.35rem;
+    background: #2a2a2a;
+    color: #bbb;
+}
+
+.sim-light.on {
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 230, 120, 0.7);
+    background: linear-gradient(180deg, #96864d, #786327);
+}
+
+.sim-controls {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+}
+
+.sim-controls button {
+    border: 1px solid #8d8d8d;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #f1f1f1, #c9c9c9);
+    color: #1d1d1d;
+    font-weight: 700;
+    padding: 0.45rem 0.3rem;
+    cursor: pointer;
+}
+
+.sim-controls button:hover {
+    filter: brightness(1.05);
+}
+
+.sim-log {
+    margin-top: 0.9rem;
+}
+
+.sim-log-rows {
+    max-height: 180px;
+    overflow: auto;
+    background: #111;
+    border: 1px solid #4f4f4f;
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-family: var(--color-mono);
+    font-size: 0.8rem;
+    color: #86df86;
+}
+
+.sim-log-row {
+    margin-bottom: 0.3rem;
+    border-bottom: 1px dotted rgba(134, 223, 134, 0.2);
+    padding-bottom: 0.25rem;
+}
+
+@media (max-width: 1100px) {
+    .sim-panel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sim-memory-head,
+    .sim-memory-row {
+        grid-template-columns: 56px 140px minmax(140px, 1fr) minmax(140px, 1fr);
+    }
+}
+
+@media (max-width: 760px) {
+    .sim-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sim-indicators {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
