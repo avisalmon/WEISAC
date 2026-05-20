@@ -140,14 +140,14 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 8.1 | audio.js — Web Audio engine | OscillatorNode + GainNode synthesis. No downloaded audio files. Total footprint < 50KB. Audio activates only after first user interaction (browser policy). | [spec.md](spec.md) §Sound Design, [simulator.md](simulator.md) §File Layout (audio.js), [ux.md](ux.md) §Sound Design | `[ ]` |
-| 8.2 | Idle hum | Continuous 50Hz + harmonics when state='ready' or 'running'. Very quiet. Fades out on halt (0.2s silence before fade). | [ux.md](ux.md) §Sound Design (Machine idle), §Delight Details | `[ ]` |
-| 8.3 | Step click | Single relay click on each instruction execution. Sharp, metallic, ~50ms. | [ux.md](ux.md) §Sound Design (Step execute) | `[ ]` |
-| 8.4 | Run mode clicking | Rapid relay clicks at instruction rate. At higher speeds, pitch up. At 100x, blends to continuous hum. | [ux.md](ux.md) §Sound Design (Run mode) | `[ ]` |
-| 8.5 | Paper tape sounds | Reader: rhythmic chattering staccato. Punch: deeper mechanical thud per character. | [ux.md](ux.md) §Sound Design (Paper tape load, Punch tape) | `[ ]` |
-| 8.6 | Halt and error sounds | Halt: descending tone + relay release (two-note power-down). Error: harsh square wave buzzer (200ms). | [ux.md](ux.md) §Sound Design (Halt, Error) | `[ ]` |
-| 8.7 | Button and memory sounds | Button press: physical toggle clunk. Memory write: faint magnetic "tick" (barely audible). | [ux.md](ux.md) §Sound Design (Button press, Memory write) | `[ ]` |
-| 8.8 | Volume controls | Master volume slider + mute button always visible on panel. M key toggles mute. | [ux.md](ux.md) §Sound Design, [ux.md](ux.md) §Keyboard Shortcuts | `[ ]` |
+| 8.1 | audio.js — Web Audio engine | OscillatorNode + GainNode synthesis. No downloaded audio files. Total footprint < 50KB. Audio activates only after first user interaction (browser policy). | [spec.md](spec.md) §Sound Design, [simulator.md](simulator.md) §File Layout (audio.js), [ux.md](ux.md) §Sound Design | `[x]` |
+| 8.2 | Idle hum | Continuous 50Hz + harmonics when state='ready' or 'running'. Very quiet. Fades out on halt (0.2s silence before fade). | [ux.md](ux.md) §Sound Design (Machine idle), §Delight Details | `[x]` |
+| 8.3 | Step click | Single relay click on each instruction execution. Sharp, metallic, ~50ms. | [ux.md](ux.md) §Sound Design (Step execute) | `[x]` |
+| 8.4 | Run mode clicking | Rapid relay clicks at instruction rate. At higher speeds, pitch up. At 100x, blends to continuous hum. | [ux.md](ux.md) §Sound Design (Run mode) | `[x]` |
+| 8.5 | Paper tape sounds | Reader: rhythmic chattering staccato. Punch: deeper mechanical thud per character. | [ux.md](ux.md) §Sound Design (Paper tape load, Punch tape) | `[x]` |
+| 8.6 | Halt and error sounds | Halt: descending tone + relay release (two-note power-down). Error: harsh square wave buzzer (200ms). | [ux.md](ux.md) §Sound Design (Halt, Error) | `[x]` |
+| 8.7 | Button and memory sounds | Button press: physical toggle clunk. Memory write: faint magnetic "tick" (barely audible). | [ux.md](ux.md) §Sound Design (Button press, Memory write) | `[x]` |
+| 8.8 | Volume controls | Master volume slider + mute button always visible on panel. M key toggles mute. | [ux.md](ux.md) §Sound Design, [ux.md](ux.md) §Keyboard Shortcuts | `[x]` |
 
 ---
 

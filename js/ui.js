@@ -11,6 +11,23 @@ import {
     extractLeft,
     extractRight
 } from './simulator.js';
+import {
+    ensureAudioReady,
+    setMasterVolume,
+    toggleMute,
+    isMuted,
+    startIdleHum,
+    stopIdleHum,
+    playStepClick,
+    startRunClicks,
+    stopRunClicks,
+    playTapeRead,
+    playTapePunch,
+    playHaltSound,
+    playErrorBuzzer,
+    playButtonClick,
+    playMemoryTick
+} from './audio.js';
 
 function toHex40(value) {
     const masked = value & 0xFFFFFFFFFFn;
@@ -80,6 +97,25 @@ export function initSimulatorUI() {
     }
 
     let uiPollTimer = null;
+
+    const syncMuteButton = () => {
+        const muteBtn = document.getElementById('sim-btn-mute');
+        if (!muteBtn) {
+            return;
+        }
+        const muted = isMuted();
+        muteBtn.classList.toggle('muted', muted);
+        muteBtn.textContent = muted ? 'UNMUTE' : 'MUTE';
+    };
+
+    const activateAudio = async () => {
+        try {
+            await ensureAudioReady();
+            return true;
+        } catch {
+            return false;
+        }
+    };
 
     const pushLog = (line) => {
         const row = document.createElement('div');
@@ -166,8 +202,13 @@ export function initSimulatorUI() {
         renderAll();
         if (trace) {
             pushLog(`[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}] ${trace.mnemonic}`);
+            playStepClick();
+            if (trace.memWrite) {
+                playMemoryTick();
+            }
         }
         if (machine.state === 'error' && machine.error) {
+            playErrorBuzzer();
             pushLog(`ERROR: ${machine.error}`);
         }
     };
@@ -180,12 +221,17 @@ export function initSimulatorUI() {
     };
 
     bind('sim-btn-power', async () => {
+        playButtonClick();
+        await activateAudio();
         if (machine.state === 'off') {
             pushLog('POWER ON: warming up');
             await powerOn();
+            startIdleHum();
             pushLog('READY');
         } else {
             powerOff();
+            stopRunClicks();
+            stopIdleHum();
             pushLog('POWER OFF');
             if (uiPollTimer) {
                 clearInterval(uiPollTimer);
@@ -199,9 +245,13 @@ export function initSimulatorUI() {
         if (machine.state === 'off') {
             return;
         }
+        playButtonClick();
+        playTapePunch();
+        playTapeRead();
         reset();
         loadProgram(buildSampleProgram());
         pushLog('Program loaded: Add Two Numbers');
+        startIdleHum();
         renderAll();
     });
 
@@ -209,6 +259,7 @@ export function initSimulatorUI() {
         if (machine.state === 'off') {
             return;
         }
+        playButtonClick();
         doStep();
     });
 
@@ -216,7 +267,9 @@ export function initSimulatorUI() {
         if (machine.state === 'off') {
             return;
         }
+        playButtonClick();
         run(1);
+        startRunClicks(20);
         pushLog('RUN');
 
         if (uiPollTimer) {
@@ -228,13 +281,26 @@ export function initSimulatorUI() {
             if (machine.state === 'halted' || machine.state === 'error' || machine.state === 'off') {
                 clearInterval(uiPollTimer);
                 uiPollTimer = null;
+                stopRunClicks();
+                if (machine.state === 'halted') {
+                    playHaltSound();
+                    stopIdleHum();
+                }
+                if (machine.state === 'error') {
+                    playErrorBuzzer();
+                    stopIdleHum();
+                }
                 pushLog(`STOP: state=${machine.state}`);
             }
         }, 100);
     });
 
     bind('sim-btn-stop', () => {
+        playButtonClick();
         stop();
+        stopRunClicks();
+        playHaltSound();
+        stopIdleHum();
         if (uiPollTimer) {
             clearInterval(uiPollTimer);
             uiPollTimer = null;
@@ -247,10 +313,37 @@ export function initSimulatorUI() {
         if (machine.state === 'off') {
             return;
         }
+        playButtonClick();
         reset();
+        startIdleHum();
         pushLog('RESET');
         renderAll();
     });
+
+    const volumeSlider = document.getElementById('sim-audio-volume');
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', async () => {
+            await activateAudio();
+            setMasterVolume(volumeSlider.value);
+        });
+        setMasterVolume(volumeSlider.value);
+    }
+
+    bind('sim-btn-mute', async () => {
+        await activateAudio();
+        playButtonClick();
+        toggleMute();
+        syncMuteButton();
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if ((event.key || '').toLowerCase() === 'm') {
+            toggleMute();
+            syncMuteButton();
+        }
+    });
+
+    syncMuteButton();
 
     pushLog('Simulator UI initialized');
     renderAll();

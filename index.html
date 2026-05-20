@@ -670,6 +670,11 @@
                 <header class="sim-titlebar">
                     <h2>WEIZAC Simulator Panel</h2>
                     <p>Operate the machine with power, load, step, run, stop, and reset controls.</p>
+                    <div class="sim-audio-controls" aria-label="Audio controls">
+                        <label for="sim-audio-volume">Volume</label>
+                        <input id="sim-audio-volume" type="range" min="0" max="100" value="35" step="1" aria-label="Master volume">
+                        <button id="sim-btn-mute" type="button" aria-label="Mute audio">MUTE</button>
+                    </div>
                 </header>
 
                 <div class="sim-panel-grid" id="sim-panel-grid">

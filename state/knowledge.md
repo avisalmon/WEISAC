@@ -266,3 +266,54 @@ tests/sprint-7.test.html | 110 ++++++++++++++++++++
 **Lessons for future sprints:**
 - Avoid nested section tags inside a tab panel when verifier regex extracts content by first closing section tag.
 - Apply large CSS patches at file end to reduce structural merge risks.
+
+## Sprint 8 — Sound Design
+Plan: Add a Web Audio engine in js/audio.js and wire it into the simulator UI so power, step, run, stop, load, error, and memory-write events trigger synthesized sounds. Add always-visible volume and mute controls in the simulator panel header and support M-key mute toggle.
+Files: js/audio.js, js/ui.js, index.html, css/style.css, docs/backlog.md, docs/dashboard.html
+Tests needed: no (perceptual sprint)
+
+### Sprint 8 Post-Mortem
+
+**Files created/modified:**
+- js/audio.js (new, 151 lines)
+- js/ui.js (audio integration + mute key handling)
+- index.html (volume slider + mute button)
+- css/style.css (audio-control styles)
+- docs/backlog.md (Sprint 8 statuses updated to [x])
+- docs/dashboard.html (regenerated)
+
+**Verification output:**
+```
+Sprint 8: Sound — PASSED
+  ✓ [8.1] audio.js exists: OK (151 lines)
+  ✓ [8.1b] Web Audio API: AudioContext found
+  ✓ [8.2] Sound synthesis: Oscillator found
+```
+
+**Regression verification output:**
+```
+Sprint 7: PASSED
+```
+
+**Git diff summary:**
+```
+css/style.css       |  34 ++++++++++
+docs/backlog.md     |  16 ++---
+docs/dashboard.html |  15 ++---
+index.html          |   5 ++
+js/audio.js         | 185 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+js/ui.js            |  93 ++++++++++++++++++++++++++
+6 files changed, 332 insertions(+), 16 deletions(-)
+```
+
+**What went well:**
+- Audio engine is isolated in js/audio.js and uses synthesized nodes only.
+- Browser autoplay constraints are handled by activating audio on first user interaction.
+- Volume slider, mute button, and M-key toggle are integrated into the panel.
+
+**What needs improvement:**
+- Run-click cadence is currently heuristic and can be tied more tightly to speed dial in Sprint 9/10.
+- Tape sounds are implemented, but full tape animation event choreography still depends on Sprint 9.
+
+**Lessons for future sprints:**
+- Keep sound triggers centralized in UI event transitions to avoid duplicate playback paths.
