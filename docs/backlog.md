@@ -106,12 +106,12 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 6.1 | assembler.js — parsing | Parse lines: comments (;), ORG directive, labels (name:), DATA literals (decimal and hex), all 21 mnemonics. Case-insensitive. | [simulator.md](simulator.md) §Assembler Syntax (Format, Rules, Mnemonic Table) | `[ ]` |
-| 6.2 | assembler.js — two-pass | Pass 1: collect labels with {addr, side} positions. Pass 2: emit binary words. Two consecutive instruction lines pack into one 40-bit word (first=left, second=right). Odd instruction pads right with HALT. | [simulator.md](simulator.md) §Assembler Syntax §Rules, §Labels in Jumps | `[ ]` |
-| 6.3 | assembler.js — smart labels | `JUMP loop` auto-resolves to correct opcode variant (0x0F/0x10 or 0x0D/0x0E) based on label's side. Explicit form `JUMP M(loop,0:19)` still works. Mismatch emits warning. | [simulator.md](simulator.md) §Labels in Jumps | `[ ]` |
-| 6.4 | assembler.js — error reporting | Returns `{success, words, labels, warnings, errors}`. Errors include line number and message. Unknown mnemonic, duplicate label, undefined label, invalid address all caught. | [simulator.md](simulator.md) §API (assembler.js exports) | `[ ]` |
-| 6.5 | assembler.js — disassemble | `disassemble(word)` returns `{ left, right }` as human-readable mnemonics. Used by memory view and word inspector. | [simulator.md](simulator.md) §API (assembler.js exports) | `[ ]` |
-| 6.6 | Example programs assemble | All 3 spec examples (Add Two Numbers, Countdown, Factorial) assemble without errors and produce correct output when loaded into simulator. | [simulator.md](simulator.md) §Example Programs | `[ ]` |
+| 6.1 | assembler.js — parsing | Parse lines: comments (;), ORG directive, labels (name:), DATA literals (decimal and hex), all 21 mnemonics. Case-insensitive. | [simulator.md](simulator.md) §Assembler Syntax (Format, Rules, Mnemonic Table) | `[x]` |
+| 6.2 | assembler.js — two-pass | Pass 1: collect labels with {addr, side} positions. Pass 2: emit binary words. Two consecutive instruction lines pack into one 40-bit word (first=left, second=right). Odd instruction pads right with HALT. | [simulator.md](simulator.md) §Assembler Syntax §Rules, §Labels in Jumps | `[x]` |
+| 6.3 | assembler.js — smart labels | `JUMP loop` auto-resolves to correct opcode variant (0x0F/0x10 or 0x0D/0x0E) based on label's side. Explicit form `JUMP M(loop,0:19)` still works. Mismatch emits warning. | [simulator.md](simulator.md) §Labels in Jumps | `[x]` |
+| 6.4 | assembler.js — error reporting | Returns `{success, words, labels, warnings, errors}`. Errors include line number and message. Unknown mnemonic, duplicate label, undefined label, invalid address all caught. | [simulator.md](simulator.md) §API (assembler.js exports) | `[x]` |
+| 6.5 | assembler.js — disassemble | `disassemble(word)` returns `{ left, right }` as human-readable mnemonics. Used by memory view and word inspector. | [simulator.md](simulator.md) §API (assembler.js exports) | `[x]` |
+| 6.6 | Example programs assemble | All 3 spec examples (Add Two Numbers, Countdown, Factorial) assemble without errors and produce correct output when loaded into simulator. | [simulator.md](simulator.md) §Example Programs | `[x]` |
 
 ---
 

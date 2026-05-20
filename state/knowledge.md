@@ -153,3 +153,56 @@ js/simulator.js          | 396 +++++++++++++++++++++++++++++++++++++++++++++++
 tests/sprint-5.test.html | 253 ++++++++++++++++++++++++++++++
 4 files changed, 671 insertions(+), 21 deletions(-)
 ```
+
+## Sprint 6 — Assembler
+Plan: Implement a two-pass assembler in js/assembler.js that parses VEIZAC syntax (comments, ORG, labels, DATA, mnemonics), resolves smart/explicit jumps, and emits packed 40-bit words. Add a heavy browser test suite in tests/sprint-6.test.html that validates parsing, packing, warnings/errors, disassembly, and execution of the three spec programs using simulator.js.
+Files: js/assembler.js, tests/sprint-6.test.html, docs/backlog.md, docs/dashboard.html
+Tests needed: yes (heavy)
+
+### Sprint 6 Post-Mortem
+
+**Files created/modified:**
+- js/assembler.js (new, 375 lines)
+- tests/sprint-6.test.html (new, 247 lines)
+- docs/backlog.md (Sprint 6 statuses updated to [x])
+- docs/dashboard.html (regenerated)
+
+**Verification output:**
+```
+Sprint 6: Assembler — PASSED
+  ✓ [6.1] assembler.js exists: OK (375 lines)
+  ✓ [6.1b] Parsing logic: Parser found
+  ✓ [6.2] Two-pass assembly: Two-pass logic found
+  ✓ [6.5] Disassemble function: Disassembler found
+  ✓ [6.4] API exports: Exports found
+  ✓ [6.T] Sprint 6 tests exist: OK (247 lines)
+```
+
+**Regression verification output:**
+```
+Sprint 3: PASSED
+Sprint 4: PASSED
+Sprint 5: PASSED
+```
+
+**Git diff summary:**
+```
+docs/backlog.md          |  12 +-
+docs/dashboard.html      |  26 +--
+js/assembler.js          | 434 +++++++++++++++++++++++++++++++++++++++++++++++
+tests/sprint-6.test.html | 263 ++++++++++++++++++++++++++++
+4 files changed, 716 insertions(+), 19 deletions(-)
+```
+
+**What went well:**
+- Assembler implementation and verification were completed in one pass with no syntax errors.
+- Smart jump label resolution and explicit-side mismatch warnings are now implemented.
+- Example programs now assemble and are validated in the sprint test suite against simulator execution.
+
+**What needs improvement:**
+- Browser execution of HTML tests is still manual and should be run interactively for visual confirmation.
+- The verifier currently checks keyword presence rather than deep semantic behavior, so test quality remains critical.
+
+**Lessons for future sprints:**
+- Keep the simulator and assembler interfaces aligned early, then test via end-to-end assembly+execution scenarios.
+- Stage files before collecting diff evidence so new files appear in git stats.

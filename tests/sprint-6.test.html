@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 6 Tests - Assembler</title>
+    <style>
+        body { font-family: monospace; padding: 2rem; background: #101010; color: #d8ffd8; }
+        .pass { color: #76ff76; }
+        .fail { color: #ff7676; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Sprint 6: Assembler</h1>
+<pre id="results"></pre>
+<script type="module">
+import { assemble, disassemble } from '../js/assembler.js';
+import { reset, step, machine, loadProgram } from '../js/simulator.js';
+
+let passes = 0;
+let failures = 0;
+const out = document.getElementById('results');
+
+function log(msg) {
+    console.log(msg);
+    out.innerHTML += msg + '\n';
+}
+
+function assert(condition, message) {
+    if (!condition) throw new Error(message);
+}
+
+function assertEq(actual, expected, message) {
+    if (actual !== expected) {
+        throw new Error(`${message} (expected ${expected}, got ${actual})`);
+    }
+}
+
+function test(name, fn) {
+    try {
+        fn();
+        passes += 1;
+        log(`<span class="pass">PASS: ${name}</span>`);
+    } catch (err) {
+        failures += 1;
+        log(`<span class="fail">FAIL: ${name} - ${err.message}</span>`);
+    }
+}
+
+function runUntilStop(limit = 20000) {
+    for (let i = 0; i < limit; i += 1) {
+        const trace = step();
+        if (!trace || machine.state === 'halted' || machine.state === 'error') {
+            return;
+        }
+    }
+    throw new Error('program did not halt within step limit');
+}
+
+test('Parses comments, ORG, labels, data, and mnemonics case-insensitively', () => {
+    const src = `
+; comment
+org 0x10
+Start:
+load m(100)
+AdD M(101)
+stor M(102)
+halt
+ORG 100
+data 25
+data 17
+data 0
+`;
+    const result = assemble(src);
+    assert(result.success, 'assembler should succeed');
+    assert(result.labels.Start, 'label Start should be defined');
+    assertEq(result.labels.Start.addr, 0x10, 'label addr');
+    assertEq(result.labels.Start.side, 'left', 'label side');
+    assert(result.words.some((w) => w.addr === 100), 'data address 100 must exist');
+});
+
+test('Two-pass packing puts 2 instructions per word and pads odd instruction with HALT', () => {
+    const src = `
+ORG 0
+LOAD M(100)
+ADD M(101)
+STOR M(102)
+`;
+    const result = assemble(src);
+    assert(result.success, 'assemble should succeed');
+    assertEq(result.words[0].addr, 0, 'first code word at 0');
+    assertEq(result.words[1].addr, 1, 'second code word at 1');
+    const second = disassemble(result.words[1].value);
+    assert(second.left.startsWith('STOR M('), 'left instruction should be STOR');
+    assertEq(second.right, 'HALT', 'odd tail should be padded with HALT');
+});
+
+test('Smart labels resolve jump side opcode variants', () => {
+    const src = `
+ORG 0
+JUMP left_target
+JUMP+ right_target
+left_target:
+LOAD M(200)
+right_target:
+ADD M(201)
+HALT
+`;
+    const result = assemble(src);
+    assert(result.success, 'assemble should succeed');
+    const first = disassemble(result.words[0].value);
+    assert(first.left.startsWith('JUMP M('), 'smart JUMP should be explicit after encoding');
+    assert(first.right.startsWith('JUMP+ M('), 'smart JUMP+ should be explicit after encoding');
+});
+
+test('Explicit side mismatch emits warning', () => {
+    const src = `
+ORG 0
+JUMP M(target,0:19)
+HALT
+target:
+LOAD M(100)
+`;
+    const result = assemble(src);
+    assert(result.success, 'assemble should succeed with warning');
+    assert(result.warnings.length > 0, 'mismatch warning expected');
+});
+
+test('Error reporting catches unknown mnemonic, duplicate label, undefined label, invalid address', () => {
+    const src = `
+ORG 0
+dup:
+LOAD M(100)
+dup:
+STORR M(101)
+JUMP missing
+LOAD M(5000)
+`;
+    const result = assemble(src);
+    assert(!result.success, 'assemble should fail');
+    const text = result.errors.map((e) => e.message).join('\n').toLowerCase();
+    assert(text.includes('duplicate label'), 'duplicate label error');
+    assert(text.includes('unknown mnemonic'), 'unknown mnemonic error');
+    assert(text.includes('undefined label'), 'undefined label error');
+    assert(text.includes('invalid address'), 'invalid address error');
+});
+
+test('Disassemble returns readable left/right text', () => {
+    const src = `
+ORG 0
+LOAD M(100)
+ADD M(101)
+`;
+    const result = assemble(src);
+    assert(result.success, 'assemble should succeed');
+    const decoded = disassemble(result.words[0].value);
+    assertEq(decoded.left, 'LOAD M(100)', 'left disassembly');
+    assertEq(decoded.right, 'ADD M(101)', 'right disassembly');
+});
+
+test('Example program: Add Two Numbers produces 42 at M(102)', () => {
+    const src = `
+ORG 0
+LOAD M(100)
+ADD M(101)
+STOR M(102)
+HALT
+ORG 100
+DATA 25
+DATA 17
+DATA 0
+`;
+    const built = assemble(src);
+    assert(built.success, 'assemble add-two should succeed');
+    reset();
+    loadProgram(built.words);
+    runUntilStop();
+    assertEq(machine.memory[102], 42n, 'M(102) should be 42');
+});
+
+test('Example program: Countdown stores 10..0 in M(200..210)', () => {
+    const src = `
+ORG 0
+LOAD M(50)
+loop:
+STOR M(200)
+SUB M(51)
+JUMP+ M(continue,0:19)
+HALT
+continue:
+STOR M(50)
+LOAD M(3)
+ADD M(52)
+STOR M(3,8:19)
+LOAD M(50)
+JUMP M(loop,20:39)
+HALT
+ORG 50
+DATA 10
+DATA 1
+DATA 1048576
+`;
+    const built = assemble(src);
+    assert(built.success, 'assemble countdown should succeed');
+    reset();
+    loadProgram(built.words);
+    runUntilStop();
+    for (let i = 0; i <= 10; i += 1) {
+        assertEq(machine.memory[200 + i], BigInt(10 - i), `countdown value at ${200 + i}`);
+    }
+});
+
+test('Example program: Factorial stores 5040 in M(102)', () => {
+    const src = `
+ORG 0
+LOAD M(100)
+STOR M(101)
+loop:
+LOAD M(100)
+SUB M(103)
+STOR M(100)
+JUMP+ M(check,0:19)
+JUMP M(done,0:19)
+check:
+LOAD M(100)
+SUB M(103)
+JUMP+ M(mul,0:19)
+JUMP M(done,0:19)
+mul:
+LOAD MQ,M(101)
+MUL M(100)
+LOAD MQ
+STOR M(101)
+JUMP M(loop,0:19)
+done:
+LOAD M(101)
+STOR M(102)
+HALT
+ORG 100
+DATA 7
+DATA 0
+DATA 0
+DATA 1
+`;
+    const built = assemble(src);
+    assert(built.success, 'assemble factorial should succeed');
+    reset();
+    loadProgram(built.words);
+    runUntilStop();
+    assertEq(machine.memory[102], 5040n, 'M(102) should be 5040');
+});
+
+log('\n' + '='.repeat(50));
+log(`Results: ${passes} passed, ${failures} failed`);
+log('='.repeat(50));
+if (failures > 0) {
+    log('<span class="fail">SPRINT 6 TESTS: FAILED</span>');
+} else {
+    log('<span class="pass">SPRINT 6 TESTS: ALL PASSED</span>');
+}
+</script>
+</body>
+</html>
