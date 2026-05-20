@@ -124,3 +124,32 @@ Validation:
 Plan: Add Lesson 4 (arithmetic opcodes: ADD, SUB, MUL, DIV, LSH, RSH), Lesson 5 (branching: JUMP, JUMP+), and Lesson 6 (self-modifying: STOR M(X,8:19) and STOR M(X,28:39)). Each lesson includes explanations and interactive exercises. Mini-simulator already supports these opcodes, so exercises will focus on predicting results.
 Files: js/training.js, js/training.global.js (regenerated), tests/sprint-4.test.html (TDD)
 Tests needed: yes
+
+## Sprint 5 — Simulator Core Engine
+Plan: Build a pure-logic simulator module in js/simulator.js with full machine model, instruction decode, execution cycle, state lifecycle APIs, and error/overflow handling. Add a heavy browser-runnable test suite in tests/sprint-5.test.html covering instruction behavior, control flow, edge cases, and lifecycle transitions.
+Files: js/simulator.js, tests/sprint-5.test.html, docs/backlog.md, docs/dashboard.html
+Tests needed: yes (heavy)
+
+### Sprint 5 Evidence
+
+Verification output:
+```
+Sprint 5: Simulator Core — PASSED
+  ✓ [5.1] simulator.js exists: OK (347 lines)
+  ✓ [5.1b] Machine model (memory, BigInt): Machine model found
+  ✓ [5.2] Instruction decode: Decode logic found
+  ✓ [5.3] Instructions (10/10 keywords): Found 10/10 instruction keywords
+  ✓ [5.4] Execution cycle: Step/execute found
+  ✓ [5.5] State lifecycle (4/4): Found 4/4 states
+  ✓ [5.8] API exports: ES module exports found
+  ✓ [5.T] Sprint 5 tests exist: OK (223 lines)
+```
+
+Git diff stat (HEAD):
+```
+docs/backlog.md          |  18 +--
+docs/dashboard.html      |  25 +--
+js/simulator.js          | 396 +++++++++++++++++++++++++++++++++++++++++++++++
+tests/sprint-5.test.html | 253 ++++++++++++++++++++++++++++++
+4 files changed, 671 insertions(+), 21 deletions(-)
+```

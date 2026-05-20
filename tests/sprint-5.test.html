@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 5 Tests - Simulator Core</title>
+    <style>
+        body { font-family: monospace; padding: 2rem; background: #111; color: #0f0; }
+        .pass { color: #0f0; }
+        .fail { color: #f44; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Sprint 5: Simulator Core Engine</h1>
+<pre id="results"></pre>
+<script type="module">
+import {
+    machine,
+    WORD_MASK,
+    mask40,
+    extractLeft,
+    extractRight,
+    powerOn,
+    powerOff,
+    reset,
+    step,
+    run,
+    stop,
+    loadProgram,
+    getState
+} from '../js/simulator.js';
+
+let passes = 0;
+let failures = 0;
+const out = document.getElementById('results');
+
+function log(msg) {
+    console.log(msg);
+    out.innerHTML += msg + '\n';
+}
+
+function assert(condition, message) {
+    if (!condition) throw new Error(message);
+}
+
+function assertEq(actual, expected, message) {
+    if (actual !== expected) {
+        throw new Error(`${message} (expected ${expected}, got ${actual})`);
+    }
+}
+
+function test(name, fn) {
+    try {
+        fn();
+        passes++;
+        log(`<span class="pass">PASS: ${name}</span>`);
+    } catch (err) {
+        failures++;
+        log(`<span class="fail">FAIL: ${name} - ${err.message}</span>`);
+    }
+}
+
+function packWord(leftOpcode, leftAddr, rightOpcode, rightAddr) {
+    return (
+        (BigInt(leftOpcode & 0xFF) << 32n) |
+        (BigInt(leftAddr & 0xFFF) << 20n) |
+        (BigInt(rightOpcode & 0xFF) << 12n) |
+        BigInt(rightAddr & 0xFFF)
+    );
+}
+
+reset();
+
+// Core machine model
+
+test('Machine starts with correct memory size', () => {
+    assertEq(machine.memory.length, 1024, 'memory size should be 1024');
+});
+
+test('mask40 preserves signed 40-bit values', () => {
+    assertEq(mask40(42n), 42n, 'positive number unchanged');
+    assertEq(mask40((1n << 40n) + 1n), 1n, 'overflow wraps');
+    assertEq(mask40(WORD_MASK), -1n, 'all ones should be -1');
+});
+
+test('Instruction decode extracts left and right halves', () => {
+    const w = packWord(0x01, 0x064, 0x05, 0x065);
+    const l = extractLeft(w);
+    const r = extractRight(w);
+    assertEq(l.opcode, 0x01, 'left opcode');
+    assertEq(l.address, 0x064, 'left address');
+    assertEq(r.opcode, 0x05, 'right opcode');
+    assertEq(r.address, 0x065, 'right address');
+});
+
+// Data transfer and arithmetic
+
+test('ADD M(X) updates AC', () => {
+    reset();
+    machine.ac = 10n;
+    machine.memory[100] = 32n;
+    machine.memory[0] = packWord(0x05, 100, 0x00, 0);
+    const trace = step();
+    assertEq(machine.ac, 42n, 'AC after add');
+    assert(trace && trace.mnemonic.includes('ADD'), 'trace mnemonic should include ADD');
+});
+
+test('RSH on negative number keeps sign', () => {
+    reset();
+    machine.ac = -4n;
+    machine.memory[0] = packWord(0x15, 0, 0x00, 0);
+    step();
+    assertEq(machine.ac, -2n, 'arithmetic right shift should preserve sign');
+});
+
+test('MUL splits product into AC:MQ', () => {
+    reset();
+    machine.mq = 7n;
+    machine.memory[50] = 9n;
+    machine.memory[0] = packWord(0x0B, 50, 0x00, 0);
+    step();
+    assertEq(machine.mq, 63n, 'low 40 bits in MQ');
+    assertEq(machine.ac, 0n, 'high 40 bits in AC for small product');
+});
+
+test('DIV by zero sets error state', () => {
+    reset();
+    machine.ac = 10n;
+    machine.memory[50] = 0n;
+    machine.memory[0] = packWord(0x0C, 50, 0x00, 0);
+    step();
+    assertEq(machine.state, 'error', 'state should be error');
+    assert(machine.error && machine.error.toLowerCase().includes('division by zero'), 'error message');
+});
+
+// Control flow
+
+test('JUMP+ does not jump for negative AC', () => {
+    reset();
+    machine.ac = -1n;
+    machine.memory[0] = packWord(0x0D, 12, 0x00, 0);
+    step();
+    assertEq(machine.pc.addr, 0, 'pc should remain on same word (before right step)');
+    assertEq(machine.pc.side, 'right', 'should advance to right side when no jump');
+});
+
+test('JUMP+ jumps for zero AC', () => {
+    reset();
+    machine.ac = 0n;
+    machine.memory[0] = packWord(0x0D, 12, 0x00, 0);
+    step();
+    assertEq(machine.pc.addr, 12 & 0x3FF, 'jump target addr');
+    assertEq(machine.pc.side, 'left', 'jump target side');
+});
+
+test('PC advances left to right to next word', () => {
+    reset();
+    machine.memory[0] = packWord(0x01, 100, 0x01, 100);
+    machine.memory[100] = 7n;
+    step();
+    assertEq(machine.pc.addr, 0, 'still same word after left');
+    assertEq(machine.pc.side, 'right', 'to right side');
+    step();
+    assertEq(machine.pc.addr, 1, 'advance to next word after right');
+    assertEq(machine.pc.side, 'left', 'return to left side');
+});
+
+// State lifecycle
+
+test('powerOff sets machine to off', () => {
+    reset();
+    powerOff();
+    assertEq(machine.state, 'off', 'state off after powerOff');
+});
+
+test('reset returns machine to ready with zeroed state', () => {
+    machine.ac = 999n;
+    machine.mq = 111n;
+    machine.memory[0] = 123n;
+    reset();
+    assertEq(machine.state, 'ready', 'state ready');
+    assertEq(machine.ac, 0n, 'ac reset');
+    assertEq(machine.mq, 0n, 'mq reset');
+    assertEq(machine.memory[0], 0n, 'memory reset');
+});
+
+test('loadProgram writes words to memory', () => {
+    reset();
+    loadProgram([
+        { addr: 7, value: packWord(0x01, 100, 0x00, 0) },
+        { addr: 100, value: 55n }
+    ]);
+    assertEq(machine.memory[7], packWord(0x01, 100, 0x00, 0), 'program word loaded');
+    assertEq(machine.memory[100], 55n, 'data word loaded');
+});
+
+test('getState returns copy and not references', () => {
+    reset();
+    machine.memory[5] = 9n;
+    const state = getState();
+    state.memory[5] = 123n;
+    assertEq(machine.memory[5], 9n, 'machine memory must stay unchanged');
+});
+
+// Manual console suite style scenarios
+
+test('Halt on empty memory', () => {
+    reset();
+    machine.memory[0] = 0n;
+    const trace = step();
+    assertEq(machine.state, 'halted', 'should halt on opcode 0x00');
+    assert(trace && trace.opcode === 0x00, 'trace opcode should be 0x00');
+});
+
+test('Countdown style branch loop does not crash', () => {
+    reset();
+    machine.memory[10] = 3n; // counter
+    machine.memory[11] = 1n; // decrement
+    machine.memory[0] = packWord(0x01, 10, 0x06, 11); // LOAD counter ; SUB 1
+    machine.memory[1] = packWord(0x21, 10, 0x0D, 0); // STOR counter ; JUMP+ word0 left
+    machine.memory[2] = packWord(0x00, 0, 0x00, 0);
+    run(8);
+    stop();
+    assert(machine.state === 'halted' || machine.state === 'ready' || machine.state === 'running', 'valid post-run state');
+});
+
+// Async smoke for powerOn
+(async () => {
+    try {
+        powerOff();
+        const p = powerOn();
+        assertEq(machine.state, 'booting', 'state should be booting immediately');
+        await p;
+        assertEq(machine.state, 'ready', 'state should become ready after warmup');
+        log('<span class="pass">PASS: powerOn warm-up transition</span>');
+        passes++;
+    } catch (err) {
+        log(`<span class="fail">FAIL: powerOn warm-up transition - ${err.message}</span>`);
+        failures++;
+    }
+
+    log('\n' + '='.repeat(50));
+    log(`Results: ${passes} passed, ${failures} failed`);
+    log('='.repeat(50));
+    if (failures > 0) {
+        log('<span class="fail">SPRINT 5 TESTS: FAILED</span>');
+    } else {
+        log('<span class="pass">SPRINT 5 TESTS: ALL PASSED</span>');
+    }
+})();
+</script>
+</body>
+</html>
