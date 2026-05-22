@@ -1145,6 +1145,11 @@ code, pre, .mono {
     color: #fff;
 }
 
+#sim-btn-authentic.active {
+    background: linear-gradient(180deg, #4f764f, #2e4f2e);
+    color: #fff;
+}
+
 .sim-panel-grid {
     display: grid;
     grid-template-columns: 220px minmax(0, 1fr) 220px;
@@ -1263,6 +1268,22 @@ code, pre, .mono {
 
 .sim-memory-row code {
     color: #9eea9e;
+}
+
+.simulator-shell.authentic-mode .sim-memory-tools {
+    display: none;
+}
+
+.simulator-shell.authentic-mode .sim-memory-head,
+.simulator-shell.authentic-mode .sim-memory-row {
+    grid-template-columns: 60px minmax(160px, 1fr);
+}
+
+.simulator-shell.authentic-mode .sim-memory-head span:nth-child(3),
+.simulator-shell.authentic-mode .sim-memory-head span:nth-child(4),
+.simulator-shell.authentic-mode .sim-memory-row span:nth-child(3),
+.simulator-shell.authentic-mode .sim-memory-row span:nth-child(4) {
+    display: none;
 }
 
 .sim-instr-ref {

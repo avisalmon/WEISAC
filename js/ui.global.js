@@ -89,6 +89,8 @@
         const tapeStrip = document.getElementById('sim-tape-strip');
         const jumpInput = document.getElementById('sim-memory-jump');
         const jumpButton = document.getElementById('sim-memory-jump-btn');
+        const authenticButton = document.getElementById('sim-btn-authentic');
+        const simulatorShell = document.querySelector('#tab-simulator .simulator-shell');
 
         if (!memRows || !logRows) {
             return;
@@ -99,6 +101,13 @@
         }
 
         let uiPollTimer = null;
+        let authenticMode = false;
+
+        try {
+            authenticMode = localStorage.getItem('veizac.authenticMode') === '1';
+        } catch (e) {
+            authenticMode = false;
+        }
 
         const syncMuteButton = () => {
             const muteBtn = document.getElementById('sim-btn-mute');
@@ -120,6 +129,13 @@
         };
 
         const pushLog = (line) => {
+            if (authenticMode) {
+                const compactLine = /^(POWER ON|POWER OFF|READY|RUN|STOP|RESET|ERROR|\[\d{3} [LR]\])/;
+                if (!compactLine.test(line)) {
+                    return;
+                }
+            }
+
             const row = document.createElement('div');
             row.className = 'sim-log-row';
             row.textContent = line;
@@ -172,6 +188,21 @@
 
         let loadFlashAddr = null;
 
+        const applyAuthenticMode = () => {
+            if (simulatorShell) {
+                simulatorShell.classList.toggle('authentic-mode', authenticMode);
+            }
+            if (authenticButton) {
+                authenticButton.textContent = authenticMode ? 'AUTHENTIC: ON' : 'AUTHENTIC: OFF';
+                authenticButton.classList.toggle('active', authenticMode);
+            }
+            try {
+                localStorage.setItem('veizac.authenticMode', authenticMode ? '1' : '0');
+            } catch (e) {
+                // Ignore persistence failures in restricted contexts.
+            }
+        };
+
         const renderMemory = (state) => {
             memRows.innerHTML = '';
             const rowsToRender = 128;
@@ -198,14 +229,14 @@
                 const leftTxt = document.createElement('span');
                 leftTxt.textContent = opcodeLabel(left.opcode, left.address);
                 const leftHover = instructionHoverText(left.opcode, left.address, state);
-                if (leftHover) {
+                if (!authenticMode && leftHover) {
                     leftTxt.title = leftHover;
                     leftTxt.classList.add('sim-instr-ref');
                 }
                 const rightTxt = document.createElement('span');
                 rightTxt.textContent = opcodeLabel(right.opcode, right.address);
                 const rightHover = instructionHoverText(right.opcode, right.address, state);
-                if (rightHover) {
+                if (!authenticMode && rightHover) {
                     rightTxt.title = rightHover;
                     rightTxt.classList.add('sim-instr-ref');
                 }
@@ -421,6 +452,16 @@
             syncMuteButton();
         });
 
+        if (authenticButton) {
+            authenticButton.addEventListener('click', () => {
+                audio.playButtonClick();
+                authenticMode = !authenticMode;
+                applyAuthenticMode();
+                renderAll();
+                pushLog(authenticMode ? 'AUTHENTIC MODE ON' : 'AUTHENTIC MODE OFF');
+            });
+        }
+
         document.addEventListener('keydown', (event) => {
             if ((event.key || '').toLowerCase() === 'm') {
                 audio.toggleMute();
@@ -429,6 +470,7 @@
         });
 
         syncMuteButton();
+        applyAuthenticMode();
 
         pushLog('Simulator UI initialized');
         renderAll();
