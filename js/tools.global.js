@@ -269,6 +269,8 @@
             const after = editor.value.slice(pos);
             editor.value = before + insertText + after;
             editor.selectionStart = editor.selectionEnd = pos + insertText.length;
+            setActiveTab(mount, 'editor');
+            editor.focus();
         };
 
         const updateTranslator = () => {
