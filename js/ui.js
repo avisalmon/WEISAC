@@ -28,7 +28,7 @@ import {
     playButtonClick,
     playMemoryTick
 } from './audio.js';
-import { setTapeContainer, runTapeLoadSequence, renderTapeFromMemory } from './tape.js';
+import { setTapeContainer, runTapeLoadSequence, renderTapeFromMemory, animateLoad } from './tape.js';
 
 function toHex40(value) {
     const masked = value & 0xFFFFFFFFFFn;
@@ -124,6 +124,7 @@ export function initSimulatorUI() {
     }
 
     let uiPollTimer = null;
+    let runAborted = false;
     let authenticMode = true;
 
     try {
@@ -411,40 +412,94 @@ export function initSimulatorUI() {
         doStep();
     });
 
-    bind('sim-btn-run', () => {
+    bind('sim-btn-run', async () => {
         if (machine.state === 'off') {
             return;
         }
         playButtonClick();
-        run(1);
-        startRunClicks(20);
-        pushLog('RUN');
+        runAborted = false;
 
-        if (uiPollTimer) {
-            clearInterval(uiPollTimer);
+        // Snapshot memory as tape words (addr 0 to last non-zero)
+        let lastNonZero = -1;
+        for (let i = machine.memory.length - 1; i >= 0; i -= 1) {
+            if (machine.memory[i] !== 0n) {
+                lastNonZero = i;
+                break;
+            }
+        }
+        if (lastNonZero < 0) {
+            pushLog('RUN blocked: memory is empty');
+            return;
+        }
+        const tapeWords = [];
+        for (let a = 0; a <= lastNonZero; a += 1) {
+            tapeWords.push({ addr: a, value: machine.memory[a] });
         }
 
-        uiPollTimer = setInterval(() => {
-            renderAll();
-            if (machine.state === 'halted' || machine.state === 'error' || machine.state === 'off') {
-                clearInterval(uiPollTimer);
-                uiPollTimer = null;
-                stopRunClicks();
-                if (machine.state === 'halted') {
-                    playHaltSound();
-                    stopIdleHum();
-                }
-                if (machine.state === 'error') {
-                    playErrorBuzzer();
-                    stopIdleHum();
-                }
-                pushLog(`STOP: state=${machine.state}`);
+        // Clear memory and render tape
+        reset();
+        for (let i = 0; i < machine.memory.length; i += 1) {
+            machine.memory[i] = 0n;
+        }
+        renderAll();
+        pushLog('LOADING TAPE...');
+        startRunClicks(20);
+
+        // Phase 1: Feed tape into memory at 20 words/sec (50ms per word)
+        await animateLoad(tapeWords, (word) => {
+            if (runAborted) {
+                return;
             }
-        }, 100);
+            machine.memory[word.addr & 0x3FF] = BigInt(word.value);
+            loadFlashAddr = word.addr;
+            renderAll();
+            playMemoryTick();
+        });
+
+        if (runAborted) {
+            stopRunClicks();
+            pushLog('STOP (during load)');
+            renderAll();
+            return;
+        }
+
+        loadFlashAddr = null;
+        renderAll();
+        pushLog('TAPE LOADED. EXECUTING...');
+
+        // Phase 2: Execute at 100 instructions/sec (10ms per step)
+        machine.pc = { addr: 0, side: 'left' };
+        machine.state = 'ready';
+        const execDelay = (ms) => new Promise((r) => setTimeout(r, ms));
+
+        while (!runAborted && machine.state !== 'halted' && machine.state !== 'error' && machine.state !== 'off') {
+            const trace = step();
+            renderAll();
+            if (trace) {
+                pushLog(`[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}] ${trace.mnemonic}`);
+            }
+            if (machine.state === 'error' && machine.error) {
+                playErrorBuzzer();
+                pushLog(`ERROR: ${machine.error}`);
+                break;
+            }
+            await execDelay(10);
+        }
+
+        stopRunClicks();
+        if (machine.state === 'halted') {
+            playHaltSound();
+            stopIdleHum();
+            pushLog('HALT');
+        } else if (runAborted) {
+            pushLog('STOP (user)');
+        }
+        renderAll();
     });
 
     bind('sim-btn-stop', () => {
         playButtonClick();
+        runAborted = true;
         stop();
         stopRunClicks();
         playHaltSound();

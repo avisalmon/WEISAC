@@ -166,6 +166,20 @@
         await animateFeed(onFeed);
     }
 
+    async function animateLoad(words, onWord) {
+        if (!tapeContainer) {
+            return;
+        }
+        const blocks = tapeContainer.querySelectorAll('.tape-word');
+        for (let i = 0; i < blocks.length; i += 1) {
+            blocks[i].classList.add('tape-consumed');
+            if (onWord) {
+                onWord(words[i], i);
+            }
+            await delay(50);
+        }
+    }
+
     function renderTapeFromMemory(memory) {
         let lastNonZero = -1;
         for (let i = memory.length - 1; i >= 0; i -= 1) {
@@ -191,6 +205,7 @@
         setTapeContainer,
         renderTape,
         renderTapeFromMemory,
+        animateLoad,
         animatePunch,
         animateFeed,
         runTapeLoadSequence

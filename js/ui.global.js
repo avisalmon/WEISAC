@@ -101,6 +101,7 @@
         }
 
         let uiPollTimer = null;
+        let runAborted = false;
         let authenticMode = true;
 
         try {
@@ -392,40 +393,98 @@
             doStep();
         });
 
-        bind('sim-btn-run', () => {
+        bind('sim-btn-run', async () => {
             if (sim.machine.state === 'off') {
                 return;
             }
             audio.playButtonClick();
-            sim.run(1);
-            audio.startRunClicks(20);
-            pushLog('RUN');
+            runAborted = false;
 
-            if (uiPollTimer) {
-                clearInterval(uiPollTimer);
+            // Snapshot memory as tape words
+            let lastNonZero = -1;
+            for (let i = sim.machine.memory.length - 1; i >= 0; i -= 1) {
+                if (sim.machine.memory[i] !== 0n) {
+                    lastNonZero = i;
+                    break;
+                }
+            }
+            if (lastNonZero < 0) {
+                pushLog('RUN blocked: memory is empty');
+                return;
+            }
+            const tapeWords = [];
+            for (let a = 0; a <= lastNonZero; a += 1) {
+                tapeWords.push({ addr: a, value: sim.machine.memory[a] });
             }
 
-            uiPollTimer = setInterval(() => {
+            // Clear memory and reset
+            sim.reset();
+            for (let i = 0; i < sim.machine.memory.length; i += 1) {
+                sim.machine.memory[i] = 0n;
+            }
+            renderAll();
+            pushLog('LOADING TAPE...');
+            audio.startRunClicks(20);
+
+            // Phase 1: Feed tape at 20 words/sec
+            if (tape && tape.animateLoad) {
+                await tape.animateLoad(tapeWords, (word) => {
+                    if (runAborted) { return; }
+                    sim.machine.memory[word.addr & 0x3FF] = BigInt(word.value);
+                    loadFlashAddr = word.addr;
+                    renderAll();
+                    audio.playMemoryTick();
+                });
+            } else {
+                tapeWords.forEach((word) => {
+                    sim.machine.memory[word.addr & 0x3FF] = BigInt(word.value);
+                });
+            }
+
+            if (runAborted) {
+                audio.stopRunClicks();
+                pushLog('STOP (during load)');
                 renderAll();
-                if (sim.machine.state === 'halted' || sim.machine.state === 'error' || sim.machine.state === 'off') {
-                    clearInterval(uiPollTimer);
-                    uiPollTimer = null;
-                    audio.stopRunClicks();
-                    if (sim.machine.state === 'halted') {
-                        audio.playHaltSound();
-                        audio.stopIdleHum();
-                    }
-                    if (sim.machine.state === 'error') {
-                        audio.playErrorBuzzer();
-                        audio.stopIdleHum();
-                    }
-                    pushLog(`STOP: state=${sim.machine.state}`);
+                return;
+            }
+
+            loadFlashAddr = null;
+            renderAll();
+            pushLog('TAPE LOADED. EXECUTING...');
+
+            // Phase 2: Execute at 100 inst/sec
+            sim.machine.pc = { addr: 0, side: 'left' };
+            sim.machine.state = 'ready';
+            const execDelay = (ms) => new Promise((r) => setTimeout(r, ms));
+
+            while (!runAborted && sim.machine.state !== 'halted' && sim.machine.state !== 'error' && sim.machine.state !== 'off') {
+                const trace = sim.step();
+                renderAll();
+                if (trace) {
+                    pushLog(`[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}] ${trace.mnemonic}`);
                 }
-            }, 100);
+                if (sim.machine.state === 'error' && sim.machine.error) {
+                    audio.playErrorBuzzer();
+                    pushLog(`ERROR: ${sim.machine.error}`);
+                    break;
+                }
+                await execDelay(10);
+            }
+
+            audio.stopRunClicks();
+            if (sim.machine.state === 'halted') {
+                audio.playHaltSound();
+                audio.stopIdleHum();
+                pushLog('HALT');
+            } else if (runAborted) {
+                pushLog('STOP (user)');
+            }
+            renderAll();
         });
 
         bind('sim-btn-stop', () => {
             audio.playButtonClick();
+            runAborted = true;
             sim.stop();
             audio.stopRunClicks();
             audio.playHaltSound();
