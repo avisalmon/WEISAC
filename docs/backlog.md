@@ -157,14 +157,14 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 9.1 | tape.js — tape renderer | Vertical tape strip on panel right side: off-white background with fiber texture, 20-column layout (one per bit of 20-bit instruction), sprocket holes between instruction rows. Each 40-bit word = two rows (left top, right bottom). | [ux.md](ux.md) §The Paper Tape Experience (What It Looks Like), [simulator.md](simulator.md) §File Layout (tape.js) | `[ ]` |
-| 9.2 | Punch animation | On LOAD: holes appear sequentially with punch sounds. Solid dark circles for 1, faint dots for 0. Visual punching takes ~1s. | [ux.md](ux.md) §Loading a Program (step 2), [spec.md](spec.md) §Paper Tape Workflow (Punch) | `[ ]` |
-| 9.3 | Feed animation | Tape scrolls upward into reader with chattering sound. ~1s duration. | [ux.md](ux.md) §Loading a Program (step 3), [spec.md](spec.md) §Paper Tape Workflow (Feed) | `[ ]` |
-| 9.4 | Memory load sequence | Words appear in memory one by one. Memory grid highlights each row as loaded. ~1-2s total. | [ux.md](ux.md) §Loading a Program (step 4), [spec.md](spec.md) §Paper Tape Workflow (Load) | `[ ]` |
-| 9.5 | Completion clunk | Final "clunk" sound. Silence. Machine ready. Full ceremony 2-4s. | [ux.md](ux.md) §Loading a Program (step 5), [spec.md](spec.md) §Paper Tape Workflow (Ready) | `[ ]` |
-| 9.6 | Skip animation | Double-click LOAD skips ceremony, loads instantly. | [ux.md](ux.md) §Loading a Program ("double-click LOAD"), [spec.md](spec.md) §Paper Tape Workflow | `[ ]` |
-| 9.7 | Tape tooltip | Hover any tape section shows decoded instruction: "LOAD M(200) — opcode 01, address 0C8". | [ux.md](ux.md) §Paper Tape Binary Visualization | `[ ]` |
-| 9.8 | Simplified-viz label | Small note "simplified visualization" appears on hover over tape, acknowledging real WEIZAC used 5-channel encoding. | [ux.md](ux.md) §The Paper Tape Experience (Note) | `[ ]` |
+| 9.1 | tape.js — tape renderer | Vertical tape strip on panel right side: off-white background with fiber texture, 20-column layout (one per bit of 20-bit instruction), sprocket holes between instruction rows. Each 40-bit word = two rows (left top, right bottom). | [ux.md](ux.md) §The Paper Tape Experience (What It Looks Like), [simulator.md](simulator.md) §File Layout (tape.js) | `[x]` |
+| 9.2 | Punch animation | On LOAD: holes appear sequentially with punch sounds. Solid dark circles for 1, faint dots for 0. Visual punching takes ~1s. | [ux.md](ux.md) §Loading a Program (step 2), [spec.md](spec.md) §Paper Tape Workflow (Punch) | `[x]` |
+| 9.3 | Feed animation | Tape scrolls upward into reader with chattering sound. ~1s duration. | [ux.md](ux.md) §Loading a Program (step 3), [spec.md](spec.md) §Paper Tape Workflow (Feed) | `[x]` |
+| 9.4 | Memory load sequence | Words appear in memory one by one. Memory grid highlights each row as loaded. ~1-2s total. | [ux.md](ux.md) §Loading a Program (step 4), [spec.md](spec.md) §Paper Tape Workflow (Load) | `[x]` |
+| 9.5 | Completion clunk | Final "clunk" sound. Silence. Machine ready. Full ceremony 2-4s. | [ux.md](ux.md) §Loading a Program (step 5), [spec.md](spec.md) §Paper Tape Workflow (Ready) | `[x]` |
+| 9.6 | Skip animation | Double-click LOAD skips ceremony, loads instantly. | [ux.md](ux.md) §Loading a Program ("double-click LOAD"), [spec.md](spec.md) §Paper Tape Workflow | `[x]` |
+| 9.7 | Tape tooltip | Hover any tape section shows decoded instruction: "LOAD M(200) — opcode 01, address 0C8". | [ux.md](ux.md) §Paper Tape Binary Visualization | `[x]` |
+| 9.8 | Simplified-viz label | Small note "simplified visualization" appears on hover over tape, acknowledging real WEIZAC used 5-channel encoding. | [ux.md](ux.md) §The Paper Tape Experience (Note) | `[x]` |
 
 ---
 

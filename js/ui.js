@@ -28,6 +28,7 @@ import {
     playButtonClick,
     playMemoryTick
 } from './audio.js';
+import { setTapeContainer, runTapeLoadSequence } from './tape.js';
 
 function toHex40(value) {
     const masked = value & 0xFFFFFFFFFFn;
@@ -88,12 +89,21 @@ function buildSampleProgram() {
     ];
 }
 
+function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function initSimulatorUI() {
     const memRows = document.getElementById('sim-memory-rows');
     const logRows = document.getElementById('sim-log-rows');
+    const tapeStrip = document.getElementById('sim-tape-strip');
 
     if (!memRows || !logRows) {
         return;
+    }
+
+    if (tapeStrip) {
+        setTapeContainer(tapeStrip);
     }
 
     let uiPollTimer = null;
@@ -161,6 +171,8 @@ export function initSimulatorUI() {
         set('light-store', false);
     };
 
+    let loadFlashAddr = null;
+
     const renderMemory = (state) => {
         memRows.innerHTML = '';
         const rowsToRender = 64;
@@ -174,6 +186,9 @@ export function initSimulatorUI() {
             row.className = 'sim-memory-row';
             if (state.pc.addr === addr) {
                 row.classList.add(state.pc.side === 'left' ? 'pc-left' : 'pc-right');
+            }
+            if (loadFlashAddr === addr) {
+                row.classList.add('load-flash');
             }
 
             const a = document.createElement('span');
@@ -241,15 +256,38 @@ export function initSimulatorUI() {
         renderAll();
     });
 
-    bind('sim-btn-load', () => {
+    bind('sim-btn-load', async (event) => {
         if (machine.state === 'off') {
             return;
         }
         playButtonClick();
-        playTapePunch();
-        playTapeRead();
+        const words = buildSampleProgram();
+        const skipAnimation = event && event.detail > 1;
+        if (skipAnimation) {
+            pushLog('LOAD: skipping tape animation');
+        } else {
+            pushLog('LOAD: punch and feed tape');
+        }
+        await runTapeLoadSequence(words, {
+            skip: skipAnimation,
+            onPunch: playTapePunch,
+            onFeed: playTapeRead
+        });
+
         reset();
-        loadProgram(buildSampleProgram());
+        if (skipAnimation) {
+            loadProgram(words);
+        } else {
+            for (const word of words) {
+                machine.memory[word.addr & 0x3FF] = BigInt(word.value);
+                loadFlashAddr = word.addr & 0x3FF;
+                playMemoryTick();
+                renderAll();
+                await delay(120);
+            }
+            loadFlashAddr = null;
+            playButtonClick();
+        }
         pushLog('Program loaded: Add Two Numbers');
         startIdleHum();
         renderAll();

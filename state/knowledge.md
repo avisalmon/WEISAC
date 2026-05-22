@@ -317,3 +317,57 @@ js/ui.js            |  93 ++++++++++++++++++++++++++
 
 **Lessons for future sprints:**
 - Keep sound triggers centralized in UI event transitions to avoid duplicate playback paths.
+
+## Sprint 9 — Paper Tape
+Plan: Implement the paper tape renderer and animation flow for both module and file:// global runtime paths, wire it into LOAD, and keep the ceremony skippable via double-click. Ensure load sequence includes punch, feed, incremental memory load highlighting, and decoded hover tooltips.
+Files: js/tape.js, js/tape.global.js, js/ui.js, js/ui.global.js, index.html, css/style.css, docs/backlog.md, docs/dashboard.html
+Tests needed: no (perceptual sprint)
+
+### Sprint 9 Post-Mortem
+
+**Files created/modified:**
+- js/tape.js (new, 119 lines)
+- js/tape.global.js (new, 170 lines)
+- js/ui.js (tape sequence + skip handling + staged memory load)
+- js/ui.global.js (file:// fallback tape sequence parity)
+- index.html (tape strip container + tape.global script include)
+- css/style.css (tape visuals + feed animation + load flash style)
+- docs/backlog.md (Sprint 9 statuses updated to [x])
+- docs/dashboard.html (regenerated)
+
+**Verification output:**
+```
+Sprint 9: Paper Tape — PASSED
+  ✓ [9.1] tape.js exists: OK (119 lines)
+  ✓ [9.2] Tape animation: Animation logic found
+```
+
+**Regression verification output:**
+```
+Sprint 7: PASSED
+Sprint 8: PASSED
+```
+
+**Git diff summary (before commit):**
+```
+css/style.css   |  82 ++++++++++++++++++++++++++++++++++
+docs/backlog.md |  16 +++---
+index.html      |   4 ++-
+js/tape.global.js | 170 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+js/tape.js      | 119 ++++++++++++++++++++++++++++++++++++++++++++++
+js/ui.global.js |  47 +++++++++++++++++++-
+js/ui.js        |  46 ++++++++++++++++++-
+7 files changed, 470 insertions(+), 14 deletions(-)
+```
+
+**What went well:**
+- The tape feature now works in both GitHub Pages and file:// contexts through module + global implementations.
+- LOAD sequence now includes punch, feed, incremental memory loading, and skip-on-double-click behavior.
+- No syntax errors were introduced across the touched UI/tape files.
+
+**What needs improvement:**
+- Verifier checks for Sprint 9 are shallow, so manual visual/audio checks remain important.
+- Tape sequencing logic is duplicated across module and global paths and can be generated from one source later.
+
+**Lessons for future sprints:**
+- For serverless compatibility, add a global fallback for every new module-based feature in the same sprint.
