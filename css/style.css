@@ -1265,6 +1265,12 @@ code, pre, .mono {
     color: #9eea9e;
 }
 
+.sim-instr-ref {
+    text-decoration: underline dotted rgba(158, 234, 158, 0.5);
+    text-underline-offset: 2px;
+    cursor: help;
+}
+
 .sim-indicators {
     display: grid;
     grid-template-columns: repeat(8, minmax(0, 1fr));

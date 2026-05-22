@@ -72,6 +72,19 @@ function opcodeLabel(opcode, address) {
     return base.replace('X', String(address));
 }
 
+function instructionReferencesMemory(opcode) {
+    return [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0B, 0x0C, 0x12, 0x13, 0x21].includes(opcode);
+}
+
+function instructionHoverText(opcode, address, state) {
+    if (!instructionReferencesMemory(opcode)) {
+        return '';
+    }
+    const addr = address & 0x3FF;
+    const value = state.memory[addr];
+    return `M(${addr}) = ${toHex40(value)} (${value.toString()})`;
+}
+
 function buildSampleProgram() {
     const pack = (lOp, lAddr, rOp, rAddr) => (
         (BigInt(lOp & 0xFF) << 32n) |
@@ -207,8 +220,18 @@ export function initSimulatorUI() {
             hex.textContent = toHex40(word);
             const leftTxt = document.createElement('span');
             leftTxt.textContent = opcodeLabel(left.opcode, left.address);
+            const leftHover = instructionHoverText(left.opcode, left.address, state);
+            if (leftHover) {
+                leftTxt.title = leftHover;
+                leftTxt.classList.add('sim-instr-ref');
+            }
             const rightTxt = document.createElement('span');
             rightTxt.textContent = opcodeLabel(right.opcode, right.address);
+            const rightHover = instructionHoverText(right.opcode, right.address, state);
+            if (rightHover) {
+                rightTxt.title = rightHover;
+                rightTxt.classList.add('sim-instr-ref');
+            }
 
             row.append(a, hex, leftTxt, rightTxt);
             memRows.appendChild(row);
