@@ -124,12 +124,13 @@ export function initSimulatorUI() {
     }
 
     let uiPollTimer = null;
-    let authenticMode = false;
+    let authenticMode = true;
 
     try {
-        authenticMode = localStorage.getItem('veizac.authenticMode') === '1';
+        const savedAuthentic = localStorage.getItem('veizac.authenticMode');
+        authenticMode = savedAuthentic === null ? true : savedAuthentic === '1';
     } catch {
-        authenticMode = false;
+        authenticMode = true;
     }
 
     const syncMuteButton = () => {
@@ -356,7 +357,8 @@ export function initSimulatorUI() {
         await runTapeLoadSequence(words, {
             skip: skipAnimation,
             onPunch: playTapePunch,
-            onFeed: playTapeRead
+            onFeed: playTapeRead,
+            showHelp: !authenticMode
         });
 
         reset();

@@ -101,12 +101,13 @@
         }
 
         let uiPollTimer = null;
-        let authenticMode = false;
+        let authenticMode = true;
 
         try {
-            authenticMode = localStorage.getItem('veizac.authenticMode') === '1';
+            const savedAuthentic = localStorage.getItem('veizac.authenticMode');
+            authenticMode = savedAuthentic === null ? true : savedAuthentic === '1';
         } catch (e) {
-            authenticMode = false;
+            authenticMode = true;
         }
 
         const syncMuteButton = () => {
@@ -334,7 +335,8 @@
                 await tape.runTapeLoadSequence(words, {
                     skip: skipAnimation,
                     onPunch: audio.playTapePunch,
-                    onFeed: audio.playTapeRead
+                    onFeed: audio.playTapeRead,
+                    showHelp: !authenticMode
                 });
             } else {
                 audio.playTapePunch();

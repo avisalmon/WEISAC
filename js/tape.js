@@ -37,32 +37,48 @@ function halfToBits(halfWord) {
     const bits = [];
     for (let i = 19; i >= 0; i -= 1) {
         bits.push((halfWord >> BigInt(i)) & 1n ? 1 : 0);
-    }
-    return bits;
-}
+function halfToByteRows(halfWord) {
+    const padded = (halfWord & 0xFFFFFn) << 4n;
+    const rows = [];
 
-function decodeHalf(halfWord) {
-    const opcode = Number((halfWord >> 12n) & 0xFFn);
+    for (let row = 0; row < 3; row += 1) {
+        const bits = [];
+        const byteShift = BigInt((2 - row) * 8);
+        const byteValue = Number((padded >> byteShift) & 0xFFn);
+        for (let bit = 7; bit >= 0; bit -= 1) {
+            bits.push((byteValue >> bit) & 1 ? 1 : 0);
+        }
+        rows.push(bits);
+    }
+
+    return rows;
     const address = Number(halfWord & 0xFFFn);
     const base = OPCODE_NAMES[opcode] || `OP 0x${opcode.toString(16).toUpperCase().padStart(2, '0')}`;
-    const text = opcode === 0x00 || opcode === 0x0A || opcode === 0x14 || opcode === 0x15
+function createTapeRow(bits, decodeText, showHelp) {
         ? base
         : base.replace('X', String(address));
-    return `${text} - opcode ${opcode.toString(16).toUpperCase().padStart(2, '0')}, address ${address.toString(16).toUpperCase().padStart(3, '0')}`;
+    if (showHelp) {
+        row.title = `${decodeText} (simplified visualization)`;
+    }
 }
 
 function createTapeRow(bits, decodeText) {
     const row = document.createElement('div');
+        if (showHelp) {
+            cell.title = `${decodeText} (simplified visualization)`;
+        }
     row.className = 'tape-row';
     row.title = `${decodeText} (simplified visualization)`;
 
     bits.forEach((bit) => {
         const cell = document.createElement('span');
         cell.className = bit ? 'tape-bit on' : 'tape-bit off';
-        row.appendChild(cell);
+export function renderTape(words, options = {}) {
     });
 
     return row;
+
+    const showHelp = options.showHelp !== false;
 }
 
 export function renderTape(words) {
@@ -74,19 +90,21 @@ export function renderTape(words) {
 
     words.forEach((entry) => {
         const value = BigInt(entry.value);
-        const leftHalf = (value >> 20n) & 0xFFFFFn;
+        const leftRows = halfToByteRows(leftHalf).map((bits) => createTapeRow(bits, decodeHalf(leftHalf), showHelp));
         const rightHalf = value & 0xFFFFFn;
 
-        const block = document.createElement('div');
+        const rightRows = halfToByteRows(rightHalf).map((bits) => createTapeRow(bits, decodeHalf(rightHalf), showHelp));
         block.className = 'tape-word';
-
+        leftRows.forEach((row) => block.appendChild(row));
+        block.appendChild(sprocket);
+        rightRows.forEach((row) => block.appendChild(row));
         const leftRow = createTapeRow(halfToBits(leftHalf), decodeHalf(leftHalf));
         const sprocket = document.createElement('div');
         sprocket.className = 'tape-sprocket';
         const rightRow = createTapeRow(halfToBits(rightHalf), decodeHalf(rightHalf));
 
-        block.append(leftRow, sprocket, rightRow);
-        tapeContainer.appendChild(block);
+    const { skip = false, onPunch = null, onFeed = null, showHelp = true } = options;
+    renderTape(words, { showHelp });
     });
 }
 

@@ -1275,15 +1275,10 @@ code, pre, .mono {
 }
 
 .simulator-shell.authentic-mode .sim-memory-head,
-.simulator-shell.authentic-mode .sim-memory-row {
-    grid-template-columns: 60px minmax(160px, 1fr);
-}
-
-.simulator-shell.authentic-mode .sim-memory-head span:nth-child(3),
-.simulator-shell.authentic-mode .sim-memory-head span:nth-child(4),
-.simulator-shell.authentic-mode .sim-memory-row span:nth-child(3),
-.simulator-shell.authentic-mode .sim-memory-row span:nth-child(4) {
-    display: none;
+.simulator-shell.authentic-mode .sim-memory-rows,
+.simulator-shell.authentic-mode .sim-log-rows {
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .sim-instr-ref {
@@ -1375,19 +1370,20 @@ code, pre, .mono {
 }
 
 .tape-word {
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.6rem;
 }
 
 .tape-row {
     display: grid;
-    grid-template-columns: repeat(20, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
+    justify-content: start;
 }
 
 .tape-bit {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     display: block;
     border: 1px solid #9d9d9d;
