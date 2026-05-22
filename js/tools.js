@@ -66,11 +66,18 @@ function buildPanelHtml() {
                 <label>Operation
                     <select id="tools-builder-op">${options}</select>
                 </label>
-                <label>Address
+                <label>Operand
                     <input id="tools-builder-addr" type="number" min="0" max="4095" value="100">
                 </label>
             </div>
             <div class="tools-readout" id="tools-builder-readout"></div>
+            <div class="tools-grid tools-target-grid">
+                <label>Target Address
+                    <input id="tools-target-addr" type="number" min="0" max="1023" value="0">
+                </label>
+                <button id="tools-target-up" type="button">&#9650;</button>
+                <button id="tools-target-down" type="button">&#9660;</button>
+            </div>
             <div class="tools-actions">
                 <button id="tools-insert-left" type="button">Insert Left</button>
                 <button id="tools-insert-right" type="button">Insert Right</button>
@@ -116,6 +123,7 @@ export function initToolsUI() {
     const opSelect = mount.querySelector('#tools-builder-op');
     const addrInput = mount.querySelector('#tools-builder-addr');
     const readout = mount.querySelector('#tools-builder-readout');
+    const targetAddrInput = mount.querySelector('#tools-target-addr');
     const editor = mount.querySelector('#tools-editor-source');
     const translatorInput = mount.querySelector('#tools-translator-input');
     const translatorReadout = mount.querySelector('#tools-translator-readout');
@@ -138,17 +146,25 @@ export function initToolsUI() {
     };
 
     const insertIntoEditor = (side) => {
-        const line = updateBuilderReadout();
-        const suffix = side === 'right' ? ' ; preferred right half' : '';
-        const insertText = `${line}${suffix}\n`;
-        const pos = editor.selectionStart;
-        const before = editor.value.slice(0, pos);
-        const after = editor.value.slice(pos);
-        editor.value = before + insertText + after;
-        editor.selectionStart = editor.selectionEnd = pos + insertText.length;
-        setActiveTab(mount, 'editor');
-        editor.focus();
+        const opcode = Number(opSelect.value);
+        const op = BUILDER_OPS.find((item) => item.opcode === opcode) || BUILDER_OPS[0];
+        const rawAddr = Number(addrInput.value || 0);
+        const address = Math.max(0, Math.min(4095, op.needsAddress ? rawAddr : 0));
+        const targetAddr = Math.max(0, Math.min(1023, Number(targetAddrInput.value || 0)));
+        if (!window.VEIZACPanelAPI || !window.VEIZACPanelAPI.pokeHalf) {
+            return;
+        }
+        window.VEIZACPanelAPI.pokeHalf(targetAddr, side, opcode, address);
+        updateBuilderReadout();
     };
+
+    const moveTargetAddr = (delta) => {
+        const cur = Number(targetAddrInput.value || 0);
+        targetAddrInput.value = Math.max(0, Math.min(1023, cur + delta));
+    };
+
+    mount.querySelector('#tools-target-up').addEventListener('click', () => moveTargetAddr(-1));
+    mount.querySelector('#tools-target-down').addEventListener('click', () => moveTargetAddr(1));
 
     const updateTranslator = () => {
         const input = (translatorInput.value || '').trim();

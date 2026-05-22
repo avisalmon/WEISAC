@@ -1206,6 +1206,25 @@ code, pre, .mono {
     gap: 0.45rem;
 }
 
+.tools-target-grid {
+    grid-template-columns: 1fr auto auto;
+    align-items: end;
+}
+
+.tools-target-grid button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    background: #2a3a52;
+    border: 1px solid #5a7a9a;
+    color: #e6edf7;
+    border-radius: 3px;
+}
+
+.tools-target-grid button:hover {
+    background: #3a5070;
+}
+
 .tools-panel label {
     display: grid;
     gap: 0.18rem;

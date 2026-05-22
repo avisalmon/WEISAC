@@ -508,7 +508,20 @@ export function initSimulatorUI() {
 
     window.VEIZACPanelAPI = {
         loadCustomProgram: async (words, label = 'Custom Program') => performLoadSequence(words, label, true),
-        getMachineState: () => getState()
+        getMachineState: () => getState(),
+        pokeHalf: (addr, side, opcode, address) => {
+            const a = addr & 0x3FF;
+            const half = (BigInt(opcode & 0xFF) << 12n) | BigInt(address & 0xFFF);
+            if (side === 'left') {
+                machine.memory[a] = (machine.memory[a] & 0xFFFFFn) | (half << 20n);
+            } else {
+                machine.memory[a] = (machine.memory[a] & 0xFFFFF00000n) | half;
+            }
+            loadFlashAddr = a;
+            renderAll();
+            scrollToAddress(a);
+            setTimeout(() => { loadFlashAddr = null; renderAll(); }, 400);
+        }
     };
 
     document.addEventListener('keydown', (event) => {
