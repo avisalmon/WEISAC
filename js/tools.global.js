@@ -263,8 +263,12 @@
         const insertIntoEditor = (side) => {
             const line = updateBuilderReadout();
             const suffix = side === 'right' ? ' ; preferred right half' : '';
-            editor.value = `${editor.value.trimEnd()}\n${line}${suffix}\n`;
-            setActiveTab(mount, 'editor');
+            const insertText = `${line}${suffix}\n`;
+            const pos = editor.selectionStart;
+            const before = editor.value.slice(0, pos);
+            const after = editor.value.slice(pos);
+            editor.value = before + insertText + after;
+            editor.selectionStart = editor.selectionEnd = pos + insertText.length;
         };
 
         const updateTranslator = () => {
