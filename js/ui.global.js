@@ -270,6 +270,51 @@
             }
         };
 
+        const performLoadSequence = async (words, label, skipAnimation) => {
+            if (sim.machine.state === 'off') {
+                pushLog('LOAD blocked: power is off');
+                return false;
+            }
+
+            if (skipAnimation) {
+                pushLog('LOAD: skipping tape animation');
+            } else {
+                pushLog('LOAD: punch and feed tape');
+            }
+
+            if (tape && typeof tape.runTapeLoadSequence === 'function') {
+                await tape.runTapeLoadSequence(words, {
+                    skip: skipAnimation,
+                    onPunch: audio.playTapePunch,
+                    onFeed: audio.playTapeRead,
+                    showHelp: !authenticMode
+                });
+            } else {
+                audio.playTapePunch();
+                audio.playTapeRead();
+            }
+
+            sim.reset();
+            if (skipAnimation) {
+                sim.loadProgram(words);
+                renderAll();
+            } else {
+                for (const word of words) {
+                    sim.machine.memory[word.addr & 0x3FF] = BigInt(word.value);
+                    loadFlashAddr = word.addr & 0x3FF;
+                    audio.playMemoryTick();
+                    renderAll();
+                    await delay(120);
+                }
+                loadFlashAddr = null;
+                audio.playButtonClick();
+            }
+            pushLog(`Program loaded: ${label}`);
+            audio.startIdleHum();
+            renderAll();
+            return true;
+        };
+
         const jumpToMemoryAddress = () => {
             if (!jumpInput) {
                 return;
@@ -326,40 +371,7 @@
             audio.playButtonClick();
             const words = buildSampleProgram();
             const skipAnimation = event && event.detail > 1;
-            if (skipAnimation) {
-                pushLog('LOAD: skipping tape animation');
-            } else {
-                pushLog('LOAD: punch and feed tape');
-            }
-            if (tape && typeof tape.runTapeLoadSequence === 'function') {
-                await tape.runTapeLoadSequence(words, {
-                    skip: skipAnimation,
-                    onPunch: audio.playTapePunch,
-                    onFeed: audio.playTapeRead,
-                    showHelp: !authenticMode
-                });
-            } else {
-                audio.playTapePunch();
-                audio.playTapeRead();
-            }
-            sim.reset();
-            if (skipAnimation) {
-                sim.loadProgram(words);
-                renderAll();
-            } else {
-                for (const word of words) {
-                    sim.machine.memory[word.addr & 0x3FF] = BigInt(word.value);
-                    loadFlashAddr = word.addr & 0x3FF;
-                    audio.playMemoryTick();
-                    renderAll();
-                    await delay(120);
-                }
-                loadFlashAddr = null;
-                audio.playButtonClick();
-            }
-            pushLog('Program loaded: Add Two Numbers');
-            audio.startIdleHum();
-            renderAll();
+            await performLoadSequence(words, 'Add Two Numbers', skipAnimation);
         });
 
         bind('sim-btn-step', () => {
@@ -463,6 +475,22 @@
                 pushLog(authenticMode ? 'AUTHENTIC MODE ON' : 'AUTHENTIC MODE OFF');
             });
         }
+
+        document.addEventListener('veizac:load-program', async (event) => {
+            const detail = event.detail || {};
+            const words = Array.isArray(detail.words) ? detail.words : null;
+            const label = typeof detail.label === 'string' && detail.label.trim() ? detail.label.trim() : 'Custom Program';
+            if (!words || words.length === 0) {
+                pushLog('LOAD blocked: no program words supplied');
+                return;
+            }
+            await performLoadSequence(words, label, true);
+        });
+
+        window.VEIZACPanelAPI = {
+            loadCustomProgram: async (words, label) => performLoadSequence(words, label || 'Custom Program', true),
+            getMachineState: () => sim.getState()
+        };
 
         document.addEventListener('keydown', (event) => {
             if ((event.key || '').toLowerCase() === 'm') {

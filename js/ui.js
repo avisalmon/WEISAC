@@ -293,6 +293,47 @@ export function initSimulatorUI() {
         }
     };
 
+    const performLoadSequence = async (words, label, skipAnimation = false) => {
+        if (machine.state === 'off') {
+            pushLog('LOAD blocked: power is off');
+            return false;
+        }
+
+        if (skipAnimation) {
+            pushLog('LOAD: skipping tape animation');
+        } else {
+            pushLog('LOAD: punch and feed tape');
+        }
+
+        await runTapeLoadSequence(words, {
+            skip: skipAnimation,
+            onPunch: playTapePunch,
+            onFeed: playTapeRead,
+            showHelp: !authenticMode
+        });
+
+        reset();
+        if (skipAnimation) {
+            loadProgram(words);
+            renderAll();
+        } else {
+            for (const word of words) {
+                machine.memory[word.addr & 0x3FF] = BigInt(word.value);
+                loadFlashAddr = word.addr & 0x3FF;
+                playMemoryTick();
+                renderAll();
+                await delay(120);
+            }
+            loadFlashAddr = null;
+            playButtonClick();
+        }
+
+        pushLog(`Program loaded: ${label}`);
+        startIdleHum();
+        renderAll();
+        return true;
+    };
+
     const jumpToMemoryAddress = () => {
         if (!jumpInput) {
             return;
@@ -349,36 +390,7 @@ export function initSimulatorUI() {
         playButtonClick();
         const words = buildSampleProgram();
         const skipAnimation = event && event.detail > 1;
-        if (skipAnimation) {
-            pushLog('LOAD: skipping tape animation');
-        } else {
-            pushLog('LOAD: punch and feed tape');
-        }
-        await runTapeLoadSequence(words, {
-            skip: skipAnimation,
-            onPunch: playTapePunch,
-            onFeed: playTapeRead,
-            showHelp: !authenticMode
-        });
-
-        reset();
-        if (skipAnimation) {
-            loadProgram(words);
-            renderAll();
-        } else {
-            for (const word of words) {
-                machine.memory[word.addr & 0x3FF] = BigInt(word.value);
-                loadFlashAddr = word.addr & 0x3FF;
-                playMemoryTick();
-                renderAll();
-                await delay(120);
-            }
-            loadFlashAddr = null;
-            playButtonClick();
-        }
-        pushLog('Program loaded: Add Two Numbers');
-        startIdleHum();
-        renderAll();
+        await performLoadSequence(words, 'Add Two Numbers', skipAnimation);
     });
 
     bind('sim-btn-step', () => {
@@ -482,6 +494,22 @@ export function initSimulatorUI() {
             pushLog(authenticMode ? 'AUTHENTIC MODE ON' : 'AUTHENTIC MODE OFF');
         });
     }
+
+    document.addEventListener('veizac:load-program', async (event) => {
+        const detail = event.detail || {};
+        const words = Array.isArray(detail.words) ? detail.words : null;
+        const label = typeof detail.label === 'string' && detail.label.trim() ? detail.label.trim() : 'Custom Program';
+        if (!words || words.length === 0) {
+            pushLog('LOAD blocked: no program words supplied');
+            return;
+        }
+        await performLoadSequence(words, label, true);
+    });
+
+    window.VEIZACPanelAPI = {
+        loadCustomProgram: async (words, label = 'Custom Program') => performLoadSequence(words, label, true),
+        getMachineState: () => getState()
+    };
 
     document.addEventListener('keydown', (event) => {
         if ((event.key || '').toLowerCase() === 'm') {

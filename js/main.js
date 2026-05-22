@@ -145,10 +145,22 @@ const simulatorMount = document.getElementById('sim-ui-mount');
 if (simulatorMount) {
     if (window.VEIZACUI && typeof window.VEIZACUI.initSimulatorUI === 'function') {
         window.VEIZACUI.initSimulatorUI();
+        if (window.VEIZACTools && typeof window.VEIZACTools.initToolsUI === 'function') {
+            window.VEIZACTools.initToolsUI();
+        }
     } else {
         import('./ui.js')
             .then(({ initSimulatorUI }) => {
                 initSimulatorUI();
+                if (window.VEIZACTools && typeof window.VEIZACTools.initToolsUI === 'function') {
+                    window.VEIZACTools.initToolsUI();
+                } else {
+                    import('./tools.js')
+                        .then(({ initToolsUI }) => initToolsUI())
+                        .catch(() => {
+                            // Tools overlay is optional during bootstrap failures.
+                        });
+                }
             })
             .catch(() => {
                 simulatorMount.innerHTML = [

@@ -371,3 +371,50 @@ js/ui.js        |  46 ++++++++++++++++++-
 
 **Lessons for future sprints:**
 - For serverless compatibility, add a global fallback for every new module-based feature in the same sprint.
+
+## Sprint 10 — Modern Tools Overlay
+Plan: Implement a real tools overlay with Instruction Builder, Binary Translator, and Assembly Editor, then wire it to load custom programs into the simulator for both module and file:// runtime paths.
+Files: js/tools.js, js/tools.global.js, tests/sprint-10.test.html, index.html, js/main.js, js/ui.js, js/ui.global.js, css/style.css, docs/backlog.md, docs/dashboard.html
+Tests needed: yes
+
+### Sprint 10 Post-Mortem
+
+**Files created/modified:**
+- js/tools.js (new, 199 lines)
+- js/tools.global.js (new, 425 lines)
+- tests/sprint-10.test.html (new, 72 lines)
+- index.html (tools overlay mount + global tools script)
+- js/main.js (tools bootstrap in global-first + module fallback mode)
+- js/ui.js (program-loading API/event bridge)
+- js/ui.global.js (program-loading API/event bridge for file mode)
+- css/style.css (tools overlay styling + authentic-mode behavior refinements)
+- docs/backlog.md (Sprint 10 statuses updated for 10.1-10.4)
+- docs/dashboard.html (regenerated)
+
+**Verification output:**
+```
+Sprint 10: Tools — PASSED
+  ✓ [10.1] tools.js exists: OK (199 lines)
+  ✓ [10.2] Instruction Builder: Builder found
+  ✓ [10.4] Assembly Editor: Editor found
+  ✓ [10.T] Sprint 10 tests exist: OK (72 lines)
+```
+
+**Regression verification output:**
+```
+Sprint 7: PASSED
+Sprint 8: PASSED
+Sprint 9: PASSED
+```
+
+**What went well:**
+- Users can now assemble and load custom programs from the UI instead of demo-only loading.
+- Tools overlay works in both GitHub Pages and direct file:// opening.
+- Authentic Mode remains intact and can hide modern tools while preserving period workflow.
+
+**What needs improvement:**
+- Global fallback assembler is intentionally limited and should be upgraded for labels/jump-side smart resolution parity.
+- Word Inspector and dedicated execution-trace tool remain open items.
+
+**Lessons for future sprints:**
+- Build simulator/tool integration through event/API bridges so UI features remain decoupled and testable.

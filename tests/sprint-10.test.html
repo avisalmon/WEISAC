@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint 10 Tools Tests</title>
+    <style>
+        body { font-family: ui-monospace, Consolas, monospace; background: #0f1218; color: #d8e6ff; padding: 1rem; }
+        .ok { color: #7fe27f; }
+        .bad { color: #ff8c8c; }
+        #results { white-space: pre-wrap; border: 1px solid #334; padding: 0.75rem; border-radius: 8px; background: #121824; }
+    </style>
+</head>
+<body>
+    <h1>Sprint 10 - Modern Tools Overlay Tests</h1>
+    <p>Checks tools toolbar chrome, instruction builder, and assembly editor wiring.</p>
+
+    <div id="sim-tools-overlay"></div>
+
+    <div id="results"></div>
+
+    <script type="module">
+        import { initToolsUI } from '../js/tools.js';
+
+        const out = document.getElementById('results');
+        let passes = 0;
+        let fails = 0;
+
+        function log(line, ok) {
+            const div = document.createElement('div');
+            div.className = ok ? 'ok' : 'bad';
+            div.textContent = line;
+            out.appendChild(div);
+        }
+
+        function test(name, fn) {
+            try {
+                fn();
+                passes += 1;
+                log(`PASS: ${name}`, true);
+            } catch (err) {
+                fails += 1;
+                log(`FAIL: ${name} - ${err.message}`, false);
+            }
+        }
+
+        function assert(condition, message) {
+            if (!condition) {
+                throw new Error(message);
+            }
+        }
+
+        initToolsUI();
+
+        test('Tools toolbar exists', () => {
+            assert(document.querySelector('.tools-toolbar'), 'missing tools toolbar');
+        });
+
+        test('Instruction Builder panel exists', () => {
+            assert(document.querySelector('[data-tools-panel="builder"]'), 'builder panel missing');
+            assert(document.getElementById('tools-builder-op'), 'builder operation select missing');
+        });
+
+        test('Binary Translator panel exists', () => {
+            assert(document.querySelector('[data-tools-panel="translator"]'), 'translator panel missing');
+            assert(document.getElementById('tools-translator-input'), 'translator input missing');
+        });
+
+        test('Assembly Editor panel exists', () => {
+            assert(document.querySelector('[data-tools-panel="editor"]'), 'editor panel missing');
+            assert(document.getElementById('tools-editor-source'), 'editor textarea missing');
+        });
+
+        test('Builder readout updates', () => {
+            const readout = document.getElementById('tools-builder-readout');
+            assert(readout && readout.textContent.length > 0, 'builder readout empty');
+        });
+
+        const summary = document.createElement('div');
+        summary.style.marginTop = '0.75rem';
+        summary.textContent = `Summary: ${passes} passed, ${fails} failed`;
+        summary.className = fails === 0 ? 'ok' : 'bad';
+        out.appendChild(summary);
+    </script>
+</body>
+</html>

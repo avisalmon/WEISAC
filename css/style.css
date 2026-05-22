@@ -1157,6 +1157,105 @@ code, pre, .mono {
     align-items: start;
 }
 
+.sim-tools-overlay {
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    background: rgba(210, 222, 240, 0.12);
+    backdrop-filter: blur(6px);
+    padding: 0.55rem;
+}
+
+.sim-tools-overlay.collapsed .tools-panel {
+    display: none;
+}
+
+.tools-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+}
+
+.tools-toolbar button {
+    border: 1px solid #9eb0c7;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #ecf3fc, #c9d8ea);
+    color: #18232e;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.55rem;
+    cursor: pointer;
+}
+
+.tools-tab.active {
+    background: linear-gradient(180deg, #83a6cd, #668cb8);
+    color: #fff;
+}
+
+.tools-panel {
+    display: none;
+}
+
+.tools-panel.active {
+    display: block;
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+}
+
+.tools-panel label {
+    display: grid;
+    gap: 0.18rem;
+    font-size: 0.75rem;
+    color: #e6edf7;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tools-panel input,
+.tools-panel select,
+.tools-panel textarea {
+    border: 1px solid #7b8ea5;
+    border-radius: 6px;
+    background: #14181d;
+    color: #d8f4d8;
+    font-family: var(--color-mono);
+    font-size: 0.78rem;
+    padding: 0.35rem 0.45rem;
+}
+
+.tools-actions {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.45rem;
+}
+
+.tools-actions button {
+    border: 1px solid #8ea0b6;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #f1f7ff, #cedaeb);
+    color: #152331;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.3rem 0.55rem;
+    cursor: pointer;
+}
+
+.tools-readout {
+    margin-top: 0.45rem;
+    min-height: 2.1em;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    background: rgba(10, 16, 24, 0.5);
+    color: #d9e8fb;
+    font-family: var(--color-mono);
+    font-size: 0.76rem;
+    padding: 0.35rem 0.45rem;
+}
+
 .sim-registers,
 .sim-memory,
 .sim-tape,
@@ -1271,6 +1370,10 @@ code, pre, .mono {
 }
 
 .simulator-shell.authentic-mode .sim-memory-tools {
+    display: none;
+}
+
+.simulator-shell.authentic-mode .sim-tools-overlay {
     display: none;
 }
 
