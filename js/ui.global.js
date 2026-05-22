@@ -188,6 +188,7 @@
         };
 
         let loadFlashAddr = null;
+        let builderTargetAddr = null;
 
         const applyAuthenticMode = () => {
             if (simulatorShell) {
@@ -222,6 +223,15 @@
                 if (loadFlashAddr === addr) {
                     row.classList.add('load-flash');
                 }
+                if (builderTargetAddr === addr) {
+                    row.classList.add('builder-target');
+                }
+
+                row.addEventListener('click', () => {
+                    builderTargetAddr = addr;
+                    renderMemory(sim.getState());
+                    document.dispatchEvent(new CustomEvent('veizac:builder-target', { detail: addr }));
+                });
 
                 const a = document.createElement('span');
                 a.textContent = String(addr).padStart(3, '0');
@@ -490,6 +500,14 @@
         window.VEIZACPanelAPI = {
             loadCustomProgram: async (words, label) => performLoadSequence(words, label || 'Custom Program', true),
             getMachineState: () => sim.getState(),
+            setBuilderTarget: (addr) => {
+                builderTargetAddr = addr === null ? null : (addr & 0x3FF);
+                renderAll();
+                if (builderTargetAddr !== null) {
+                    scrollToAddress(builderTargetAddr);
+                }
+            },
+            getBuilderTarget: () => builderTargetAddr,
             pokeHalf: (addr, side, opcode, address) => {
                 const a = addr & 0x3FF;
                 const half = (BigInt(opcode & 0xFF) << 12n) | BigInt(address & 0xFFF);

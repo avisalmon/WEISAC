@@ -268,6 +268,13 @@
             return mnemonic;
         };
 
+        const syncTarget = (addr) => {
+            targetAddrInput.value = Math.max(0, Math.min(1023, addr));
+            if (window.VEIZACPanelAPI && window.VEIZACPanelAPI.setBuilderTarget) {
+                window.VEIZACPanelAPI.setBuilderTarget(addr);
+            }
+        };
+
         const insertIntoEditor = (side) => {
             const opcode = Number(opSelect.value);
             const rawAddr = Number(addrInput.value || 0);
@@ -279,15 +286,30 @@
             }
             window.VEIZACPanelAPI.pokeHalf(targetAddr, side, opcode, address);
             updateBuilderReadout();
+            if (side === 'right') {
+                syncTarget(targetAddr + 1);
+            } else {
+                syncTarget(targetAddr);
+            }
         };
 
         const moveTargetAddr = (delta) => {
             const cur = Number(targetAddrInput.value || 0);
-            targetAddrInput.value = Math.max(0, Math.min(1023, cur + delta));
+            syncTarget(cur + delta);
         };
+
+        document.addEventListener('veizac:builder-target', (event) => {
+            targetAddrInput.value = event.detail;
+        });
 
         mount.querySelector('#tools-target-up').addEventListener('click', () => moveTargetAddr(-1));
         mount.querySelector('#tools-target-down').addEventListener('click', () => moveTargetAddr(1));
+        targetAddrInput.addEventListener('input', () => {
+            const val = Math.max(0, Math.min(1023, Number(targetAddrInput.value || 0)));
+            if (window.VEIZACPanelAPI && window.VEIZACPanelAPI.setBuilderTarget) {
+                window.VEIZACPanelAPI.setBuilderTarget(val);
+            }
+        });
 
         const updateTranslator = () => {
             const input = (translatorInput.value || '').trim();
