@@ -138,6 +138,13 @@ export function initSimulatorUI() {
         }
     };
 
+    const scrollToAddress = (addr) => {
+        const target = memRows.querySelector(`[data-addr="${addr}"]`);
+        if (target) {
+            target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+    };
+
     const renderRegisters = (state) => {
         const ac = document.getElementById('sim-reg-ac');
         const mq = document.getElementById('sim-reg-mq');
@@ -175,7 +182,7 @@ export function initSimulatorUI() {
 
     const renderMemory = (state) => {
         memRows.innerHTML = '';
-        const rowsToRender = 64;
+        const rowsToRender = 128;
 
         for (let addr = 0; addr < rowsToRender; addr += 1) {
             const word = state.memory[addr];
@@ -184,6 +191,7 @@ export function initSimulatorUI() {
 
             const row = document.createElement('div');
             row.className = 'sim-memory-row';
+            row.dataset.addr = String(addr);
             if (state.pc.addr === addr) {
                 row.classList.add(state.pc.side === 'left' ? 'pc-left' : 'pc-right');
             }
@@ -277,12 +285,15 @@ export function initSimulatorUI() {
         reset();
         if (skipAnimation) {
             loadProgram(words);
+            renderAll();
+            scrollToAddress(words[0].addr);
         } else {
             for (const word of words) {
                 machine.memory[word.addr & 0x3FF] = BigInt(word.value);
                 loadFlashAddr = word.addr & 0x3FF;
                 playMemoryTick();
                 renderAll();
+                scrollToAddress(loadFlashAddr);
                 await delay(120);
             }
             loadFlashAddr = null;
