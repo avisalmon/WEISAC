@@ -1172,6 +1172,37 @@ code, pre, .mono {
     font-size: 0.92rem;
     color: #f0d97b;
 }
+    .sim-memory-tools {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        margin-bottom: 0.45rem;
+    }
+    .sim-memory-tools label {
+        font-size: 0.72rem;
+        color: #d7d7d7;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .sim-memory-tools input {
+        width: 92px;
+        padding: 0.18rem 0.35rem;
+        border: 1px solid #767676;
+        border-radius: 5px;
+        background: #151515;
+        color: #9eea9e;
+        font-family: var(--color-mono);
+        font-size: 0.78rem;
+    }
+    .sim-memory-tools button {
+        border: 1px solid #9a9a9a;
+        border-radius: 5px;
+        background: linear-gradient(180deg, #f7f7f7, #cfcfcf);
+        color: #111;
+        font-weight: 700;
+        padding: 0.15rem 0.5rem;
+        cursor: pointer;
+    }
 
 .sim-register-row {
     display: grid;

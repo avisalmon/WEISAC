@@ -688,6 +688,11 @@
 
                     <div class="sim-memory" aria-label="Memory">
                         <h3>Memory</h3>
+                        <div class="sim-memory-tools" aria-label="Memory jump">
+                            <label for="sim-memory-jump">Jump</label>
+                            <input id="sim-memory-jump" type="number" min="0" max="1023" step="1" placeholder="addr">
+                            <button id="sim-memory-jump-btn" type="button">GO</button>
+                        </div>
                         <div class="sim-memory-head">
                             <span>Addr</span>
                             <span>Hex (40-bit)</span>

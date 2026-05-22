@@ -97,6 +97,8 @@ export function initSimulatorUI() {
     const memRows = document.getElementById('sim-memory-rows');
     const logRows = document.getElementById('sim-log-rows');
     const tapeStrip = document.getElementById('sim-tape-strip');
+    const jumpInput = document.getElementById('sim-memory-jump');
+    const jumpButton = document.getElementById('sim-memory-jump-btn');
 
     if (!memRows || !logRows) {
         return;
@@ -236,6 +238,27 @@ export function initSimulatorUI() {
         }
     };
 
+    const jumpToMemoryAddress = () => {
+        if (!jumpInput) {
+            return;
+        }
+        const parsed = Number.parseInt(jumpInput.value, 10);
+        if (Number.isNaN(parsed)) {
+            pushLog('Jump: enter address 0-1023');
+            return;
+        }
+        const addr = Math.max(0, Math.min(1023, parsed));
+        jumpInput.value = String(addr);
+        loadFlashAddr = addr;
+        renderAll();
+        scrollToAddress(addr);
+        pushLog(`Jumped to memory ${String(addr).padStart(3, '0')}`);
+        setTimeout(() => {
+            loadFlashAddr = null;
+            renderAll();
+        }, 650);
+    };
+
     const bind = (id, fn) => {
         const el = document.getElementById(id);
         if (el) {
@@ -368,6 +391,17 @@ export function initSimulatorUI() {
         pushLog('RESET');
         renderAll();
     });
+
+    if (jumpButton) {
+        jumpButton.addEventListener('click', jumpToMemoryAddress);
+    }
+    if (jumpInput) {
+        jumpInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                jumpToMemoryAddress();
+            }
+        });
+    }
 
     const volumeSlider = document.getElementById('sim-audio-volume');
     if (volumeSlider) {
