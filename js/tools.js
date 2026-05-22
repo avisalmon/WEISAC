@@ -6,7 +6,8 @@ const BUILDER_OPS = [
     { mnemonic: 'SUB M(X)', opcode: 0x06, needsAddress: true },
     { mnemonic: 'STOR M(X)', opcode: 0x21, needsAddress: true },
     { mnemonic: 'LOAD MQ', opcode: 0x0A, needsAddress: false },
-    { mnemonic: 'HALT', opcode: 0x00, needsAddress: false }
+    { mnemonic: 'HALT', opcode: 0x00, needsAddress: false },
+    { mnemonic: 'DATA', opcode: -1, needsAddress: false, isData: true }
 ];
 
 const SAMPLE_SOURCE = [
@@ -66,7 +67,7 @@ function buildPanelHtml() {
                 <label>Operation
                     <select id="tools-builder-op">${options}</select>
                 </label>
-                <label>Operand
+                <label id="tools-operand-label">Operand
                     <input id="tools-builder-addr" type="number" min="0" max="4095" value="100">
                 </label>
             </div>
@@ -131,9 +132,24 @@ export function initToolsUI() {
 
     editor.value = SAMPLE_SOURCE;
 
+    const operandLabel = mount.querySelector('#tools-operand-label');
+
     const updateBuilderReadout = () => {
         const opcode = Number(opSelect.value);
         const op = BUILDER_OPS.find((item) => item.opcode === opcode) || BUILDER_OPS[0];
+        const isData = op.isData;
+
+        if (isData) {
+            operandLabel.firstChild.textContent = 'Value';
+            addrInput.max = '1099511627775';
+            const val = BigInt(addrInput.value || 0) & 0xFFFFFFFFFFn;
+            const hex = `0x${val.toString(16).toUpperCase().padStart(10, '0')}`;
+            readout.textContent = `DATA ${addrInput.value} | hex ${hex}`;
+            return `DATA ${addrInput.value}`;
+        }
+
+        operandLabel.firstChild.textContent = 'Operand';
+        addrInput.max = '4095';
         const rawAddr = Number(addrInput.value || 0);
         const address = Math.max(0, Math.min(4095, rawAddr));
         const encoded = encodeHalf(opcode, op.needsAddress ? address : 0);
@@ -155,10 +171,22 @@ export function initToolsUI() {
     const insertIntoEditor = (side) => {
         const opcode = Number(opSelect.value);
         const op = BUILDER_OPS.find((item) => item.opcode === opcode) || BUILDER_OPS[0];
+        const targetAddr = Math.max(0, Math.min(1023, Number(targetAddrInput.value || 0)));
+        if (!window.VEIZACPanelAPI) {
+            return;
+        }
+        if (op.isData) {
+            const val = BigInt(addrInput.value || 0) & 0xFFFFFFFFFFn;
+            if (window.VEIZACPanelAPI.pokeWord) {
+                window.VEIZACPanelAPI.pokeWord(targetAddr, val);
+            }
+            updateBuilderReadout();
+            syncTarget(targetAddr + 1);
+            return;
+        }
         const rawAddr = Number(addrInput.value || 0);
         const address = Math.max(0, Math.min(4095, op.needsAddress ? rawAddr : 0));
-        const targetAddr = Math.max(0, Math.min(1023, Number(targetAddrInput.value || 0)));
-        if (!window.VEIZACPanelAPI || !window.VEIZACPanelAPI.pokeHalf) {
+        if (!window.VEIZACPanelAPI.pokeHalf) {
             return;
         }
         window.VEIZACPanelAPI.pokeHalf(targetAddr, side, opcode, address);

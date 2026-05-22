@@ -33,14 +33,9 @@ export function setTapeContainer(element) {
     tapeContainer = element;
 }
 
-function halfToBits(halfWord) {
-    const bits = [];
-    for (let i = 19; i >= 0; i -= 1) {
-        bits.push((halfWord >> BigInt(i)) & 1n ? 1 : 0);
 function halfToByteRows(halfWord) {
     const padded = (halfWord & 0xFFFFFn) << 4n;
     const rows = [];
-
     for (let row = 0; row < 3; row += 1) {
         const bits = [];
         const byteShift = BigInt((2 - row) * 8);
@@ -50,111 +45,110 @@ function halfToByteRows(halfWord) {
         }
         rows.push(bits);
     }
-
     return rows;
-    const address = Number(halfWord & 0xFFFn);
-    const base = OPCODE_NAMES[opcode] || `OP 0x${opcode.toString(16).toUpperCase().padStart(2, '0')}`;
-function createTapeRow(bits, decodeText, showHelp) {
-        ? base
-        : base.replace('X', String(address));
-    if (showHelp) {
-        row.title = `${decodeText} (simplified visualization)`;
-    }
 }
 
-function createTapeRow(bits, decodeText) {
-    const row = document.createElement('div');
-        if (showHelp) {
-            cell.title = `${decodeText} (simplified visualization)`;
-        }
-    row.className = 'tape-row';
-    row.title = `${decodeText} (simplified visualization)`;
+function decodeHalf(halfWord) {
+    const opcode = Number((halfWord >> 12n) & 0xFFn);
+    const address = Number(halfWord & 0xFFFn);
+    const base = OPCODE_NAMES[opcode] || `OP 0x${opcode.toString(16).toUpperCase().padStart(2, '0')}`;
+    return (opcode === 0x00 || opcode === 0x0A || opcode === 0x14 || opcode === 0x15)
+        ? base
+        : base.replace('X', String(address));
+}
 
+function createTapeRow(bits, decodeText, showHelp) {
+    const row = document.createElement('div');
+    row.className = 'tape-row';
+    if (showHelp) {
+        row.title = `${decodeText}`;
+    }
     bits.forEach((bit) => {
         const cell = document.createElement('span');
         cell.className = bit ? 'tape-bit on' : 'tape-bit off';
-export function renderTape(words, options = {}) {
+        row.appendChild(cell);
     });
-
     return row;
-
-    const showHelp = options.showHelp !== false;
 }
 
-export function renderTape(words) {
+export function renderTape(words, options = {}) {
     if (!tapeContainer) {
         return;
     }
-
+    const showHelp = options.showHelp !== false;
     tapeContainer.innerHTML = '';
 
     words.forEach((entry) => {
         const value = BigInt(entry.value);
-        const leftRows = halfToByteRows(leftHalf).map((bits) => createTapeRow(bits, decodeHalf(leftHalf), showHelp));
+        const leftHalf = (value >> 20n) & 0xFFFFFn;
         const rightHalf = value & 0xFFFFFn;
 
-        const rightRows = halfToByteRows(rightHalf).map((bits) => createTapeRow(bits, decodeHalf(rightHalf), showHelp));
+        const block = document.createElement('div');
         block.className = 'tape-word';
-        leftRows.forEach((row) => block.appendChild(row));
-        block.appendChild(sprocket);
-        rightRows.forEach((row) => block.appendChild(row));
-        const leftRow = createTapeRow(halfToBits(leftHalf), decodeHalf(leftHalf));
+        block.dataset.addr = String(entry.addr);
+
+        const leftRows = halfToByteRows(leftHalf);
+        leftRows.forEach((bits) => block.appendChild(createTapeRow(bits, decodeHalf(leftHalf), showHelp)));
+
         const sprocket = document.createElement('div');
         sprocket.className = 'tape-sprocket';
-        const rightRow = createTapeRow(halfToBits(rightHalf), decodeHalf(rightHalf));
+        block.appendChild(sprocket);
 
-    const { skip = false, onPunch = null, onFeed = null, showHelp = true } = options;
-    renderTape(words, { showHelp });
+        const rightRows = halfToByteRows(rightHalf);
+        rightRows.forEach((bits) => block.appendChild(createTapeRow(bits, decodeHalf(rightHalf), showHelp)));
+
+        tapeContainer.appendChild(block);
     });
 }
 
-export async function animatePunch(onPulse) {
-    if (!tapeContainer) {
-        return;
-    }
-
-    const holes = Array.from(tapeContainer.querySelectorAll('.tape-bit.on'));
-    if (holes.length === 0) {
-        return;
-    }
-
-    const stepDelay = Math.max(6, Math.floor(1000 / holes.length));
-
-    for (let i = 0; i < holes.length; i += 1) {
-        holes[i].classList.add('punched');
-        if (onPulse && i % 3 === 0) {
-            onPulse();
+export function renderTapeFromMemory(memory) {
+    let lastNonZero = -1;
+    for (let i = memory.length - 1; i >= 0; i -= 1) {
+        if (memory[i] !== 0n) {
+            lastNonZero = i;
+            break;
         }
-        await delay(stepDelay);
     }
+    if (lastNonZero < 0) {
+        if (tapeContainer) {
+            tapeContainer.innerHTML = '';
+        }
+        return;
+    }
+    const words = [];
+    for (let addr = 0; addr <= lastNonZero; addr += 1) {
+        words.push({ addr, value: memory[addr] });
+    }
+    renderTape(words, { showHelp: true });
 }
 
-export async function animateFeed(onPulse) {
+export async function animateLoad(words, onWord) {
     if (!tapeContainer) {
         return;
     }
-
-    tapeContainer.classList.add('feeding');
-    const pulses = 10;
-    for (let i = 0; i < pulses; i += 1) {
-        if (onPulse) {
-            onPulse();
+    const blocks = tapeContainer.querySelectorAll('.tape-word');
+    for (let i = 0; i < blocks.length; i += 1) {
+        blocks[i].classList.add('tape-consumed');
+        if (onWord) {
+            onWord(words[i], i);
         }
-        await delay(90);
+        await delay(50);
     }
-    tapeContainer.classList.remove('feeding');
 }
 
 export async function runTapeLoadSequence(words, options = {}) {
-    const { skip = false, onPunch = null, onFeed = null } = options;
-    renderTape(words);
+    const { skip = false, onPunch = null, onFeed = null, showHelp = true } = options;
+    renderTape(words, { showHelp });
 
     if (skip) {
-        const holes = tapeContainer ? tapeContainer.querySelectorAll('.tape-bit.on') : [];
-        holes.forEach((hole) => hole.classList.add('punched'));
         return;
     }
 
-    await animatePunch(onPunch);
-    await animateFeed(onFeed);
+    if (onPunch) {
+        onPunch();
+    }
+    await animateLoad(words, null);
+    if (onFeed) {
+        onFeed();
+    }
 }

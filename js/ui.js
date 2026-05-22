@@ -28,7 +28,7 @@ import {
     playButtonClick,
     playMemoryTick
 } from './audio.js';
-import { setTapeContainer, runTapeLoadSequence } from './tape.js';
+import { setTapeContainer, runTapeLoadSequence, renderTapeFromMemory } from './tape.js';
 
 function toHex40(value) {
     const masked = value & 0xFFFFFFFFFFn;
@@ -538,6 +538,16 @@ export function initSimulatorUI() {
             loadFlashAddr = a;
             renderAll();
             scrollToAddress(a);
+            renderTapeFromMemory(machine.memory);
+            setTimeout(() => { loadFlashAddr = null; renderAll(); }, 400);
+        },
+        pokeWord: (addr, value) => {
+            const a = addr & 0x3FF;
+            machine.memory[a] = BigInt(value) & 0xFFFFFFFFFFn;
+            loadFlashAddr = a;
+            renderAll();
+            scrollToAddress(a);
+            renderTapeFromMemory(machine.memory);
             setTimeout(() => { loadFlashAddr = null; renderAll(); }, 400);
         }
     };

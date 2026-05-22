@@ -166,9 +166,31 @@
         await animateFeed(onFeed);
     }
 
+    function renderTapeFromMemory(memory) {
+        let lastNonZero = -1;
+        for (let i = memory.length - 1; i >= 0; i -= 1) {
+            if (memory[i] !== 0n) {
+                lastNonZero = i;
+                break;
+            }
+        }
+        if (lastNonZero < 0) {
+            if (tapeContainer) {
+                tapeContainer.innerHTML = '';
+            }
+            return;
+        }
+        const words = [];
+        for (let addr = 0; addr <= lastNonZero; addr += 1) {
+            words.push({ addr, value: memory[addr] });
+        }
+        renderTape(words, { showHelp: true });
+    }
+
     window.VEIZACTape = {
         setTapeContainer,
         renderTape,
+        renderTapeFromMemory,
         animatePunch,
         animateFeed,
         runTapeLoadSequence

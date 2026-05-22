@@ -519,6 +519,16 @@
                 loadFlashAddr = a;
                 renderAll();
                 scrollToAddress(a);
+                if (tape && tape.renderTapeFromMemory) { tape.renderTapeFromMemory(sim.machine.memory); }
+                setTimeout(() => { loadFlashAddr = null; renderAll(); }, 400);
+            },
+            pokeWord: (addr, value) => {
+                const a = addr & 0x3FF;
+                sim.machine.memory[a] = BigInt(value) & 0xFFFFFFFFFFn;
+                loadFlashAddr = a;
+                renderAll();
+                scrollToAddress(a);
+                if (tape && tape.renderTapeFromMemory) { tape.renderTapeFromMemory(sim.machine.memory); }
                 setTimeout(() => { loadFlashAddr = null; renderAll(); }, 400);
             }
         };

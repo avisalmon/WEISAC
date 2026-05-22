@@ -1503,6 +1503,12 @@ code, pre, .mono {
 
 .tape-word {
     margin-bottom: 0.6rem;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.tape-word.tape-consumed {
+    opacity: 0.2;
+    transform: translateY(-4px);
 }
 
 .tape-row {
