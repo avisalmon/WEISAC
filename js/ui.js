@@ -332,14 +332,12 @@ export function initSimulatorUI() {
         if (skipAnimation) {
             loadProgram(words);
             renderAll();
-            scrollToAddress(words[0].addr);
         } else {
             for (const word of words) {
                 machine.memory[word.addr & 0x3FF] = BigInt(word.value);
                 loadFlashAddr = word.addr & 0x3FF;
                 playMemoryTick();
                 renderAll();
-                scrollToAddress(loadFlashAddr);
                 await delay(120);
             }
             loadFlashAddr = null;
