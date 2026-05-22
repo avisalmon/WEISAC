@@ -143,11 +143,18 @@ if (trainingContainer) {
 
 const simulatorMount = document.getElementById('sim-ui-mount');
 if (simulatorMount) {
-    import('./ui.js')
-        .then(({ initSimulatorUI }) => {
-            initSimulatorUI();
-        })
-        .catch(() => {
-            simulatorMount.textContent = 'Simulator module could not be loaded in this browser context.';
-        });
+    if (window.VEIZACUI && typeof window.VEIZACUI.initSimulatorUI === 'function') {
+        window.VEIZACUI.initSimulatorUI();
+    } else {
+        import('./ui.js')
+            .then(({ initSimulatorUI }) => {
+                initSimulatorUI();
+            })
+            .catch(() => {
+                simulatorMount.innerHTML = [
+                    'Simulator module could not be loaded in this browser context.',
+                    'Global and module simulator loaders are both unavailable.'
+                ].join('<br>');
+            });
+    }
 }
