@@ -67,7 +67,7 @@
         const audio = window.VEIZACAudio;
         const tape = window.VEIZACTape;
 
-        if (!sim || !audio || !tape) {
+        if (!sim || !audio) {
             return;
         }
 
@@ -79,7 +79,7 @@
             return;
         }
 
-        if (tapeStrip) {
+        if (tapeStrip && tape && typeof tape.setTapeContainer === 'function') {
             tape.setTapeContainer(tapeStrip);
         }
 
@@ -245,11 +245,16 @@
             } else {
                 pushLog('LOAD: punch and feed tape');
             }
-            await tape.runTapeLoadSequence(words, {
-                skip: skipAnimation,
-                onPunch: audio.playTapePunch,
-                onFeed: audio.playTapeRead
-            });
+            if (tape && typeof tape.runTapeLoadSequence === 'function') {
+                await tape.runTapeLoadSequence(words, {
+                    skip: skipAnimation,
+                    onPunch: audio.playTapePunch,
+                    onFeed: audio.playTapeRead
+                });
+            } else {
+                audio.playTapePunch();
+                audio.playTapeRead();
+            }
             sim.reset();
             if (skipAnimation) {
                 sim.loadProgram(words);
