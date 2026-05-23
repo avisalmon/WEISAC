@@ -44,14 +44,14 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 2.1 | English narrative | Full story rendered from history.md: Birth of WEIZAC, Princeton origins, advisory committee, Estrin arrival, improvised construction, first calculation, specs, scientific achievements, legacy | [history.md](history.md) §English, [spec.md](spec.md) §Tab: History | `[x]` |
-| 2.2 | Hebrew narrative | Full Hebrew section rendered below English (or as a toggle). RTL text direction correct. | [history.md](history.md) §Hebrew | `[x]` |
-| 2.3 | Timeline visualization | Visual timeline covering 1945-2006: key dates (1947 committee, 1952 Estrin arrives, 1955 first calc, 1958 full operation, 1963 retired, 2006 IEEE milestone) | [spec.md](spec.md) §Tab: History, [history.md](history.md) §Timeline | `[x]` |
-| 2.4 | Key people section | Names, roles, photos where available: Pekeris, von Neumann, Einstein, Gerald Estrin, Thelma Estrin, Micha Kedem, Zvi Riesel, Phillip Rabinowitz, Hans Jarosch | [history.md](history.md) §English (people subsections) | `[x]` |
-| 2.5 | Technical specs table | Rendered table: word size, instruction format, registers, I/O, memory evolution (1024→4096→12288 words) | [history.md](history.md) §Technical Specifications | `[x]` |
-| 2.6 | Photos with captions | Historical images: machine room, Estrins, paper tape, Ziskind Building basement. Responsive sizing. | [spec.md](spec.md) §Tab: History | `[x]` |
-| 2.7 | References | All 13 references from history.md rendered as footnotes or endnotes with working links | [history.md](history.md) §References | `[x]` |
-| 2.8 | Scientific achievements | Tidal equations story, quantum mechanics calculations, impact on Israel's tech industry | [history.md](history.md) §Scientific Achievements, §Legacy | `[x]` |
+| 2.1 | English narrative | Full story rendered from history.md: Birth of WEIZAC, Princeton origins, advisory committee, Estrin arrival, improvised construction, first calculation, specs, scientific achievements, legacy | [history.md](history.md) §English, [spec.md](spec.md) §Tab: History | `[ ]` |
+| 2.2 | Hebrew narrative | Full Hebrew section rendered below English (or as a toggle). RTL text direction correct. | [history.md](history.md) §Hebrew | `[ ]` |
+| 2.3 | Timeline visualization | Visual timeline covering 1945-2006: key dates (1947 committee, 1952 Estrin arrives, 1955 first calc, 1958 full operation, 1963 retired, 2006 IEEE milestone) | [spec.md](spec.md) §Tab: History, [history.md](history.md) §Timeline | `[ ]` |
+| 2.4 | Key people section | Names, roles, photos where available: Pekeris, von Neumann, Einstein, Gerald Estrin, Thelma Estrin, Micha Kedem, Zvi Riesel, Phillip Rabinowitz, Hans Jarosch | [history.md](history.md) §English (people subsections) | `[ ]` |
+| 2.5 | Technical specs table | Rendered table: word size, instruction format, registers, I/O, memory evolution (1024→4096→12288 words) | [history.md](history.md) §Technical Specifications | `[ ]` |
+| 2.6 | Photos with captions | Historical images: machine room, Estrins, paper tape, Ziskind Building basement. Responsive sizing. | [spec.md](spec.md) §Tab: History | `[ ]` |
+| 2.7 | References | All 13 references from history.md rendered as footnotes or endnotes with working links | [history.md](history.md) §References | `[ ]` |
+| 2.8 | Scientific achievements | Tidal equations story, quantum mechanics calculations, impact on Israel's tech industry | [history.md](history.md) §Scientific Achievements, §Legacy | `[ ]` |
 
 ---
 
@@ -61,11 +61,11 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 3.1 | Lesson framework | Reusable lesson renderer: title, explanation text, interactive exercise area, expected-result checker. Lesson nav (prev/next). Progress indicator. | [spec.md](spec.md) §Tab: Training | `[x]` |
-| 3.2 | Lesson 1: Architecture | Teaches: 40-bit word, two 20-bit instructions per word, registers (AC, MQ, PC), 1024-word memory. Diagram of word format. Interactive: click to identify word parts. | [spec.md](spec.md) §Tab: Training (Lesson 1), [simulator.md](simulator.md) §Machine Model | `[x]` |
-| 3.3 | Lesson 2: Instruction format | Teaches: 8-bit opcode + 12-bit address, left/right instruction layout, bit positions. Interactive: given a hex word, identify opcode and address of each half. | [spec.md](spec.md) §Tab: Training (Lesson 2), [simulator.md](simulator.md) §Instruction Encoding | `[x]` |
-| 3.4 | Lesson 3: Data transfer | Teaches: LOAD M(X), LOAD -M(X), LOAD |M(X)|, LOAD -|M(X)|, LOAD MQ,M(X), LOAD MQ, STOR M(X). Interactive: write instructions, predict register/memory state after execution. | [spec.md](spec.md) §Tab: Training (Lesson 3), [simulator.md](simulator.md) §Data Transfer | `[x]` |
-| 3.5 | Mini-simulator for exercises | Lightweight step-through engine for Training exercises: shows registers + small memory, executes student-written instructions, checks result against expected answer. | [spec.md](spec.md) §Tab: Training ("Exercises let user write instructions and see expected result") | `[x]` |
+| 3.1 | Lesson framework | Reusable lesson renderer: title, explanation text, interactive exercise area, expected-result checker. Lesson nav (prev/next). Progress indicator. | [spec.md](spec.md) §Tab: Training | `[ ]` |
+| 3.2 | Lesson 1: Architecture | Teaches: 40-bit word, two 20-bit instructions per word, registers (AC, MQ, PC), 1024-word memory. Diagram of word format. Interactive: click to identify word parts. | [spec.md](spec.md) §Tab: Training (Lesson 1), [simulator.md](simulator.md) §Machine Model | `[ ]` |
+| 3.3 | Lesson 2: Instruction format | Teaches: 8-bit opcode + 12-bit address, left/right instruction layout, bit positions. Interactive: given a hex word, identify opcode and address of each half. | [spec.md](spec.md) §Tab: Training (Lesson 2), [simulator.md](simulator.md) §Instruction Encoding | `[ ]` |
+| 3.4 | Lesson 3: Data transfer | Teaches: LOAD M(X), LOAD -M(X), LOAD |M(X)|, LOAD -|M(X)|, LOAD MQ,M(X), LOAD MQ, STOR M(X). Interactive: write instructions, predict register/memory state after execution. | [spec.md](spec.md) §Tab: Training (Lesson 3), [simulator.md](simulator.md) §Data Transfer | `[ ]` |
+| 3.5 | Mini-simulator for exercises | Lightweight step-through engine for Training exercises: shows registers + small memory, executes student-written instructions, checks result against expected answer. | [spec.md](spec.md) §Tab: Training ("Exercises let user write instructions and see expected result") | `[ ]` |
 
 ---
 
@@ -88,15 +88,15 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 5.1 | simulator.js — machine model | 1024-word memory, AC, MQ, composite PC {addr, side}, state lifecycle ('off'→'booting'→'ready'→'running'→'halted'→'error'), stepCount. All constants per spec. | [simulator.md](simulator.md) §Machine Model, §Constants, §Registers, §Machine State Lifecycle | `[x]` |
-| 5.2 | simulator.js — instruction decode | Extract left/right opcode and address from 40-bit word. Bit positions per spec: left opcode bits 0-7, left addr bits 8-19, right opcode bits 20-27, right addr bits 28-39. | [simulator.md](simulator.md) §Instruction Encoding | `[x]` |
-| 5.3 | simulator.js — all 21 instructions | Every opcode implemented per ISA table: 7 data transfer, 8 arithmetic, 2 address modify, 2 unconditional jump, 2 conditional jump. Plus HALT (0x00). | [simulator.md](simulator.md) §Instruction Set (all subsections) | `[x]` |
-| 5.4 | simulator.js — execution cycle | Step function follows spec pseudocode: read word, extract instruction by side, execute, advance PC (left→right→next word). jumpTaken flag. Self-modifying code timing (re-read on each side). | [simulator.md](simulator.md) §Execution Cycle, §Jump Semantics, §Self-Modifying Code Timing | `[x]` |
-| 5.5 | simulator.js — state lifecycle | powerOn() (off→booting→ready, async 2s), powerOff(), reset() (→ready), step(), run(stepsPerFrame), stop(). Correct state transitions per lifecycle diagram. | [simulator.md](simulator.md) §Machine State Lifecycle, §API (simulator.js exports) | `[x]` |
-| 5.6 | simulator.js — overflow & errors | mask40() truncation, MUL 80-bit handling, DIV by zero → state='error', unknown opcode → state='error'. RSH arithmetic (sign-preserving). | [simulator.md](simulator.md) §Overflow Handling, §Edge Cases | `[x]` |
-| 5.7 | simulator.js — edge cases | PC wrap at 1023→0, jump address 12-bit mask, LOAD MQ ignores address, LSH/RSH ignore address, step when ready/halted behavior. All per edge cases table. | [simulator.md](simulator.md) §Edge Cases and Decisions | `[x]` |
-| 5.8 | simulator.js — API exports | getState() returns deep copy. step() returns trace entry with pc, opcode, operand, mnemonic, ac, mq, memRead, memWrite. loadProgram(words). | [simulator.md](simulator.md) §API (simulator.js exports) | `[x]` |
-| 5.9 | Console test suite | All 11 manual test cases pass in browser console: add, factorial, countdown, halt-on-empty, div-by-zero, jump+ negative, jump+ zero, RSH negative, MUL overflow, power cycle, smart label. | [simulator.md](simulator.md) §Testing | `[x]` |
+| 5.1 | simulator.js — machine model | 1024-word memory, AC, MQ, composite PC {addr, side}, state lifecycle ('off'→'booting'→'ready'→'running'→'halted'→'error'), stepCount. All constants per spec. | [simulator.md](simulator.md) §Machine Model, §Constants, §Registers, §Machine State Lifecycle | `[ ]` |
+| 5.2 | simulator.js — instruction decode | Extract left/right opcode and address from 40-bit word. Bit positions per spec: left opcode bits 0-7, left addr bits 8-19, right opcode bits 20-27, right addr bits 28-39. | [simulator.md](simulator.md) §Instruction Encoding | `[ ]` |
+| 5.3 | simulator.js — all 21 instructions | Every opcode implemented per ISA table: 7 data transfer, 8 arithmetic, 2 address modify, 2 unconditional jump, 2 conditional jump. Plus HALT (0x00). | [simulator.md](simulator.md) §Instruction Set (all subsections) | `[ ]` |
+| 5.4 | simulator.js — execution cycle | Step function follows spec pseudocode: read word, extract instruction by side, execute, advance PC (left→right→next word). jumpTaken flag. Self-modifying code timing (re-read on each side). | [simulator.md](simulator.md) §Execution Cycle, §Jump Semantics, §Self-Modifying Code Timing | `[ ]` |
+| 5.5 | simulator.js — state lifecycle | powerOn() (off→booting→ready, async 2s), powerOff(), reset() (→ready), step(), run(stepsPerFrame), stop(). Correct state transitions per lifecycle diagram. | [simulator.md](simulator.md) §Machine State Lifecycle, §API (simulator.js exports) | `[ ]` |
+| 5.6 | simulator.js — overflow & errors | mask40() truncation, MUL 80-bit handling, DIV by zero → state='error', unknown opcode → state='error'. RSH arithmetic (sign-preserving). | [simulator.md](simulator.md) §Overflow Handling, §Edge Cases | `[ ]` |
+| 5.7 | simulator.js — edge cases | PC wrap at 1023→0, jump address 12-bit mask, LOAD MQ ignores address, LSH/RSH ignore address, step when ready/halted behavior. All per edge cases table. | [simulator.md](simulator.md) §Edge Cases and Decisions | `[ ]` |
+| 5.8 | simulator.js — API exports | getState() returns deep copy. step() returns trace entry with pc, opcode, operand, mnemonic, ac, mq, memRead, memWrite. loadProgram(words). | [simulator.md](simulator.md) §API (simulator.js exports) | `[ ]` |
+| 5.9 | Console test suite | All 11 manual test cases pass in browser console: add, factorial, countdown, halt-on-empty, div-by-zero, jump+ negative, jump+ zero, RSH negative, MUL overflow, power cycle, smart label. | [simulator.md](simulator.md) §Testing | `[ ]` |
 
 ---
 
@@ -106,12 +106,12 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 6.1 | assembler.js — parsing | Parse lines: comments (;), ORG directive, labels (name:), DATA literals (decimal and hex), all 21 mnemonics. Case-insensitive. | [simulator.md](simulator.md) §Assembler Syntax (Format, Rules, Mnemonic Table) | `[x]` |
-| 6.2 | assembler.js — two-pass | Pass 1: collect labels with {addr, side} positions. Pass 2: emit binary words. Two consecutive instruction lines pack into one 40-bit word (first=left, second=right). Odd instruction pads right with HALT. | [simulator.md](simulator.md) §Assembler Syntax §Rules, §Labels in Jumps | `[x]` |
-| 6.3 | assembler.js — smart labels | `JUMP loop` auto-resolves to correct opcode variant (0x0F/0x10 or 0x0D/0x0E) based on label's side. Explicit form `JUMP M(loop,0:19)` still works. Mismatch emits warning. | [simulator.md](simulator.md) §Labels in Jumps | `[x]` |
-| 6.4 | assembler.js — error reporting | Returns `{success, words, labels, warnings, errors}`. Errors include line number and message. Unknown mnemonic, duplicate label, undefined label, invalid address all caught. | [simulator.md](simulator.md) §API (assembler.js exports) | `[x]` |
-| 6.5 | assembler.js — disassemble | `disassemble(word)` returns `{ left, right }` as human-readable mnemonics. Used by memory view and word inspector. | [simulator.md](simulator.md) §API (assembler.js exports) | `[x]` |
-| 6.6 | Example programs assemble | All 3 spec examples (Add Two Numbers, Countdown, Factorial) assemble without errors and produce correct output when loaded into simulator. | [simulator.md](simulator.md) §Example Programs | `[x]` |
+| 6.1 | assembler.js — parsing | Parse lines: comments (;), ORG directive, labels (name:), DATA literals (decimal and hex), all 21 mnemonics. Case-insensitive. | [simulator.md](simulator.md) §Assembler Syntax (Format, Rules, Mnemonic Table) | `[ ]` |
+| 6.2 | assembler.js — two-pass | Pass 1: collect labels with {addr, side} positions. Pass 2: emit binary words. Two consecutive instruction lines pack into one 40-bit word (first=left, second=right). Odd instruction pads right with HALT. | [simulator.md](simulator.md) §Assembler Syntax §Rules, §Labels in Jumps | `[ ]` |
+| 6.3 | assembler.js — smart labels | `JUMP loop` auto-resolves to correct opcode variant (0x0F/0x10 or 0x0D/0x0E) based on label's side. Explicit form `JUMP M(loop,0:19)` still works. Mismatch emits warning. | [simulator.md](simulator.md) §Labels in Jumps | `[ ]` |
+| 6.4 | assembler.js — error reporting | Returns `{success, words, labels, warnings, errors}`. Errors include line number and message. Unknown mnemonic, duplicate label, undefined label, invalid address all caught. | [simulator.md](simulator.md) §API (assembler.js exports) | `[ ]` |
+| 6.5 | assembler.js — disassemble | `disassemble(word)` returns `{ left, right }` as human-readable mnemonics. Used by memory view and word inspector. | [simulator.md](simulator.md) §API (assembler.js exports) | `[ ]` |
+| 6.6 | Example programs assemble | All 3 spec examples (Add Two Numbers, Countdown, Factorial) assemble without errors and produce correct output when loaded into simulator. | [simulator.md](simulator.md) §Example Programs | `[ ]` |
 
 ---
 
@@ -121,15 +121,15 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 7.1 | Panel layout | Brushed-metal panel with three sections: registers (left), memory (center), paper tape placeholder (right). Controls bar below. Execution log at bottom. Matches ASCII art layout in spec. | [spec.md](spec.md) §Panel Layout, [ux.md](ux.md) §The Panel | `[x]` |
-| 7.2 | Color palette and typography | Panel #4a4a4a with brushed-metal texture. Engraved white labels (Futura/Century Gothic). Memory in green monospace on dark (CRT feel). Log in dimmer monospace. | [ux.md](ux.md) §Color Palette, §Typography | `[x]` |
-| 7.3 | Register display | AC and MQ: 10-digit hex + signed decimal. PC: word address + side ("005 L"). Hover shows binary breakdown. Updates on every step. | [spec.md](spec.md) §Register Display, [simulator.md](simulator.md) §Registers | `[~]` |
-| 7.4 | Memory view | 1024-row scrollable grid (~32 visible). Columns: Addr, Hex (40-bit), Left Instr (decoded), Right Instr (decoded). Current PC row highlighted (yellow=left, blue=right). Recent writes glow green (1s fade). Click row to toggle breakpoint (red dot). Only re-render changed rows. | [spec.md](spec.md) §Memory View, [ux.md](ux.md) §Memory View, [simulator.md](simulator.md) §Rendering Strategy | `[~]` |
-| 7.5 | Indicator lights | 8 circular lights: POWER (green steady), FETCH (amber blink), EXEC (green blink), STORE (amber blink), HALT (red steady), ERROR (red flash), LEFT (white), RIGHT (white). CSS transitions for persistence-of-vision at fast speeds. | [spec.md](spec.md) §Indicator Lights, [ux.md](ux.md) §Indicator Lights | `[~]` |
-| 7.6 | Control buttons | LOAD, STEP, RUN, STOP, RESET buttons with physical toggle click feel. Power switch with CSS spring animation (toggle with bounce). All wired to simulator API. | [spec.md](spec.md) §Controls, [ux.md](ux.md) §Delight Details | `[~]` |
+| 7.1 | Panel layout | Brushed-metal panel with three sections: registers (left), memory (center), paper tape placeholder (right). Controls bar below. Execution log at bottom. Matches ASCII art layout in spec. | [spec.md](spec.md) §Panel Layout, [ux.md](ux.md) §The Panel | `[ ]` |
+| 7.2 | Color palette and typography | Panel #4a4a4a with brushed-metal texture. Engraved white labels (Futura/Century Gothic). Memory in green monospace on dark (CRT feel). Log in dimmer monospace. | [ux.md](ux.md) §Color Palette, §Typography | `[ ]` |
+| 7.3 | Register display | AC and MQ: 10-digit hex + signed decimal. PC: word address + side ("005 L"). Hover shows binary breakdown. Updates on every step. | [spec.md](spec.md) §Register Display, [simulator.md](simulator.md) §Registers | `[ ]` |
+| 7.4 | Memory view | 1024-row scrollable grid (~32 visible). Columns: Addr, Hex (40-bit), Left Instr (decoded), Right Instr (decoded). Current PC row highlighted (yellow=left, blue=right). Recent writes glow green (1s fade). Click row to toggle breakpoint (red dot). Only re-render changed rows. | [spec.md](spec.md) §Memory View, [ux.md](ux.md) §Memory View, [simulator.md](simulator.md) §Rendering Strategy | `[ ]` |
+| 7.5 | Indicator lights | 8 circular lights: POWER (green steady), FETCH (amber blink), EXEC (green blink), STORE (amber blink), HALT (red steady), ERROR (red flash), LEFT (white), RIGHT (white). CSS transitions for persistence-of-vision at fast speeds. | [spec.md](spec.md) §Indicator Lights, [ux.md](ux.md) §Indicator Lights | `[ ]` |
+| 7.6 | Control buttons | LOAD, STEP, RUN, STOP, RESET buttons with physical toggle click feel. Power switch with CSS spring animation (toggle with bounce). All wired to simulator API. | [spec.md](spec.md) §Controls, [ux.md](ux.md) §Delight Details | `[ ]` |
 | 7.7 | Rotary speed dial | 5 positions: OBSERVE (~5/sec), 1955 FEEL (~20/sec), 10x (~200/sec), 100x (~2000/sec), MAX (instant). Draggable with momentum (overshoots and settles). Controls execution rate of run(). | [simulator.md](simulator.md) §Speed Control, [ux.md](ux.md) §Timing and Speed | `[ ]` |
-| 7.8 | Execution log | Teletype-styled scrolling area. Each step: `[addr side] MNEMONIC → register=value`. Last 1000 entries (ring buffer). Slightly randomized character spacing (typewriter feel). | [spec.md](spec.md) §Execution Log, [ux.md](ux.md) §Execution Trace, [simulator.md](simulator.md) §Rendering Strategy | `[~]` |
-| 7.9 | Power-on sequence | Flip power → lights flicker on sequentially (2s), hum starts, memory zeros in CRT scanline sweep, "READY" in log. Return visitors can skip. | [spec.md](spec.md) §The Experience, [simulator.md](simulator.md) §Machine State Lifecycle, [ux.md](ux.md) §Delight Details | `[~]` |
+| 7.8 | Execution log | Teletype-styled scrolling area. Each step: `[addr side] MNEMONIC → register=value`. Last 1000 entries (ring buffer). Slightly randomized character spacing (typewriter feel). | [spec.md](spec.md) §Execution Log, [ux.md](ux.md) §Execution Trace, [simulator.md](simulator.md) §Rendering Strategy | `[ ]` |
+| 7.9 | Power-on sequence | Flip power → lights flicker on sequentially (2s), hum starts, memory zeros in CRT scanline sweep, "READY" in log. Return visitors can skip. | [spec.md](spec.md) §The Experience, [simulator.md](simulator.md) §Machine State Lifecycle, [ux.md](ux.md) §Delight Details | `[ ]` |
 | 7.10 | Keyboard shortcuts | Space=Step (or Stop when running), Enter=Run, R=Reset, B=Breakpoint, ↑/↓=Scroll memory, Esc=Close popup, M=Mute, T=Toggle tools. All scoped to "panel focused" (not when editor has focus). | [ux.md](ux.md) §Keyboard Shortcuts | `[ ]` |
 
 ---
@@ -140,14 +140,14 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 8.1 | audio.js — Web Audio engine | OscillatorNode + GainNode synthesis. No downloaded audio files. Total footprint < 50KB. Audio activates only after first user interaction (browser policy). | [spec.md](spec.md) §Sound Design, [simulator.md](simulator.md) §File Layout (audio.js), [ux.md](ux.md) §Sound Design | `[x]` |
-| 8.2 | Idle hum | Continuous 50Hz + harmonics when state='ready' or 'running'. Very quiet. Fades out on halt (0.2s silence before fade). | [ux.md](ux.md) §Sound Design (Machine idle), §Delight Details | `[x]` |
-| 8.3 | Step click | Single relay click on each instruction execution. Sharp, metallic, ~50ms. | [ux.md](ux.md) §Sound Design (Step execute) | `[x]` |
-| 8.4 | Run mode clicking | Rapid relay clicks at instruction rate. At higher speeds, pitch up. At 100x, blends to continuous hum. | [ux.md](ux.md) §Sound Design (Run mode) | `[x]` |
-| 8.5 | Paper tape sounds | Reader: rhythmic chattering staccato. Punch: deeper mechanical thud per character. | [ux.md](ux.md) §Sound Design (Paper tape load, Punch tape) | `[x]` |
-| 8.6 | Halt and error sounds | Halt: descending tone + relay release (two-note power-down). Error: harsh square wave buzzer (200ms). | [ux.md](ux.md) §Sound Design (Halt, Error) | `[x]` |
-| 8.7 | Button and memory sounds | Button press: physical toggle clunk. Memory write: faint magnetic "tick" (barely audible). | [ux.md](ux.md) §Sound Design (Button press, Memory write) | `[x]` |
-| 8.8 | Volume controls | Master volume slider + mute button always visible on panel. M key toggles mute. | [ux.md](ux.md) §Sound Design, [ux.md](ux.md) §Keyboard Shortcuts | `[x]` |
+| 8.1 | audio.js — Web Audio engine | OscillatorNode + GainNode synthesis. No downloaded audio files. Total footprint < 50KB. Audio activates only after first user interaction (browser policy). | [spec.md](spec.md) §Sound Design, [simulator.md](simulator.md) §File Layout (audio.js), [ux.md](ux.md) §Sound Design | `[ ]` |
+| 8.2 | Idle hum | Continuous 50Hz + harmonics when state='ready' or 'running'. Very quiet. Fades out on halt (0.2s silence before fade). | [ux.md](ux.md) §Sound Design (Machine idle), §Delight Details | `[ ]` |
+| 8.3 | Step click | Single relay click on each instruction execution. Sharp, metallic, ~50ms. | [ux.md](ux.md) §Sound Design (Step execute) | `[ ]` |
+| 8.4 | Run mode clicking | Rapid relay clicks at instruction rate. At higher speeds, pitch up. At 100x, blends to continuous hum. | [ux.md](ux.md) §Sound Design (Run mode) | `[ ]` |
+| 8.5 | Paper tape sounds | Reader: rhythmic chattering staccato. Punch: deeper mechanical thud per character. | [ux.md](ux.md) §Sound Design (Paper tape load, Punch tape) | `[ ]` |
+| 8.6 | Halt and error sounds | Halt: descending tone + relay release (two-note power-down). Error: harsh square wave buzzer (200ms). | [ux.md](ux.md) §Sound Design (Halt, Error) | `[ ]` |
+| 8.7 | Button and memory sounds | Button press: physical toggle clunk. Memory write: faint magnetic "tick" (barely audible). | [ux.md](ux.md) §Sound Design (Button press, Memory write) | `[ ]` |
+| 8.8 | Volume controls | Master volume slider + mute button always visible on panel. M key toggles mute. | [ux.md](ux.md) §Sound Design, [ux.md](ux.md) §Keyboard Shortcuts | `[ ]` |
 
 ---
 
@@ -157,14 +157,14 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 9.1 | tape.js — tape renderer | Vertical tape strip on panel right side: off-white background with fiber texture, 20-column layout (one per bit of 20-bit instruction), sprocket holes between instruction rows. Each 40-bit word = two rows (left top, right bottom). | [ux.md](ux.md) §The Paper Tape Experience (What It Looks Like), [simulator.md](simulator.md) §File Layout (tape.js) | `[x]` |
-| 9.2 | Punch animation | On LOAD: holes appear sequentially with punch sounds. Solid dark circles for 1, faint dots for 0. Visual punching takes ~1s. | [ux.md](ux.md) §Loading a Program (step 2), [spec.md](spec.md) §Paper Tape Workflow (Punch) | `[x]` |
-| 9.3 | Feed animation | Tape scrolls upward into reader with chattering sound. ~1s duration. | [ux.md](ux.md) §Loading a Program (step 3), [spec.md](spec.md) §Paper Tape Workflow (Feed) | `[x]` |
-| 9.4 | Memory load sequence | Words appear in memory one by one. Memory grid highlights each row as loaded. ~1-2s total. | [ux.md](ux.md) §Loading a Program (step 4), [spec.md](spec.md) §Paper Tape Workflow (Load) | `[x]` |
-| 9.5 | Completion clunk | Final "clunk" sound. Silence. Machine ready. Full ceremony 2-4s. | [ux.md](ux.md) §Loading a Program (step 5), [spec.md](spec.md) §Paper Tape Workflow (Ready) | `[x]` |
-| 9.6 | Skip animation | Double-click LOAD skips ceremony, loads instantly. | [ux.md](ux.md) §Loading a Program ("double-click LOAD"), [spec.md](spec.md) §Paper Tape Workflow | `[x]` |
-| 9.7 | Tape tooltip | Hover any tape section shows decoded instruction: "LOAD M(200) — opcode 01, address 0C8". | [ux.md](ux.md) §Paper Tape Binary Visualization | `[x]` |
-| 9.8 | Simplified-viz label | Small note "simplified visualization" appears on hover over tape, acknowledging real WEIZAC used 5-channel encoding. | [ux.md](ux.md) §The Paper Tape Experience (Note) | `[x]` |
+| 9.1 | tape.js — tape renderer | Vertical tape strip on panel right side: off-white background with fiber texture, 20-column layout (one per bit of 20-bit instruction), sprocket holes between instruction rows. Each 40-bit word = two rows (left top, right bottom). | [ux.md](ux.md) §The Paper Tape Experience (What It Looks Like), [simulator.md](simulator.md) §File Layout (tape.js) | `[ ]` |
+| 9.2 | Punch animation | On LOAD: holes appear sequentially with punch sounds. Solid dark circles for 1, faint dots for 0. Visual punching takes ~1s. | [ux.md](ux.md) §Loading a Program (step 2), [spec.md](spec.md) §Paper Tape Workflow (Punch) | `[ ]` |
+| 9.3 | Feed animation | Tape scrolls upward into reader with chattering sound. ~1s duration. | [ux.md](ux.md) §Loading a Program (step 3), [spec.md](spec.md) §Paper Tape Workflow (Feed) | `[ ]` |
+| 9.4 | Memory load sequence | Words appear in memory one by one. Memory grid highlights each row as loaded. ~1-2s total. | [ux.md](ux.md) §Loading a Program (step 4), [spec.md](spec.md) §Paper Tape Workflow (Load) | `[ ]` |
+| 9.5 | Completion clunk | Final "clunk" sound. Silence. Machine ready. Full ceremony 2-4s. | [ux.md](ux.md) §Loading a Program (step 5), [spec.md](spec.md) §Paper Tape Workflow (Ready) | `[ ]` |
+| 9.6 | Skip animation | Double-click LOAD skips ceremony, loads instantly. | [ux.md](ux.md) §Loading a Program ("double-click LOAD"), [spec.md](spec.md) §Paper Tape Workflow | `[ ]` |
+| 9.7 | Tape tooltip | Hover any tape section shows decoded instruction: "LOAD M(200) — opcode 01, address 0C8". | [ux.md](ux.md) §Paper Tape Binary Visualization | `[ ]` |
+| 9.8 | Simplified-viz label | Small note "simplified visualization" appears on hover over tape, acknowledging real WEIZAC used 5-channel encoding. | [ux.md](ux.md) §The Paper Tape Experience (Note) | `[ ]` |
 
 ---
 
@@ -174,10 +174,10 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 10.1 | tools.js — toolbar chrome | Translucent frosted-glass toolbar above panel. Collapsible with T key. Contains 5 tool buttons. Visually distinct from authentic layer. | [ux.md](ux.md) §Modern Tools (The Toolbar), [spec.md](spec.md) §Modern Tools | `[x]` |
-| 10.2 | Instruction Builder | Dropdown form: category (Data Transfer/Arithmetic/Control/Address Modify), operation, address. Shows mnemonic, binary (color-coded bit fields), hex, plain-English meaning, data flow diagram. Insert Left/Right/Copy buttons. | [ux.md](ux.md) §Tool 1: Instruction Builder, [spec.md](spec.md) §Modern Tools (Instruction Builder) | `[x]` |
-| 10.3 | Binary Translator | Bidirectional converter: type assembly/hex/binary/decimal, all others update in real-time. Includes visual punch-hole pattern of instruction. | [ux.md](ux.md) §Tool 2: Binary Translator, [spec.md](spec.md) §Modern Tools (Binary Translator) | `[x]` |
-| 10.4 | Assembly Editor | Textarea with syntax highlighting: opcodes blue, addresses green, labels orange, comments gray. Line numbers. Error markers. Mnemonic autocomplete. Faint inline hex preview per line. Ctrl+Enter to assemble and load. | [ux.md](ux.md) §Tool 3: Assembly Editor, [spec.md](spec.md) §Modern Tools (Assembly Editor) | `[x]` |
+| 10.1 | tools.js — toolbar chrome | Translucent frosted-glass toolbar above panel. Collapsible with T key. Contains 5 tool buttons. Visually distinct from authentic layer. | [ux.md](ux.md) §Modern Tools (The Toolbar), [spec.md](spec.md) §Modern Tools | `[ ]` |
+| 10.2 | Instruction Builder | Dropdown form: category (Data Transfer/Arithmetic/Control/Address Modify), operation, address. Shows mnemonic, binary (color-coded bit fields), hex, plain-English meaning, data flow diagram. Insert Left/Right/Copy buttons. | [ux.md](ux.md) §Tool 1: Instruction Builder, [spec.md](spec.md) §Modern Tools (Instruction Builder) | `[ ]` |
+| 10.3 | Binary Translator | Bidirectional converter: type assembly/hex/binary/decimal, all others update in real-time. Includes visual punch-hole pattern of instruction. | [ux.md](ux.md) §Tool 2: Binary Translator, [spec.md](spec.md) §Modern Tools (Binary Translator) | `[ ]` |
+| 10.4 | Assembly Editor | Textarea with syntax highlighting: opcodes blue, addresses green, labels orange, comments gray. Line numbers. Error markers. Mnemonic autocomplete. Faint inline hex preview per line. Ctrl+Enter to assemble and load. | [ux.md](ux.md) §Tool 3: Assembly Editor, [spec.md](spec.md) §Modern Tools (Assembly Editor) | `[ ]` |
 | 10.5 | Word Inspector | Click memory cell → popup with full decode: left/right instruction mnemonics, plain-English meaning, raw hex, raw binary, signed decimal. Edit value, set breakpoint, add to watch list. | [ux.md](ux.md) §Tool 4: Word Inspector, [spec.md](spec.md) §Modern Tools (Word Inspector) | `[ ]` |
 | 10.6 | Execution Trace | Teletype-styled log panel. Each step: `[addr side] MNEMONIC → register=value`. Last 200 lines retained. Scrollable. | [ux.md](ux.md) §Tool 5: Execution Trace, [spec.md](spec.md) §Modern Tools (Execution Trace) | `[ ]` |
 

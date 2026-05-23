@@ -118,9 +118,16 @@ function buildPanelHtml() {
             <div class="tools-readout" id="tools-translator-readout"></div>
         </div>
         <div class="tools-panel" data-tools-panel="editor">
-            <textarea id="tools-editor-source" rows="10" spellcheck="false"></textarea>
+            <div class="asm-editor-wrap" id="asm-editor-wrap">
+                <div class="asm-line-numbers" id="asm-line-numbers"></div>
+                <div class="asm-editor-area">
+                    <textarea id="tools-editor-source" rows="16" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"></textarea>
+                    <div class="asm-errors" id="asm-errors"></div>
+                </div>
+                <div class="asm-autocomplete" id="asm-autocomplete" hidden></div>
+            </div>
             <div class="tools-actions">
-                <button id="tools-assemble-load" type="button">Assemble and Load (Ctrl+Enter)</button>
+                <button id="tools-assemble-load" type="button">Assemble &amp; Load (Ctrl+Enter)</button>
             </div>
             <div class="tools-readout" id="tools-editor-status"></div>
         </div>
@@ -340,11 +347,168 @@ export function initToolsUI() {
     translatorInput.addEventListener('input', updateTranslator);
     mount.querySelector('#tools-assemble-load').addEventListener('click', assembleAndLoad);
 
+    // === Assembly Editor: line numbers, autocomplete, live validation ===
+    const lineNumbersEl = mount.querySelector('#asm-line-numbers');
+    const errorsEl = mount.querySelector('#asm-errors');
+    const autocompleteEl = mount.querySelector('#asm-autocomplete');
+
+    const ASM_KEYWORDS = [
+        'HALT', 'LOAD M(', 'LOAD -M(', 'LOAD |M(', 'LOAD -|M(',
+        'ADD M(', 'SUB M(', 'ADD |M(', 'SUB |M(',
+        'LOAD MQ,M(', 'LOAD MQ', 'MUL M(', 'DIV M(',
+        'JUMP+ M(', 'JUMP M(', 'JUMP+ ', 'JUMP ',
+        'STOR M(', 'STOR M(X,8:19)', 'STOR M(X,28:39)',
+        'LSH', 'RSH', 'ORG ', 'DATA '
+    ];
+
+    const updateLineNumbers = () => {
+        const lineCount = editor.value.split('\n').length;
+        let html = '';
+        for (let i = 1; i <= lineCount; i += 1) {
+            html += `<div>${i}</div>`;
+        }
+        lineNumbersEl.innerHTML = html;
+    };
+
+    const validateEditor = () => {
+        const result = assemble(editor.value);
+        errorsEl.innerHTML = '';
+        if (!result.success && result.errors.length > 0) {
+            const errorLines = new Set();
+            result.errors.forEach((err) => {
+                errorLines.add(err.line);
+            });
+            const lineEls = lineNumbersEl.querySelectorAll('div');
+            lineEls.forEach((el, idx) => {
+                if (errorLines.has(idx + 1)) {
+                    el.classList.add('error');
+                }
+            });
+            const first = result.errors[0];
+            errorsEl.innerHTML = result.errors.slice(0, 3).map((e) =>
+                `<div class="asm-error-msg">Line ${e.line}: ${e.message}</div>`
+            ).join('');
+        }
+        editorStatus.textContent = result.success ? `Ready: ${result.words.length} words` : '';
+    };
+
+    let acVisible = false;
+    let acItems = [];
+    let acIndex = 0;
+
+    const showAutocomplete = (items) => {
+        if (items.length === 0) { hideAutocomplete(); return; }
+        acItems = items;
+        acIndex = 0;
+        autocompleteEl.innerHTML = items.map((item, i) =>
+            `<div class="asm-ac-item${i === 0 ? ' active' : ''}">${item}</div>`
+        ).join('');
+        autocompleteEl.hidden = false;
+        acVisible = true;
+    };
+
+    const hideAutocomplete = () => {
+        autocompleteEl.hidden = true;
+        acVisible = false;
+        acItems = [];
+    };
+
+    const acceptAutocomplete = () => {
+        if (!acVisible || acItems.length === 0) { return false; }
+        const chosen = acItems[acIndex];
+        const pos = editor.selectionStart;
+        const text = editor.value;
+        const lineStart = text.lastIndexOf('\n', pos - 1) + 1;
+        const lineText = text.slice(lineStart, pos);
+        const stripped = lineText.replace(/;.*/, '').trimStart();
+        const prefix = stripped.toUpperCase();
+        const replaceStart = lineStart + (lineText.length - lineText.trimStart().length);
+        editor.value = text.slice(0, replaceStart) + chosen + text.slice(pos);
+        editor.selectionStart = editor.selectionEnd = replaceStart + chosen.length;
+        hideAutocomplete();
+        updateLineNumbers();
+        validateEditor();
+        return true;
+    };
+
+    const updateAutocomplete = () => {
+        const pos = editor.selectionStart;
+        const text = editor.value;
+        const lineStart = text.lastIndexOf('\n', pos - 1) + 1;
+        const lineText = text.slice(lineStart, pos);
+        const stripped = lineText.replace(/;.*/, '').trimStart();
+        if (!stripped || stripped.startsWith(';')) { hideAutocomplete(); return; }
+        const prefix = stripped.toUpperCase();
+        const matches = ASM_KEYWORDS.filter((kw) => kw.startsWith(prefix) && kw !== prefix);
+        if (matches.length > 0 && matches.length <= 8) {
+            showAutocomplete(matches);
+        } else {
+            hideAutocomplete();
+        }
+    };
+
     editor.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key === 'Enter') {
             assembleAndLoad();
+            event.preventDefault();
+            return;
+        }
+        if (acVisible) {
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                acIndex = (acIndex + 1) % acItems.length;
+                autocompleteEl.querySelectorAll('.asm-ac-item').forEach((el, i) => el.classList.toggle('active', i === acIndex));
+                return;
+            }
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                acIndex = (acIndex - 1 + acItems.length) % acItems.length;
+                autocompleteEl.querySelectorAll('.asm-ac-item').forEach((el, i) => el.classList.toggle('active', i === acIndex));
+                return;
+            }
+            if (event.key === 'Tab' || event.key === 'Enter') {
+                if (acceptAutocomplete()) {
+                    event.preventDefault();
+                    return;
+                }
+            }
+            if (event.key === 'Escape') {
+                hideAutocomplete();
+                event.preventDefault();
+                return;
+            }
+        }
+        if (event.key === 'Tab' && !acVisible) {
+            event.preventDefault();
+            const start = editor.selectionStart;
+            editor.value = editor.value.slice(0, start) + '    ' + editor.value.slice(editor.selectionEnd);
+            editor.selectionStart = editor.selectionEnd = start + 4;
         }
     });
+
+    editor.addEventListener('input', () => {
+        updateLineNumbers();
+        validateEditor();
+        updateAutocomplete();
+    });
+
+    editor.addEventListener('scroll', () => {
+        lineNumbersEl.scrollTop = editor.scrollTop;
+    });
+
+    editor.addEventListener('click', hideAutocomplete);
+    editor.addEventListener('blur', () => setTimeout(hideAutocomplete, 150));
+
+    autocompleteEl.addEventListener('mousedown', (event) => {
+        const item = event.target.closest('.asm-ac-item');
+        if (item) {
+            acIndex = [...autocompleteEl.children].indexOf(item);
+            acceptAutocomplete();
+        }
+    });
+
+    updateLineNumbers();
+    validateEditor();
 
     // Word Inspector
     const inspectorAddr = mount.querySelector('#tools-inspector-addr');
