@@ -1763,16 +1763,19 @@ code, pre, .mono {
     margin-top: 0.25rem;
     max-height: 260px;
     overflow: hidden;
-    border: 1px solid #8a7e6a;
-    border-radius: 3px;
-    background: #f2e8c9;
+    border: 1px solid #a09070;
+    border-radius: 2px;
+    /* Oiled paper: slightly translucent yellowish */
+    background: #e8dbb4;
     background-image:
-        repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, transparent 1px, transparent 3px),
-        linear-gradient(180deg, #f5ecd3, #ede3c4);
-    padding: 0.5rem 0.5rem 0.5rem 1.2rem;
+        /* Paper fiber texture */
+        repeating-linear-gradient(0deg, rgba(180,160,120,0.04) 0px, transparent 1px, transparent 2px),
+        repeating-linear-gradient(90deg, rgba(180,160,120,0.03) 0px, transparent 1px, transparent 3px),
+        /* Oil-soaked translucency gradient */
+        linear-gradient(180deg, #ece0c0, #e0d4a8, #e5d9b0);
+    padding: 0.4rem 0.4rem 0.4rem 0.4rem;
     position: relative;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
-    /* Paper reader slot at top */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .sim-tape-strip::before {
@@ -1781,17 +1784,16 @@ code, pre, .mono {
     left: 0;
     top: 0;
     bottom: 0;
-    width: 10px;
-    background: repeating-linear-gradient(
-        180deg,
-        transparent 0, transparent 6px,
-        rgba(0,0,0,0.12) 6px, rgba(0,0,0,0.12) 8px,
-        transparent 8px, transparent 14px
-    );
-    border-right: 1px solid rgba(0,0,0,0.08);
+    width: 100%;
+    /* Subtle worn edges */
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(100,80,50,0.08) 0px, transparent 3px),
+        linear-gradient(270deg, rgba(100,80,50,0.08) 0px, transparent 3px);
+    z-index: 1;
 }
 
-/* Reader slot visual — dark bar at top where tape feeds in */
+/* Reader slot visual — dark metal bar at top where tape feeds in */
 .sim-tape-strip::after {
     content: '';
     position: absolute;
@@ -1820,10 +1822,12 @@ code, pre, .mono {
 }
 
 .tape-word {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed rgba(160, 140, 100, 0.25);
     transition: opacity 0.5s ease-in, transform 0.5s ease-in, max-height 0.5s ease-in, margin 0.4s ease-in;
     transform-origin: top center;
-    max-height: 60px;
+    max-height: 70px;
     overflow: visible;
 }
 
@@ -1847,7 +1851,7 @@ code, pre, .mono {
     display: grid;
     grid-template-columns: repeat(20, 1fr);
     gap: 1px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     justify-content: start;
 }
 
@@ -1856,31 +1860,43 @@ code, pre, .mono {
     height: 7px;
     border-radius: 50%;
     display: block;
-    border: 1px solid #c4b89a;
-    background: rgba(245, 240, 220, 0.6);
-    box-shadow: inset 0 0.5px 1px rgba(0,0,0,0.05);
+    /* Unpunched: just a faint impression in the paper */
+    border: 1px solid rgba(160, 140, 100, 0.3);
+    background: rgba(220, 210, 180, 0.4);
 }
 
 .tape-bit.on {
-    background: rgba(80, 70, 50, 0.15);
-    border-color: #a89878;
+    /* Pre-punch: position marked but not yet punched through */
+    background: rgba(120, 100, 60, 0.15);
+    border-color: rgba(140, 120, 80, 0.5);
 }
 
 .tape-bit.on.punched {
-    background: #1a1008;
-    border-color: #2a2018;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,0.4);
+    /* Punched through: you see the dark reader backing through the hole */
+    background: #1a1410;
+    border-color: #302820;
+    box-shadow: inset 0 0.5px 1px rgba(0,0,0,0.9), 0 0 0.5px rgba(0,0,0,0.3);
 }
 
+/* Sprocket feed holes — smaller, centered between data rows */
 .tape-sprocket {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    height: 6px;
+    margin: 1px 0;
+    padding: 0 2px;
+}
+
+.tape-sprocket-hole {
+    width: 4px;
     height: 4px;
-    width: 100%;
-    background: repeating-linear-gradient(
-        90deg,
-        transparent 0, transparent 7px,
-        rgba(60, 50, 30, 0.25) 7px, rgba(60, 50, 30, 0.25) 9px
-    );
-    margin: 2px 0 3px;
+    border-radius: 50%;
+    background: #1a1410;
+    border: 0.5px solid #302820;
+    box-shadow: inset 0 0.5px 0.5px rgba(0,0,0,0.8);
+    flex-shrink: 0;
 }
 
 

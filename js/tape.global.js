@@ -57,18 +57,27 @@
         const row = document.createElement('div');
         row.className = 'tape-row';
         if (showHelp) {
-            row.title = `${decodeText} (simplified visualization)`;
+            row.title = `${decodeText}`;
         }
 
         bits.forEach((bit) => {
             const cell = document.createElement('span');
             cell.className = bit ? 'tape-bit on punched' : 'tape-bit off';
-            if (showHelp) {
-                cell.title = `${decodeText} (simplified visualization)`;
-            }
             row.appendChild(cell);
         });
 
+        return row;
+    }
+
+    function createSprocketRow(numHoles) {
+        const row = document.createElement('div');
+        row.className = 'tape-sprocket';
+        const count = numHoles || 10;
+        for (let i = 0; i < count; i += 1) {
+            const hole = document.createElement('span');
+            hole.className = 'tape-sprocket-hole';
+            row.appendChild(hole);
+        }
         return row;
     }
 
@@ -95,9 +104,7 @@
             const leftBits = halfToBits20(leftHalf);
             block.appendChild(createTapeRow(leftBits, decodeHalf(leftHalf), showHelp));
 
-            const sprocket = document.createElement('div');
-            sprocket.className = 'tape-sprocket';
-            block.appendChild(sprocket);
+            block.appendChild(createSprocketRow(10));
 
             const rightBits = halfToBits20(rightHalf);
             block.appendChild(createTapeRow(rightBits, decodeHalf(rightHalf), showHelp));
