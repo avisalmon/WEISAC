@@ -1,13 +1,29 @@
 import { assemble, disassemble } from './assembler.js';
 
 const BUILDER_OPS = [
-    { mnemonic: 'LOAD M(X)', opcode: 0x01, needsAddress: true },
-    { mnemonic: 'ADD M(X)', opcode: 0x05, needsAddress: true },
-    { mnemonic: 'SUB M(X)', opcode: 0x06, needsAddress: true },
-    { mnemonic: 'STOR M(X)', opcode: 0x21, needsAddress: true },
-    { mnemonic: 'LOAD MQ', opcode: 0x0A, needsAddress: false },
-    { mnemonic: 'HALT', opcode: 0x00, needsAddress: false },
-    { mnemonic: 'DATA', opcode: -1, needsAddress: false, isData: true }
+    { mnemonic: 'HALT', opcode: 0x00, needsAddress: false, category: 'Control' },
+    { mnemonic: 'LOAD M(X)', opcode: 0x01, needsAddress: true, category: 'Data Transfer' },
+    { mnemonic: 'LOAD -M(X)', opcode: 0x02, needsAddress: true, category: 'Data Transfer' },
+    { mnemonic: 'LOAD |M(X)|', opcode: 0x03, needsAddress: true, category: 'Data Transfer' },
+    { mnemonic: 'LOAD -|M(X)|', opcode: 0x04, needsAddress: true, category: 'Data Transfer' },
+    { mnemonic: 'ADD M(X)', opcode: 0x05, needsAddress: true, category: 'Arithmetic' },
+    { mnemonic: 'SUB M(X)', opcode: 0x06, needsAddress: true, category: 'Arithmetic' },
+    { mnemonic: 'ADD |M(X)|', opcode: 0x07, needsAddress: true, category: 'Arithmetic' },
+    { mnemonic: 'SUB |M(X)|', opcode: 0x08, needsAddress: true, category: 'Arithmetic' },
+    { mnemonic: 'LOAD MQ,M(X)', opcode: 0x09, needsAddress: true, category: 'Data Transfer' },
+    { mnemonic: 'LOAD MQ', opcode: 0x0A, needsAddress: false, category: 'Data Transfer' },
+    { mnemonic: 'MUL M(X)', opcode: 0x0B, needsAddress: true, category: 'Arithmetic' },
+    { mnemonic: 'DIV M(X)', opcode: 0x0C, needsAddress: true, category: 'Arithmetic' },
+    { mnemonic: 'JUMP+ M(X,0:19)', opcode: 0x0D, needsAddress: true, category: 'Control' },
+    { mnemonic: 'JUMP+ M(X,20:39)', opcode: 0x0E, needsAddress: true, category: 'Control' },
+    { mnemonic: 'JUMP M(X,0:19)', opcode: 0x0F, needsAddress: true, category: 'Control' },
+    { mnemonic: 'JUMP M(X,20:39)', opcode: 0x10, needsAddress: true, category: 'Control' },
+    { mnemonic: 'STOR M(X,8:19)', opcode: 0x12, needsAddress: true, category: 'Address Modify' },
+    { mnemonic: 'STOR M(X,28:39)', opcode: 0x13, needsAddress: true, category: 'Address Modify' },
+    { mnemonic: 'LSH', opcode: 0x14, needsAddress: false, category: 'Arithmetic' },
+    { mnemonic: 'RSH', opcode: 0x15, needsAddress: false, category: 'Arithmetic' },
+    { mnemonic: 'STOR M(X)', opcode: 0x21, needsAddress: true, category: 'Data Transfer' },
+    { mnemonic: 'DATA', opcode: -1, needsAddress: false, isData: true, category: 'Data' }
 ];
 
 const SAMPLE_SOURCE = [
@@ -30,30 +46,38 @@ function encodeHalf(opcode, address) {
 }
 
 function parseBuilderLine(line) {
-    const text = (line || '').trim();
+    const text = (line || '').trim().toUpperCase();
     if (!text) {
         return null;
     }
 
-    const noAddr = text.match(/^(HALT|LOAD\s+MQ)$/i);
-    if (noAddr) {
-        const op = noAddr[1].toUpperCase() === 'HALT' ? 0x00 : 0x0A;
-        return { opcode: op, address: 0 };
-    }
+    // No-operand instructions
+    if (text === 'HALT') { return { opcode: 0x00, address: 0 }; }
+    if (text === 'LOAD MQ') { return { opcode: 0x0A, address: 0 }; }
+    if (text === 'LSH') { return { opcode: 0x14, address: 0 }; }
+    if (text === 'RSH') { return { opcode: 0x15, address: 0 }; }
 
-    const withAddr = text.match(/^(LOAD|ADD|SUB|STOR)\s+M\((\d+)\)$/i);
-    if (withAddr) {
-        const stem = withAddr[1].toUpperCase();
-        const addr = Number(withAddr[2]);
-        const opcodeMap = { LOAD: 0x01, ADD: 0x05, SUB: 0x06, STOR: 0x21 };
-        return { opcode: opcodeMap[stem], address: addr };
-    }
+    // M(X) format
+    const m = text.match(/^(LOAD|LOAD -|LOAD \||\LOAD -\||ADD|ADD \||SUB|SUB \||LOAD MQ,|MUL|DIV|JUMP\+?|STOR)\s*(?:\|?M\((\d+)(?:,\d+:\d+)?\)\|?|M\((\d+)(?:,\d+:\d+)?\))$/);
+    if (!m) { return null; }
 
-    return null;
+    const stem = m[1].replace(/\s+/g, ' ');
+    const addr = Number(m[2] || m[3] || 0);
+
+    const opcodeMap = {
+        'LOAD': 0x01, 'LOAD -': 0x02, 'LOAD |': 0x03, 'LOAD -|': 0x04,
+        'ADD': 0x05, 'SUB': 0x06, 'ADD |': 0x07, 'SUB |': 0x08,
+        'LOAD MQ,': 0x09, 'MUL': 0x0B, 'DIV': 0x0C,
+        'JUMP+': 0x0D, 'JUMP': 0x0F, 'STOR': 0x21
+    };
+
+    const opcode = opcodeMap[stem];
+    if (opcode === undefined) { return null; }
+    return { opcode, address: addr };
 }
 
 function buildPanelHtml() {
-    const options = BUILDER_OPS.map((op) => `<option value="${op.opcode}">${op.mnemonic}</option>`).join('');
+    const options = BUILDER_OPS.map((op) => `<option value="${op.opcode}">${op.category ? `[${op.category}] ` : ''}${op.mnemonic}</option>`).join('');
 
     return `
         <div class="tools-toolbar" id="tools-toolbar">
@@ -61,6 +85,8 @@ function buildPanelHtml() {
             <button class="tools-tab active" data-tools-tab="builder" type="button">Instruction Builder</button>
             <button class="tools-tab" data-tools-tab="translator" type="button">Binary Translator</button>
             <button class="tools-tab" data-tools-tab="editor" type="button">Assembly Editor</button>
+            <button class="tools-tab" data-tools-tab="inspector" type="button">Word Inspector</button>
+            <button class="tools-tab" data-tools-tab="trace" type="button">Execution Trace</button>
         </div>
         <div class="tools-panel active" data-tools-panel="builder">
             <div class="tools-grid">
@@ -86,17 +112,29 @@ function buildPanelHtml() {
             </div>
         </div>
         <div class="tools-panel" data-tools-panel="translator">
-            <label>Assembly / Hex
-                <input id="tools-translator-input" type="text" placeholder="ADD M(101) or 0x05065">
+            <label>Assembly / Hex / Binary / Decimal
+                <input id="tools-translator-input" type="text" placeholder="ADD M(101) or 0x05065 or 0b... or 325">
             </label>
             <div class="tools-readout" id="tools-translator-readout"></div>
         </div>
         <div class="tools-panel" data-tools-panel="editor">
             <textarea id="tools-editor-source" rows="10" spellcheck="false"></textarea>
             <div class="tools-actions">
-                <button id="tools-assemble-load" type="button">Assemble and Load</button>
+                <button id="tools-assemble-load" type="button">Assemble and Load (Ctrl+Enter)</button>
             </div>
             <div class="tools-readout" id="tools-editor-status"></div>
+        </div>
+        <div class="tools-panel" data-tools-panel="inspector">
+            <div class="tools-grid">
+                <label>Address
+                    <input id="tools-inspector-addr" type="number" min="0" max="1023" value="0">
+                </label>
+                <button id="tools-inspector-go" type="button">Inspect</button>
+            </div>
+            <div class="tools-readout" id="tools-inspector-readout" style="white-space:pre-wrap;"></div>
+        </div>
+        <div class="tools-panel" data-tools-panel="trace">
+            <div class="tools-readout tools-trace-log" id="tools-trace-log" style="max-height:200px;overflow:auto;white-space:pre-wrap;font-size:0.72rem;"></div>
         </div>
     `;
 }
@@ -223,22 +261,46 @@ export function initToolsUI() {
             return;
         }
 
-        if (/^0x[0-9a-f]+$/i.test(input) || /^[0-9a-f]{1,5}$/i.test(input)) {
-            const raw = input.startsWith('0x') ? input.slice(2) : input;
-            const value = parseInt(raw, 16) & 0xFFFFF;
+        // Binary input: 0b...
+        if (/^0b[01]+$/i.test(input)) {
+            const value = parseInt(input.slice(2), 2) & 0xFFFFF;
             const left = disassemble((BigInt(value) << 20n) | 0n).left;
-            translatorReadout.textContent = `Hex ${input} -> ${left}`;
+            const hex = `0x${value.toString(16).toUpperCase().padStart(5, '0')}`;
+            translatorReadout.textContent = `Binary -> ${left} | hex ${hex} | dec ${value}`;
             return;
         }
 
+        // Hex input: 0x... or raw hex digits
+        if (/^0x[0-9a-f]+$/i.test(input) || /^[0-9a-f]{3,5}$/i.test(input)) {
+            const raw = input.startsWith('0x') ? input.slice(2) : input;
+            const value = parseInt(raw, 16) & 0xFFFFF;
+            const left = disassemble((BigInt(value) << 20n) | 0n).left;
+            const binary = value.toString(2).padStart(20, '0');
+            translatorReadout.textContent = `Hex -> ${left} | bin ${binary} | dec ${value}`;
+            return;
+        }
+
+        // Decimal input (pure number)
+        if (/^\d+$/.test(input)) {
+            const value = parseInt(input, 10) & 0xFFFFF;
+            const left = disassemble((BigInt(value) << 20n) | 0n).left;
+            const hex = `0x${value.toString(16).toUpperCase().padStart(5, '0')}`;
+            const binary = value.toString(2).padStart(20, '0');
+            translatorReadout.textContent = `Dec ${input} -> ${left} | hex ${hex} | bin ${binary}`;
+            return;
+        }
+
+        // Assembly input
         const parsed = parseBuilderLine(input);
         if (!parsed) {
-            translatorReadout.textContent = 'Could not parse input. Try ADD M(101) or 0x05065';
+            translatorReadout.textContent = 'Try: ADD M(101), 0x05065, 0b..., or 325';
             return;
         }
 
         const encoded = encodeHalf(parsed.opcode, parsed.address);
-        translatorReadout.textContent = `Assembly -> hex 0x${encoded.toString(16).toUpperCase().padStart(5, '0')} | dec ${encoded}`;
+        const hex = `0x${encoded.toString(16).toUpperCase().padStart(5, '0')}`;
+        const binary = encoded.toString(2).padStart(20, '0');
+        translatorReadout.textContent = `${input} -> hex ${hex} | bin ${binary} | dec ${encoded}`;
     };
 
     const assembleAndLoad = () => {
@@ -284,6 +346,52 @@ export function initToolsUI() {
         }
     });
 
+    // Word Inspector
+    const inspectorAddr = mount.querySelector('#tools-inspector-addr');
+    const inspectorReadout = mount.querySelector('#tools-inspector-readout');
+    const inspectorGo = mount.querySelector('#tools-inspector-go');
+    const updateInspector = () => {
+        if (!window.VEIZACPanelAPI) { inspectorReadout.textContent = 'Power on first'; return; }
+        const state = window.VEIZACPanelAPI.getMachineState();
+        if (!state) { inspectorReadout.textContent = 'No state'; return; }
+        const addr = Math.max(0, Math.min(1023, Number(inspectorAddr.value || 0)));
+        const word = state.memory[addr];
+        const decoded = disassemble(word);
+        const hex = (word & 0xFFFFFFFFFFn).toString(16).toUpperCase().padStart(10, '0');
+        const bin = (word & 0xFFFFFFFFFFn).toString(2).padStart(40, '0');
+        const signed = word >= (1n << 39n) ? (word - (1n << 40n)).toString() : word.toString();
+        inspectorReadout.textContent = [
+            `Addr:    ${String(addr).padStart(3, '0')}`,
+            `Hex:     0x${hex}`,
+            `Binary:  ${bin.slice(0,8)} ${bin.slice(8,20)} ${bin.slice(20,28)} ${bin.slice(28)}`,
+            `Signed:  ${signed}`,
+            `Left:    ${decoded.left}`,
+            `Right:   ${decoded.right}`
+        ].join('\n');
+    };
+    if (inspectorGo) { inspectorGo.addEventListener('click', updateInspector); }
+    if (inspectorAddr) { inspectorAddr.addEventListener('change', updateInspector); }
+
+    // Execution Trace - listen to log events
+    const traceLog = mount.querySelector('#tools-trace-log');
+    let traceLines = [];
+    const pushTrace = (line) => {
+        traceLines.push(line);
+        if (traceLines.length > 200) { traceLines.shift(); }
+        if (traceLog) { traceLog.textContent = traceLines.join('\n'); traceLog.scrollTop = traceLog.scrollHeight; }
+    };
+    // Hook into step events via MutationObserver on log
+    const logRows = document.getElementById('sim-log-rows');
+    if (logRows) {
+        const observer = new MutationObserver(() => {
+            const first = logRows.firstElementChild;
+            if (first && first.textContent.startsWith('[')) {
+                pushTrace(first.textContent);
+            }
+        });
+        observer.observe(logRows, { childList: true });
+    }
+
     toggleButton.addEventListener('click', () => {
         toolbar.classList.toggle('collapsed');
         mount.classList.toggle('collapsed');
@@ -291,6 +399,8 @@ export function initToolsUI() {
 
     document.addEventListener('keydown', (event) => {
         if ((event.key || '').toLowerCase() === 't') {
+            const tag = (document.activeElement || {}).tagName || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') { return; }
             toolbar.classList.toggle('collapsed');
             mount.classList.toggle('collapsed');
         }

@@ -1,20 +1,40 @@
 (function () {
     const OPS = {
-        'HALT': { opcode: 0x00, needsAddress: false },
-        'LOAD M(X)': { opcode: 0x01, needsAddress: true },
-        'ADD M(X)': { opcode: 0x05, needsAddress: true },
-        'SUB M(X)': { opcode: 0x06, needsAddress: true },
-        'LOAD MQ': { opcode: 0x0A, needsAddress: false },
-        'STOR M(X)': { opcode: 0x21, needsAddress: true },
-        'DATA': { opcode: -1, needsAddress: false, isData: true }
+        'HALT': { opcode: 0x00, needsAddress: false, category: 'Control' },
+        'LOAD M(X)': { opcode: 0x01, needsAddress: true, category: 'Data Transfer' },
+        'LOAD -M(X)': { opcode: 0x02, needsAddress: true, category: 'Data Transfer' },
+        'LOAD |M(X)|': { opcode: 0x03, needsAddress: true, category: 'Data Transfer' },
+        'LOAD -|M(X)|': { opcode: 0x04, needsAddress: true, category: 'Data Transfer' },
+        'ADD M(X)': { opcode: 0x05, needsAddress: true, category: 'Arithmetic' },
+        'SUB M(X)': { opcode: 0x06, needsAddress: true, category: 'Arithmetic' },
+        'ADD |M(X)|': { opcode: 0x07, needsAddress: true, category: 'Arithmetic' },
+        'SUB |M(X)|': { opcode: 0x08, needsAddress: true, category: 'Arithmetic' },
+        'LOAD MQ,M(X)': { opcode: 0x09, needsAddress: true, category: 'Data Transfer' },
+        'LOAD MQ': { opcode: 0x0A, needsAddress: false, category: 'Data Transfer' },
+        'MUL M(X)': { opcode: 0x0B, needsAddress: true, category: 'Arithmetic' },
+        'DIV M(X)': { opcode: 0x0C, needsAddress: true, category: 'Arithmetic' },
+        'JUMP+ M(X,0:19)': { opcode: 0x0D, needsAddress: true, category: 'Control' },
+        'JUMP+ M(X,20:39)': { opcode: 0x0E, needsAddress: true, category: 'Control' },
+        'JUMP M(X,0:19)': { opcode: 0x0F, needsAddress: true, category: 'Control' },
+        'JUMP M(X,20:39)': { opcode: 0x10, needsAddress: true, category: 'Control' },
+        'STOR M(X,8:19)': { opcode: 0x12, needsAddress: true, category: 'Address Modify' },
+        'STOR M(X,28:39)': { opcode: 0x13, needsAddress: true, category: 'Address Modify' },
+        'LSH': { opcode: 0x14, needsAddress: false, category: 'Arithmetic' },
+        'RSH': { opcode: 0x15, needsAddress: false, category: 'Arithmetic' },
+        'STOR M(X)': { opcode: 0x21, needsAddress: true, category: 'Data Transfer' },
+        'DATA': { opcode: -1, needsAddress: false, isData: true, category: 'Data' }
     };
 
     const OPCODE_TO_TEXT = {
         0x00: 'HALT',
-        0x01: 'LOAD M(X)',
-        0x05: 'ADD M(X)',
-        0x06: 'SUB M(X)',
-        0x0A: 'LOAD MQ',
+        0x01: 'LOAD M(X)', 0x02: 'LOAD -M(X)', 0x03: 'LOAD |M(X)|', 0x04: 'LOAD -|M(X)|',
+        0x05: 'ADD M(X)', 0x06: 'SUB M(X)', 0x07: 'ADD |M(X)|', 0x08: 'SUB |M(X)|',
+        0x09: 'LOAD MQ,M(X)', 0x0A: 'LOAD MQ',
+        0x0B: 'MUL M(X)', 0x0C: 'DIV M(X)',
+        0x0D: 'JUMP+ M(X,0:19)', 0x0E: 'JUMP+ M(X,20:39)',
+        0x0F: 'JUMP M(X,0:19)', 0x10: 'JUMP M(X,20:39)',
+        0x12: 'STOR M(X,8:19)', 0x13: 'STOR M(X,28:39)',
+        0x14: 'LSH', 0x15: 'RSH',
         0x21: 'STOR M(X)'
     };
 
@@ -178,13 +198,18 @@
     }
 
     function buildPanelHtml() {
-        const options = Object.keys(OPS).map((mnemonic) => `<option value="${OPS[mnemonic].opcode}">${mnemonic}</option>`).join('');
+        const options = Object.keys(OPS).map((mnemonic) => {
+            const op = OPS[mnemonic];
+            return `<option value="${op.opcode}">${op.category ? `[${op.category}] ` : ''}${mnemonic}</option>`;
+        }).join('');
         return `
             <div class="tools-toolbar" id="tools-toolbar">
                 <button id="tools-toggle" type="button">TOOLS</button>
                 <button class="tools-tab active" data-tools-tab="builder" type="button">Instruction Builder</button>
                 <button class="tools-tab" data-tools-tab="translator" type="button">Binary Translator</button>
                 <button class="tools-tab" data-tools-tab="editor" type="button">Assembly Editor</button>
+                <button class="tools-tab" data-tools-tab="inspector" type="button">Word Inspector</button>
+                <button class="tools-tab" data-tools-tab="trace" type="button">Execution Trace</button>
             </div>
             <div class="tools-panel active" data-tools-panel="builder">
                 <div class="tools-grid">
@@ -210,17 +235,29 @@
                 </div>
             </div>
             <div class="tools-panel" data-tools-panel="translator">
-                <label>Assembly / Hex
-                    <input id="tools-translator-input" type="text" placeholder="ADD M(101) or 0x05065">
+                <label>Assembly / Hex / Binary / Decimal
+                    <input id="tools-translator-input" type="text" placeholder="ADD M(101) or 0x05065 or 0b... or 325">
                 </label>
                 <div class="tools-readout" id="tools-translator-readout"></div>
             </div>
             <div class="tools-panel" data-tools-panel="editor">
                 <textarea id="tools-editor-source" rows="10" spellcheck="false"></textarea>
                 <div class="tools-actions">
-                    <button id="tools-assemble-load" type="button">Assemble and Load</button>
+                    <button id="tools-assemble-load" type="button">Assemble and Load (Ctrl+Enter)</button>
                 </div>
                 <div class="tools-readout" id="tools-editor-status"></div>
+            </div>
+            <div class="tools-panel" data-tools-panel="inspector">
+                <div class="tools-grid">
+                    <label>Address
+                        <input id="tools-inspector-addr" type="number" min="0" max="1023" value="0">
+                    </label>
+                    <button id="tools-inspector-go" type="button">Inspect</button>
+                </div>
+                <div class="tools-readout" id="tools-inspector-readout" style="white-space:pre-wrap;"></div>
+            </div>
+            <div class="tools-panel" data-tools-panel="trace">
+                <div class="tools-readout tools-trace-log" id="tools-trace-log" style="max-height:200px;overflow:auto;white-space:pre-wrap;font-size:0.72rem;"></div>
             </div>
         `;
     }
@@ -346,20 +383,38 @@
                 return;
             }
 
-            if (/^0x[0-9a-f]+$/i.test(input) || /^[0-9a-f]{1,5}$/i.test(input)) {
+            if (/^0b[01]+$/i.test(input)) {
+                const value = parseInt(input.slice(2), 2) & 0xFFFFF;
+                const hex = `0x${value.toString(16).toUpperCase().padStart(5, '0')}`;
+                translatorReadout.textContent = `Binary -> ${decodeHalfText(value)} | hex ${hex} | dec ${value}`;
+                return;
+            }
+
+            if (/^0x[0-9a-f]+$/i.test(input) || /^[0-9a-f]{3,5}$/i.test(input)) {
                 const raw = input.startsWith('0x') ? input.slice(2) : input;
                 const value = parseInt(raw, 16) & 0xFFFFF;
-                translatorReadout.textContent = `Hex ${input} -> ${decodeHalfText(value)}`;
+                const binary = value.toString(2).padStart(20, '0');
+                translatorReadout.textContent = `Hex -> ${decodeHalfText(value)} | bin ${binary} | dec ${value}`;
+                return;
+            }
+
+            if (/^\d+$/.test(input)) {
+                const value = parseInt(input, 10) & 0xFFFFF;
+                const hex = `0x${value.toString(16).toUpperCase().padStart(5, '0')}`;
+                const binary = value.toString(2).padStart(20, '0');
+                translatorReadout.textContent = `Dec ${input} -> ${decodeHalfText(value)} | hex ${hex} | bin ${binary}`;
                 return;
             }
 
             const parsed = parseBuilderLine(input);
             if (!parsed) {
-                translatorReadout.textContent = 'Could not parse input. Try ADD M(101) or 0x05065';
+                translatorReadout.textContent = 'Try: ADD M(101), 0x05065, 0b..., or 325';
                 return;
             }
             const encoded = encodeHalf(parsed.opcode, parsed.address);
-            translatorReadout.textContent = `Assembly -> hex 0x${encoded.toString(16).toUpperCase().padStart(5, '0')} | dec ${encoded}`;
+            const hex = `0x${encoded.toString(16).toUpperCase().padStart(5, '0')}`;
+            const binary = encoded.toString(2).padStart(20, '0');
+            translatorReadout.textContent = `${input} -> hex ${hex} | bin ${binary} | dec ${encoded}`;
         };
 
         const assembleAndLoad = () => {
@@ -405,13 +460,62 @@
             }
         });
 
+        // Word Inspector
+        const inspectorAddr = mount.querySelector('#tools-inspector-addr');
+        const inspectorReadout = mount.querySelector('#tools-inspector-readout');
+        const inspectorGo = mount.querySelector('#tools-inspector-go');
+        const updateInspector = () => {
+            if (!window.VEIZACPanelAPI) { inspectorReadout.textContent = 'Power on first'; return; }
+            const state = window.VEIZACPanelAPI.getMachineState();
+            if (!state) { inspectorReadout.textContent = 'No state'; return; }
+            const addr = Math.max(0, Math.min(1023, Number(inspectorAddr.value || 0)));
+            const word = state.memory[addr];
+            const hex = (word & 0xFFFFFFFFFFn).toString(16).toUpperCase().padStart(10, '0');
+            const bin = (word & 0xFFFFFFFFFFn).toString(2).padStart(40, '0');
+            const signed = word >= (1n << 39n) ? (word - (1n << 40n)).toString() : word.toString();
+            const leftHalf = Number((word >> 20n) & 0xFFFFFn);
+            const rightHalf = Number(word & 0xFFFFFn);
+            inspectorReadout.textContent = [
+                `Addr:    ${String(addr).padStart(3, '0')}`,
+                `Hex:     0x${hex}`,
+                `Binary:  ${bin.slice(0,8)} ${bin.slice(8,20)} ${bin.slice(20,28)} ${bin.slice(28)}`,
+                `Signed:  ${signed}`,
+                `Left:    ${decodeHalfText(leftHalf)}`,
+                `Right:   ${decodeHalfText(rightHalf)}`
+            ].join('\n');
+        };
+        if (inspectorGo) { inspectorGo.addEventListener('click', updateInspector); }
+        if (inspectorAddr) { inspectorAddr.addEventListener('change', updateInspector); }
+
+        // Execution Trace
+        const traceLog = mount.querySelector('#tools-trace-log');
+        let traceLines = [];
+        const pushTrace = (line) => {
+            traceLines.push(line);
+            if (traceLines.length > 200) { traceLines.shift(); }
+            if (traceLog) { traceLog.textContent = traceLines.join('\n'); traceLog.scrollTop = traceLog.scrollHeight; }
+        };
+        const logRowsEl = document.getElementById('sim-log-rows');
+        if (logRowsEl) {
+            const observer = new MutationObserver(() => {
+                const first = logRowsEl.firstElementChild;
+                if (first && first.textContent.startsWith('[')) {
+                    pushTrace(first.textContent);
+                }
+            });
+            observer.observe(logRowsEl, { childList: true });
+        }
+
         toggleButton.addEventListener('click', () => {
             toolbar.classList.toggle('collapsed');
             mount.classList.toggle('collapsed');
         });
 
         document.addEventListener('keydown', (event) => {
-            if ((event.key || '').toLowerCase() === 't') {
+            const key = (event.key || '').toLowerCase();
+            const tag = (document.activeElement || {}).tagName || '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') { return; }
+            if (key === 't') {
                 toolbar.classList.toggle('collapsed');
                 mount.classList.toggle('collapsed');
             }
