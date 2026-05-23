@@ -112,117 +112,20 @@
         return null;
     }
 
-    function parseInstruction(line) {
-        const clean = line.trim().replace(/\s+/g, ' ');
-        if (!clean) {
-            return null;
-        }
-
-        if (/^(HALT|LOAD MQ)$/i.test(clean)) {
-            const key = clean.toUpperCase() === 'HALT' ? 'HALT' : 'LOAD MQ';
-            return { opcode: OPS[key].opcode, address: 0 };
-        }
-
-        const match = clean.match(/^(LOAD|ADD|SUB|STOR)\s+M\((\d+)\)$/i);
-        if (!match) {
-            return null;
-        }
-        const stem = match[1].toUpperCase();
-        const address = Number(match[2]);
-        const opcodeMap = { LOAD: 0x01, ADD: 0x05, SUB: 0x06, STOR: 0x21 };
-        if (!Number.isInteger(address) || address < 0 || address > 4095) {
-            return null;
-        }
-        return { opcode: opcodeMap[stem], address };
-    }
-
-    function assembleBasic(source) {
-        const lines = source.split(/\r?\n/);
-        const memory = new Map();
-        const errors = [];
-        let addr = 0;
-        let side = 'left';
-        let pendingLeft = null;
-
-        function flushPending() {
-            if (!pendingLeft) {
-                return;
-            }
-            memory.set(addr & 0x3FF, packWord(pendingLeft.opcode, pendingLeft.address, 0x00, 0));
-            addr = (addr + 1) & 0x3FF;
-            side = 'left';
-            pendingLeft = null;
-        }
-
-        for (let i = 0; i < lines.length; i += 1) {
-            const noComment = lines[i].replace(/;.*/, '').trim();
-            if (!noComment) {
-                continue;
-            }
-
-            const orgMatch = noComment.match(/^ORG\s+(.+)$/i);
-            if (orgMatch) {
-                const orgValue = parseNumber(orgMatch[1]);
-                if (orgValue === null || orgValue < 0 || orgValue > 4095) {
-                    errors.push({ line: i + 1, message: `Invalid ORG: ${orgMatch[1]}` });
-                    continue;
-                }
-                flushPending();
-                addr = orgValue;
-                side = 'left';
-                continue;
-            }
-
-            const dataMatch = noComment.match(/^DATA\s+(.+)$/i);
-            if (dataMatch) {
-                const dataValue = parseNumber(dataMatch[1]);
-                if (dataValue === null) {
-                    errors.push({ line: i + 1, message: `Invalid DATA: ${dataMatch[1]}` });
-                    continue;
-                }
-                flushPending();
-                memory.set(addr & 0x3FF, BigInt(dataValue));
-                addr = (addr + 1) & 0x3FF;
-                side = 'left';
-                continue;
-            }
-
-            const encoded = parseInstruction(noComment);
-            if (!encoded) {
-                errors.push({ line: i + 1, message: `Unsupported instruction: ${noComment}` });
-                continue;
-            }
-
-            if (side === 'left') {
-                pendingLeft = encoded;
-                side = 'right';
-            } else {
-                memory.set(addr & 0x3FF, packWord(pendingLeft.opcode, pendingLeft.address, encoded.opcode, encoded.address));
-                pendingLeft = null;
-                side = 'left';
-                addr = (addr + 1) & 0x3FF;
-            }
-        }
-
-        flushPending();
-
-        if (errors.length > 0) {
-            return { success: false, words: [], errors };
-        }
-
-        const words = [...memory.entries()]
-            .sort((a, b) => a[0] - b[0])
-            .map(([wordAddr, value]) => ({ addr: wordAddr, value }));
-
-        return { success: true, words, errors: [] };
-    }
-
     function parseBuilderLine(line) {
         const text = (line || '').trim();
         if (!text) {
             return null;
         }
-        return parseInstruction(text);
+        // Use the full assembler to parse a single instruction
+        var result = window.veizacAssemble('ORG 0\n' + text);
+        if (result.success && result.words.length > 0) {
+            var w = result.words[0].value;
+            var opcode = Number((w >> 32n) & 0xFFn);
+            var address = Number((w >> 20n) & 0xFFFn);
+            return { opcode: opcode, address: address };
+        }
+        return null;
     }
 
     function decodeHalfText(halfValue) {
@@ -487,7 +390,7 @@
         };
 
         const assembleAndLoad = () => {
-            const result = assembleBasic(editor.value);
+            const result = window.veizacAssemble(editor.value);
             if (!result.success) {
                 const firstError = result.errors[0] ? `line ${result.errors[0].line}: ${result.errors[0].message}` : 'unknown error';
                 editorStatus.textContent = `Assemble failed: ${firstError}`;
@@ -598,7 +501,7 @@
         };
 
         const validateEditor = () => {
-            const result = assembleBasic(editor.value);
+            const result = window.veizacAssemble(editor.value);
             errorsEl.innerHTML = '';
             var errorLines = {};
             if (!result.success && result.errors && result.errors.length > 0) {
