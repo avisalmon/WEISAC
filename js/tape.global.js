@@ -171,11 +171,14 @@
         strip.classList.add('feeding');
         const blocks = tapeContainer.querySelectorAll('.tape-word');
         for (let i = 0; i < blocks.length; i += 1) {
+            // Accelerating read speed — gets faster as tape is consumed
+            const progress = i / blocks.length;
+            const readDelay = Math.max(20, Math.floor(80 * (1 - progress * 0.6)));
             blocks[i].classList.add('tape-consumed');
             if (onWord) {
                 onWord(words[i], i);
             }
-            await delay(50);
+            await delay(readDelay);
         }
         strip.classList.remove('feeding');
     }
