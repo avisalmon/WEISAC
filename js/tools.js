@@ -1,4 +1,5 @@
 import { assemble, disassemble } from './assembler.js';
+import { EXAMPLES } from './examples.js';
 
 const BUILDER_OPS = [
     { mnemonic: 'HALT', opcode: 0x00, needsAddress: false, category: 'Control' },
@@ -145,6 +146,15 @@ function buildPanelHtml() {
             <div class="tools-readout" id="tools-translator-readout"></div>
         </div>
         <div class="tools-panel" data-tools-panel="editor">
+            <div class="asm-examples-bar">
+                <label>Examples
+                    <select id="asm-example-select">
+                        <option value="">— Load an example —</option>
+                        ${EXAMPLES.map((ex, i) => `<option value="${i}">${ex.name}</option>`).join('')}
+                    </select>
+                </label>
+                <span class="asm-example-desc" id="asm-example-desc"></span>
+            </div>
             <div class="asm-editor-wrap" id="asm-editor-wrap">
                 <div class="asm-line-numbers" id="asm-line-numbers"></div>
                 <div class="asm-editor-area">
@@ -205,6 +215,18 @@ export function initToolsUI() {
     const editorStatus = mount.querySelector('#tools-editor-status');
 
     editor.value = SAMPLE_SOURCE;
+
+    // Example program selector
+    const exampleSelect = mount.querySelector('#asm-example-select');
+    const exampleDesc = mount.querySelector('#asm-example-desc');
+    exampleSelect.addEventListener('change', () => {
+        const idx = exampleSelect.value;
+        if (idx === '') { exampleDesc.textContent = ''; return; }
+        const ex = EXAMPLES[Number(idx)];
+        editor.value = ex.source;
+        exampleDesc.textContent = ex.description;
+        editor.dispatchEvent(new Event('input'));
+    });
 
     const operandLabel = mount.querySelector('#tools-operand-label');
 

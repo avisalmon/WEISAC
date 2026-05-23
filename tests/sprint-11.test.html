@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 11 Tests — Example Programs & User Journeys</title>
+    <style>
+        body { font-family: monospace; padding: 2rem; background: #111; color: #0f0; }
+        .pass { color: #0f0; }
+        .fail { color: #f00; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+<h1>Sprint 11: Example Programs & User Journeys</h1>
+<pre id="results"></pre>
+
+<script type="module">
+import { EXAMPLES } from '../js/examples.js';
+import { assemble } from '../js/assembler.js';
+
+let passes = 0, failures = 0;
+const results = document.getElementById('results');
+
+function log(msg) {
+    console.log(msg);
+    results.innerHTML += msg + '\n';
+}
+
+function assert(condition, message) {
+    if (!condition) throw new Error(message);
+}
+
+function test(name, fn) {
+    try {
+        fn();
+        log('<span class="pass">✅ ' + name + '</span>');
+        passes++;
+    } catch (e) {
+        log('<span class="fail">❌ ' + name + ' — ' + e.message + '</span>');
+        failures++;
+    }
+}
+
+// ============================================================================
+// 11.1 — Examples module structure
+// ============================================================================
+
+test('EXAMPLES is an array', () => {
+    assert(Array.isArray(EXAMPLES), 'EXAMPLES should be an array');
+});
+
+test('At least 5 examples', () => {
+    assert(EXAMPLES.length >= 5, `Expected >= 5 examples, got ${EXAMPLES.length}`);
+});
+
+test('Each example has name, description, source', () => {
+    EXAMPLES.forEach((ex, i) => {
+        assert(typeof ex.name === 'string' && ex.name.length > 0, `Example ${i} missing name`);
+        assert(typeof ex.description === 'string' && ex.description.length > 0, `Example ${i} missing description`);
+        assert(typeof ex.source === 'string' && ex.source.length > 0, `Example ${i} missing source`);
+    });
+});
+
+// ============================================================================
+// 11.2 — All examples assemble without errors
+// ============================================================================
+
+EXAMPLES.forEach((ex, i) => {
+    test(`Example "${ex.name}" assembles cleanly`, () => {
+        const result = assemble(ex.source);
+        assert(result.success, `Assembly failed: ${(result.errors || []).map(e => e.message).join('; ')}`);
+        assert(result.words.length > 0, 'Should produce at least one word');
+    });
+});
+
+// ============================================================================
+// 11.3 — Specific example correctness
+// ============================================================================
+
+test('Add Two Numbers: result word at address 102 is initially 0', () => {
+    const ex = EXAMPLES.find(e => e.name === 'Add Two Numbers');
+    assert(ex, 'Example not found');
+    const result = assemble(ex.source);
+    assert(result.success, 'Assembly failed');
+    // address 102 should have DATA 0
+    const w102 = result.words.find(w => w.address === 102);
+    assert(w102, 'No word at address 102');
+    assert(w102.value === 0n || w102.value === BigInt(0), 'Expected 0 at address 102');
+});
+
+test('Multiply Two Numbers: uses MUL instruction', () => {
+    const ex = EXAMPLES.find(e => e.name === 'Multiply Two Numbers');
+    assert(ex, 'Example not found');
+    assert(ex.source.includes('MUL'), 'Source should contain MUL instruction');
+});
+
+test('Countdown Loop: uses JUMP', () => {
+    const ex = EXAMPLES.find(e => e.name === 'Countdown Loop');
+    assert(ex, 'Example not found');
+    assert(ex.source.includes('JUMP'), 'Source should contain JUMP instruction');
+});
+
+test('Factorial: target is 7! = 5040', () => {
+    const ex = EXAMPLES.find(e => e.name.includes('Factorial'));
+    assert(ex, 'Example not found');
+    assert(ex.description.includes('5040'), 'Description should mention 5040');
+});
+
+test('Fibonacci: produces output at M(200)+', () => {
+    const ex = EXAMPLES.find(e => e.name.includes('Fibonacci'));
+    assert(ex, 'Example not found');
+    assert(ex.source.includes('M(200)'), 'Source should reference M(200)');
+});
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+log('');
+log(`Done: ${passes} passed, ${failures} failed`);
+if (failures === 0) {
+    log('<span class="pass">ALL TESTS PASSED</span>');
+} else {
+    log('<span class="fail">SOME TESTS FAILED</span>');
+}
+</script>
+</body>
+</html>

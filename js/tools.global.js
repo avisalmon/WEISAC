@@ -51,6 +51,15 @@
         'DATA 0'
     ].join('\n');
 
+    const GLOBAL_EXAMPLES = [
+        { name: 'Add Two Numbers', description: 'Simplest program: compute C = A + B. Result at M(102).', source: '; Compute C = A + B\nORG 0\nLOAD M(100)\nADD M(101)\nSTOR M(102)\nHALT\n\nORG 100\nDATA 25\nDATA 17\nDATA 0' },
+        { name: 'Multiply Two Numbers', description: 'Demonstrates MUL and MQ register. Computes 6 x 9 = 54.', source: '; Multiply A * B\nORG 0\nLOAD MQ,M(100)\nMUL M(101)\nLOAD MQ\nSTOR M(102)\nHALT\n\nORG 100\nDATA 6\nDATA 9\nDATA 0' },
+        { name: 'Countdown Loop', description: 'Self-modifying code: counts 10 to 0 at M(200+).', source: '; Countdown from 10\nORG 0\nLOAD M(50)\nloop:\nSTOR M(200)\nSUB M(51)\nJUMP+ M(continue,0:19)\nHALT\ncontinue:\nSTOR M(50)\nLOAD M(3)\nADD M(52)\nSTOR M(3,8:19)\nLOAD M(50)\nJUMP M(loop,20:39)\nHALT\n\nORG 50\nDATA 10\nDATA 1\nDATA 1048576' },
+        { name: 'Sum Array', description: 'Sums 5 values using address modification. Result at M(110).', source: '; Sum array of 5 numbers\nORG 0\nLOAD M(50)\nSTOR M(110)\nLOAD M(51)\nSTOR M(52)\nloop:\nLOAD M(110)\nADD M(100)\nSTOR M(110)\nLOAD M(52)\nSUB M(53)\nSTOR M(52)\nSUB M(53)\nJUMP+ M(inc,0:19)\nHALT\ninc:\nLOAD M(5)\nADD M(54)\nSTOR M(5,8:19)\nJUMP M(loop,0:19)\n\nORG 50\nDATA 0\nDATA 5\nDATA 0\nDATA 1\nDATA 1048576\n\nORG 100\nDATA 10\nDATA 20\nDATA 30\nDATA 40\nDATA 50' },
+        { name: 'Factorial (7! = 5040)', description: 'Computes 7! using loop and MUL. Result at M(102).', source: '; Compute 7!\nORG 0\nLOAD M(100)\nSTOR M(101)\nloop:\nLOAD M(100)\nSUB M(103)\nSTOR M(100)\nJUMP+ M(check,0:19)\nJUMP M(done,0:19)\ncheck:\nLOAD M(100)\nSUB M(103)\nJUMP+ M(mul,0:19)\nJUMP M(done,0:19)\nmul:\nLOAD MQ,M(101)\nMUL M(100)\nLOAD MQ\nSTOR M(101)\nJUMP M(loop,0:19)\ndone:\nLOAD M(101)\nSTOR M(102)\nHALT\n\nORG 100\nDATA 7\nDATA 0\nDATA 0\nDATA 1' },
+        { name: 'Fibonacci Sequence', description: 'First 10 Fibonacci numbers at M(200)-M(209).', source: '; Fibonacci\nORG 0\nLOAD M(50)\nSTOR M(200)\nLOAD M(51)\nSTOR M(201)\nLOAD M(52)\nSTOR M(53)\nLOAD M(51)\nSTOR M(54)\nLOAD M(50)\nSTOR M(55)\nloop:\nLOAD M(54)\nADD M(55)\nSTOR M(202)\nLOAD M(55)\nSTOR M(56)\nLOAD M(54)\nSTOR M(55)\nLOAD M(56)\nADD M(55)\nSTOR M(54)\nLOAD M(53)\nSUB M(57)\nSTOR M(53)\nSUB M(57)\nJUMP+ M(next,0:19)\nHALT\nnext:\nLOAD M(8)\nADD M(58)\nSTOR M(8,8:19)\nJUMP M(loop,0:19)\n\nORG 50\nDATA 0\nDATA 1\nDATA 8\nDATA 0\nDATA 0\nDATA 0\nDATA 0\nDATA 1\nDATA 1048576' }
+    ];
+
     const BUILDER_DESCRIPTIONS = {
         0x00: 'Stops the machine. No further instructions are executed until RUN is pressed again.',
         0x01: 'Loads the full 40-bit word from memory address X into the Accumulator (AC). Previous AC value is lost.',
@@ -268,6 +277,15 @@
                 <div class="tools-readout" id="tools-translator-readout"></div>
             </div>
             <div class="tools-panel" data-tools-panel="editor">
+                <div class="asm-examples-bar">
+                    <label>Examples
+                        <select id="asm-example-select">
+                            <option value="">— Load an example —</option>
+                            ${GLOBAL_EXAMPLES.map((ex, i) => '<option value="' + i + '">' + ex.name + '</option>').join('')}
+                        </select>
+                    </label>
+                    <span class="asm-example-desc" id="asm-example-desc"></span>
+                </div>
                 <div class="asm-editor-wrap" id="asm-editor-wrap">
                     <div class="asm-line-numbers" id="asm-line-numbers"></div>
                     <div class="asm-editor-area">
@@ -328,6 +346,18 @@
         const editorStatus = mount.querySelector('#tools-editor-status');
 
         editor.value = SAMPLE_SOURCE;
+
+        // Example program selector
+        const exampleSelect = mount.querySelector('#asm-example-select');
+        const exampleDesc = mount.querySelector('#asm-example-desc');
+        exampleSelect.addEventListener('change', function() {
+            var idx = exampleSelect.value;
+            if (idx === '') { exampleDesc.textContent = ''; return; }
+            var ex = GLOBAL_EXAMPLES[Number(idx)];
+            editor.value = ex.source;
+            exampleDesc.textContent = ex.description;
+            editor.dispatchEvent(new Event('input'));
+        });
 
         const operandLabel = mount.querySelector('#tools-operand-label');
 

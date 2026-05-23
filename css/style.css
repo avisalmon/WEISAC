@@ -1342,6 +1342,39 @@ code, pre, .mono {
     margin-left: 0.5rem;
 }
 
+.asm-examples-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.asm-examples-bar label {
+    font-size: 0.75rem;
+    color: #e6edf7;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.asm-examples-bar select {
+    border: 1px solid #5a7a9a;
+    border-radius: 5px;
+    background: #1c2128;
+    color: #c9d1d9;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.4rem;
+}
+
+.asm-example-desc {
+    font-size: 0.7rem;
+    color: #8b949e;
+    font-style: italic;
+}
+
 .asm-editor-area {
     flex: 1;
     min-width: 0;
