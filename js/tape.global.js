@@ -80,6 +80,8 @@
         const opts = options || {};
         const showHelp = opts.showHelp !== false;
 
+        const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+        strip.classList.add('feeding');
         tapeContainer.innerHTML = '';
 
         words.forEach((entry) => {

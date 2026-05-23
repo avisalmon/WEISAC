@@ -70,6 +70,8 @@ export function renderTape(words, options = {}) {
         return;
     }
     const showHelp = options.showHelp !== false;
+    const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+    strip.classList.add('feeding');
     tapeContainer.innerHTML = '';
 
     words.forEach((entry) => {
@@ -106,6 +108,8 @@ export function renderTapeFromMemory(memory) {
     if (lastNonZero < 0) {
         if (tapeContainer) {
             tapeContainer.innerHTML = '';
+            const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+            strip.classList.remove('feeding');
         }
         return;
     }
