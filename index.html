@@ -683,8 +683,10 @@
                 <div class="sim-panel-grid" id="sim-panel-grid">
                     <div class="sim-registers" aria-label="Registers">
                         <h3>Registers</h3>
-                        <div class="sim-register-row"><span>AC</span><code id="sim-reg-ac">0000000000</code></div>
-                        <div class="sim-register-row"><span>MQ</span><code id="sim-reg-mq">0000000000</code></div>
+                        <div class="sim-register-row"><span>AC</span><code id="sim-reg-ac" title="">0000000000</code></div>
+                        <div class="sim-register-decimal" id="sim-reg-ac-dec">0</div>
+                        <div class="sim-register-row"><span>MQ</span><code id="sim-reg-mq" title="">0000000000</code></div>
+                        <div class="sim-register-decimal" id="sim-reg-mq-dec">0</div>
                         <div class="sim-register-row"><span>PC</span><code id="sim-reg-pc">000 L</code></div>
                         <div class="sim-register-row"><span>State</span><code id="sim-reg-state">off</code></div>
                     </div>
@@ -731,6 +733,12 @@
                     <button id="sim-btn-stop" type="button">STOP</button>
                     <button id="sim-btn-reset" type="button">RESET</button>
                     <button id="sim-btn-clear" type="button">CLEAR</button>
+                </div>
+
+                <div class="sim-speed-dial" aria-label="Speed control">
+                    <label for="sim-speed-knob">Speed</label>
+                    <input id="sim-speed-knob" type="range" min="0" max="4" step="1" value="1">
+                    <span class="speed-label" id="sim-speed-label">1955 FEEL</span>
                 </div>
 
                 <div class="sim-log" aria-label="Execution log">

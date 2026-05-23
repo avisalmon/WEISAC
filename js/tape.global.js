@@ -70,7 +70,7 @@
 
         bits.forEach((bit) => {
             const cell = document.createElement('span');
-            cell.className = bit ? 'tape-bit on' : 'tape-bit off';
+            cell.className = bit ? 'tape-bit on punched' : 'tape-bit off';
             if (showHelp) {
                 cell.title = `${decodeText} (simplified visualization)`;
             }

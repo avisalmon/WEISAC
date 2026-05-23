@@ -1086,11 +1086,14 @@ code, pre, .mono {
 /* ===== SIMULATOR TAB (SPRINT 7) ===== */
 .simulator-shell {
     background: linear-gradient(145deg, #575757, #464646);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='1'%3E%3Crect width='200' height='1' fill='rgba(255,255,255,0.02)'/%3E%3C/svg%3E");
+    background-size: 100% 2px;
     border: 2px solid #2c2c2c;
     border-radius: 14px;
     padding: 1rem;
     color: #f4f4f4;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    font-family: 'Century Gothic', 'Futura', -apple-system, sans-serif;
 }
 
 .sim-titlebar {
@@ -1104,6 +1107,7 @@ code, pre, .mono {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     font-weight: 600;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .sim-titlebar p {
@@ -1360,10 +1364,11 @@ code, pre, .mono {
 
 .sim-memory-rows {
     margin-top: 0.45rem;
-    max-height: 340px;
+    max-height: 400px;
     overflow: auto;
     font-family: var(--color-mono);
     font-size: 0.76rem;
+    position: relative;
 }
 
 .sim-memory-row {
@@ -1444,7 +1449,7 @@ code, pre, .mono {
 
 .sim-controls {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 0.5rem;
     margin-top: 0.9rem;
 }
@@ -1461,6 +1466,80 @@ code, pre, .mono {
 
 .sim-controls button:hover {
     filter: brightness(1.05);
+}
+
+/* Speed dial */
+.sim-speed-dial {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+}
+.sim-speed-dial label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #d8d8d8;
+}
+.sim-speed-dial input[type="range"] {
+    width: 160px;
+    accent-color: #c9a227;
+}
+.sim-speed-dial .speed-label {
+    font-family: var(--color-mono);
+    font-size: 0.72rem;
+    color: #f0d97b;
+    min-width: 80px;
+}
+
+/* Light blink animations */
+@keyframes light-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+.sim-light.blink {
+    animation: light-blink 0.4s ease-in-out infinite;
+}
+#light-power.on {
+    background: linear-gradient(180deg, #4a9e4a, #2a6e2a);
+    box-shadow: 0 0 12px rgba(80, 200, 80, 0.7);
+}
+#light-halt.on {
+    background: linear-gradient(180deg, #c94040, #8a2020);
+    box-shadow: 0 0 12px rgba(220, 80, 80, 0.7);
+}
+#light-error.on {
+    background: linear-gradient(180deg, #c94040, #8a2020);
+    box-shadow: 0 0 12px rgba(220, 80, 80, 0.7);
+    animation: light-blink 0.2s ease-in-out infinite;
+}
+#light-left.on, #light-right.on {
+    background: linear-gradient(180deg, #e8e8e8, #b8b8b8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    color: #222;
+}
+
+/* Register decimal display */
+.sim-register-decimal {
+    font-size: 0.68rem;
+    color: #aadaaa;
+    margin-top: 0.1rem;
+    font-family: var(--color-mono);
+}
+.sim-register-row code[title] {
+    cursor: help;
+}
+
+/* Breakpoint dot */
+.sim-memory-row.breakpoint::before {
+    content: '●';
+    color: #e83030;
+    position: absolute;
+    left: -14px;
+    font-size: 0.9rem;
+}
+.sim-memory-row {
+    position: relative;
 }
 
 .sim-log {

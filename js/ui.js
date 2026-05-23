@@ -35,6 +35,19 @@ function toHex40(value) {
     return masked.toString(16).toUpperCase().padStart(10, '0');
 }
 
+function toBin40(value) {
+    const masked = value & 0xFFFFFFFFFFn;
+    return masked.toString(2).padStart(40, '0');
+}
+
+function toSigned40(value) {
+    const masked = value & 0xFFFFFFFFFFn;
+    if (masked >= (1n << 39n)) {
+        return (masked - (1n << 40n)).toString();
+    }
+    return masked.toString();
+}
+
 function formatPc(pc) {
     return `${String(pc.addr).padStart(3, '0')} ${pc.side === 'left' ? 'L' : 'R'}`;
 }
@@ -166,16 +179,14 @@ export function initSimulatorUI() {
         row.textContent = line;
         logRows.prepend(row);
 
-        while (logRows.children.length > 80) {
+        while (logRows.children.length > 1000) {
             logRows.removeChild(logRows.lastChild);
         }
     };
 
     const scrollToAddress = (addr) => {
-        const target = memRows.querySelector(`[data-addr="${addr}"]`);
-        if (target) {
-            target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        }
+        const rowHeight = 24;
+        memRows.scrollTop = Math.max(0, addr * rowHeight - memRows.clientHeight / 2);
     };
 
     const renderRegisters = (state) => {
@@ -183,21 +194,28 @@ export function initSimulatorUI() {
         const mq = document.getElementById('sim-reg-mq');
         const pc = document.getElementById('sim-reg-pc');
         const regState = document.getElementById('sim-reg-state');
+        const acDec = document.getElementById('sim-reg-ac-dec');
+        const mqDec = document.getElementById('sim-reg-mq-dec');
         if (!ac || !mq || !pc || !regState) {
             return;
         }
 
         ac.textContent = toHex40(state.ac);
+        ac.title = toBin40(state.ac);
         mq.textContent = toHex40(state.mq);
+        mq.title = toBin40(state.mq);
         pc.textContent = formatPc(state.pc);
         regState.textContent = state.state;
+        if (acDec) { acDec.textContent = toSigned40(state.ac); }
+        if (mqDec) { mqDec.textContent = toSigned40(state.mq); }
     };
 
     const renderLights = (state) => {
-        const set = (id, on) => {
+        const set = (id, on, blink = false) => {
             const el = document.getElementById(id);
             if (el) {
                 el.classList.toggle('on', on);
+                el.classList.toggle('blink', blink);
             }
         };
 
@@ -206,13 +224,25 @@ export function initSimulatorUI() {
         set('light-error', state.state === 'error');
         set('light-left', state.pc.side === 'left');
         set('light-right', state.pc.side === 'right');
-        set('light-fetch', state.state === 'running' || state.state === 'ready');
-        set('light-exec', state.state === 'running' || state.state === 'ready');
-        set('light-store', false);
+        set('light-fetch', state.state === 'running', state.state === 'running');
+        set('light-exec', state.state === 'running', state.state === 'running');
+        set('light-store', state.lastWrite !== undefined && state.lastWrite !== null);
     };
 
     let loadFlashAddr = null;
     let builderTargetAddr = null;
+    const breakpoints = new Set();
+
+    // Speed dial: 5 positions
+    const SPEED_SETTINGS = [
+        { label: 'OBSERVE', delay: 200 },
+        { label: '1955 FEEL', delay: 50 },
+        { label: '10x', delay: 5 },
+        { label: '100x', delay: 0.5 },
+        { label: 'MAX', delay: 0 }
+    ];
+    let speedIndex = 1;
+    const getSpeedDelay = () => SPEED_SETTINGS[speedIndex].delay;
 
     const applyAuthenticMode = () => {
         if (simulatorShell) {
@@ -230,10 +260,25 @@ export function initSimulatorUI() {
     };
 
     const renderMemory = (state) => {
-        memRows.innerHTML = '';
-        const rowsToRender = 128;
+        const scrollTop = memRows.scrollTop;
+        const rowHeight = 24;
+        const containerHeight = memRows.clientHeight || 400;
+        const visibleCount = Math.ceil(containerHeight / rowHeight) + 4;
+        const startAddr = Math.max(0, Math.floor(scrollTop / rowHeight) - 2);
+        const endAddr = Math.min(1024, startAddr + visibleCount);
 
-        for (let addr = 0; addr < rowsToRender; addr += 1) {
+        // Spacer for full scroll height
+        let spacer = memRows.querySelector('.mem-spacer');
+        if (!spacer) {
+            spacer = document.createElement('div');
+            spacer.className = 'mem-spacer';
+            spacer.style.height = `${1024 * rowHeight}px`;
+            spacer.style.position = 'relative';
+            memRows.appendChild(spacer);
+        }
+        spacer.querySelectorAll('.sim-memory-row').forEach((r) => r.remove());
+
+        for (let addr = startAddr; addr < endAddr; addr += 1) {
             const word = state.memory[addr];
             const left = extractLeft(word);
             const right = extractRight(word);
@@ -241,6 +286,12 @@ export function initSimulatorUI() {
             const row = document.createElement('div');
             row.className = 'sim-memory-row';
             row.dataset.addr = String(addr);
+            row.style.position = 'absolute';
+            row.style.top = `${addr * rowHeight}px`;
+            row.style.left = '0';
+            row.style.right = '0';
+            row.style.height = `${rowHeight}px`;
+
             if (state.pc.addr === addr) {
                 row.classList.add(state.pc.side === 'left' ? 'pc-left' : 'pc-right');
             }
@@ -250,8 +301,17 @@ export function initSimulatorUI() {
             if (builderTargetAddr === addr) {
                 row.classList.add('builder-target');
             }
+            if (breakpoints.has(addr)) {
+                row.classList.add('breakpoint');
+            }
 
-            row.addEventListener('click', () => {
+            row.addEventListener('click', (e) => {
+                if (e.shiftKey) {
+                    if (breakpoints.has(addr)) { breakpoints.delete(addr); }
+                    else { breakpoints.add(addr); }
+                    renderMemory(getState());
+                    return;
+                }
                 builderTargetAddr = addr;
                 renderMemory(getState());
                 document.dispatchEvent(new CustomEvent('veizac:builder-target', { detail: addr }));
@@ -277,7 +337,7 @@ export function initSimulatorUI() {
             }
 
             row.append(a, hex, leftTxt, rightTxt);
-            memRows.appendChild(row);
+            spacer.appendChild(row);
         }
     };
 
@@ -378,6 +438,14 @@ export function initSimulatorUI() {
         await activateAudio();
         if (machine.state === 'off') {
             pushLog('POWER ON: warming up');
+            // Flicker lights sequentially
+            const lights = ['light-power', 'light-fetch', 'light-exec', 'light-store', 'light-left', 'light-right'];
+            for (const id of lights) {
+                const el = document.getElementById(id);
+                if (el) { el.classList.add('on'); }
+                await delay(250);
+                if (el && id !== 'light-power') { el.classList.remove('on'); }
+            }
             await powerOn();
             startIdleHum();
             pushLog('READY');
@@ -434,27 +502,33 @@ export function initSimulatorUI() {
         playButtonClick();
         runAborted = false;
 
-        // Jump to address 0 and execute at 100 inst/sec
+        // Jump to address 0 and execute at speed-dial rate
         machine.pc = { addr: 0, side: 'left' };
         machine.state = 'ready';
         machine.error = null;
         renderAll();
         pushLog('RUN');
         startRunClicks(20);
-        const execDelay = (ms) => new Promise((r) => setTimeout(r, ms));
+        const execDelay = (ms) => ms > 0 ? new Promise((r) => setTimeout(r, ms)) : Promise.resolve();
 
         while (!runAborted && machine.state !== 'halted' && machine.state !== 'error' && machine.state !== 'off') {
             const trace = step();
-            renderAll();
+            const currentDelay = getSpeedDelay();
+            if (currentDelay >= 5) { renderAll(); }
             if (trace) {
                 pushLog(`[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}] ${trace.mnemonic}`);
+                if (breakpoints.has(trace.pc.addr)) {
+                    pushLog(`BREAKPOINT at ${String(trace.pc.addr).padStart(3, '0')}`);
+                    runAborted = true;
+                    break;
+                }
             }
             if (machine.state === 'error' && machine.error) {
                 playErrorBuzzer();
                 pushLog(`ERROR: ${machine.error}`);
                 break;
             }
-            await execDelay(10);
+            await execDelay(currentDelay);
         }
 
         stopRunClicks();
@@ -602,10 +676,65 @@ export function initSimulatorUI() {
     };
 
     document.addEventListener('keydown', (event) => {
-        if ((event.key || '').toLowerCase() === 'm') {
+        const key = (event.key || '').toLowerCase();
+        const tag = (document.activeElement || {}).tagName || '';
+        const inInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+
+        if (key === 'm' && !inInput) {
             toggleMute();
             syncMuteButton();
+            return;
         }
+        if (inInput) { return; }
+
+        if (key === 't') {
+            const overlay = document.getElementById('sim-tools-overlay');
+            if (overlay) { overlay.classList.toggle('collapsed'); }
+        } else if (key === ' ') {
+            event.preventDefault();
+            if (machine.state === 'running') {
+                document.getElementById('sim-btn-stop')?.click();
+            } else {
+                document.getElementById('sim-btn-step')?.click();
+            }
+        } else if (key === 'enter') {
+            event.preventDefault();
+            document.getElementById('sim-btn-run')?.click();
+        } else if (key === 'r') {
+            document.getElementById('sim-btn-reset')?.click();
+        } else if (key === 'b') {
+            if (builderTargetAddr !== null) {
+                if (breakpoints.has(builderTargetAddr)) { breakpoints.delete(builderTargetAddr); }
+                else { breakpoints.add(builderTargetAddr); }
+                renderAll();
+            }
+        } else if (key === 'arrowup') {
+            event.preventDefault();
+            memRows.scrollTop = Math.max(0, memRows.scrollTop - 24);
+        } else if (key === 'arrowdown') {
+            event.preventDefault();
+            memRows.scrollTop += 24;
+        } else if (key === 'escape') {
+            const overlay = document.getElementById('sim-tools-overlay');
+            if (overlay && !overlay.classList.contains('collapsed')) {
+                overlay.classList.add('collapsed');
+            }
+        }
+    });
+
+    // Speed dial
+    const speedKnob = document.getElementById('sim-speed-knob');
+    const speedLabel = document.getElementById('sim-speed-label');
+    if (speedKnob) {
+        speedKnob.addEventListener('input', () => {
+            speedIndex = Number(speedKnob.value);
+            if (speedLabel) { speedLabel.textContent = SPEED_SETTINGS[speedIndex].label; }
+        });
+    }
+
+    // Virtual scroll for memory
+    memRows.addEventListener('scroll', () => {
+        renderMemory(getState());
     });
 
     syncMuteButton();

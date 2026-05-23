@@ -65,7 +65,7 @@ function createTapeRow(bits, decodeText, showHelp) {
     }
     bits.forEach((bit) => {
         const cell = document.createElement('span');
-        cell.className = bit ? 'tape-bit on' : 'tape-bit off';
+        cell.className = bit ? 'tape-bit on punched' : 'tape-bit off';
         row.appendChild(cell);
     });
     return row;
