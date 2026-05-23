@@ -26,6 +26,32 @@ const BUILDER_OPS = [
     { mnemonic: 'DATA', opcode: -1, needsAddress: false, isData: true, category: 'Data' }
 ];
 
+const BUILDER_DESCRIPTIONS = {
+    0x00: 'Stops the machine. No further instructions are executed until RUN is pressed again.',
+    0x01: 'Loads the full 40-bit word from memory address X into the Accumulator (AC). Previous AC value is lost.',
+    0x02: 'Loads the arithmetic negation of M(X) into AC. Equivalent to: AC = 0 - M(X).',
+    0x03: 'Loads the absolute value of M(X) into AC. If M(X) is negative, the sign is flipped.',
+    0x04: 'Loads the negated absolute value of M(X) into AC. Result is always non-positive.',
+    0x05: 'Adds M(X) to the current Accumulator value. Result: AC = AC + M(X).',
+    0x06: 'Subtracts M(X) from the Accumulator. Result: AC = AC - M(X).',
+    0x07: 'Adds the absolute value of M(X) to AC. Result: AC = AC + |M(X)|.',
+    0x08: 'Subtracts the absolute value of M(X) from AC. Result: AC = AC - |M(X)|.',
+    0x09: 'Loads memory word at address X into the MQ (Multiplier-Quotient) register.',
+    0x0A: 'Transfers the contents of MQ into AC. MQ is unchanged.',
+    0x0B: 'Multiplies MQ by M(X). Upper 40 bits go to AC, lower 40 bits stay in MQ (80-bit product).',
+    0x0C: 'Divides AC by M(X). Quotient goes to MQ, remainder stays in AC.',
+    0x0D: 'If AC \u2265 0, jump to the LEFT instruction in word at address X. Otherwise, continue to next instruction.',
+    0x0E: 'If AC \u2265 0, jump to the RIGHT instruction in word at address X. Otherwise, continue to next instruction.',
+    0x0F: 'Unconditional jump to the LEFT instruction in the word at address X.',
+    0x10: 'Unconditional jump to the RIGHT instruction in the word at address X.',
+    0x12: 'Self-modifying code: replaces the LEFT address field (bits 8-19) of word at M(X) with the 12 rightmost bits of AC.',
+    0x13: 'Self-modifying code: replaces the RIGHT address field (bits 28-39) of word at M(X) with the 12 rightmost bits of AC.',
+    0x14: 'Shifts AC left by one bit (multiply by 2). The sign bit is preserved.',
+    0x15: 'Shifts AC right by one bit (divide by 2). The sign bit is preserved.',
+    0x21: 'Stores the full 40-bit Accumulator value into memory at address X.',
+    [-1]: 'Inserts a raw 40-bit data value directly into memory. Use for constants, initial values, or lookup tables.'
+};
+
 const SAMPLE_SOURCE = [
     '; Add two numbers and store result at 102',
     'ORG 0',
@@ -98,6 +124,7 @@ function buildPanelHtml() {
                 </label>
             </div>
             <div class="tools-readout" id="tools-builder-readout"></div>
+            <div class="tools-builder-desc" id="tools-builder-desc"></div>
             <div class="tools-grid tools-target-grid">
                 <label>Target Address
                     <input id="tools-target-addr" type="number" min="0" max="1023" value="0">
@@ -192,6 +219,8 @@ export function initToolsUI() {
             const val = BigInt(addrInput.value || 0) & 0xFFFFFFFFFFn;
             const hex = `0x${val.toString(16).toUpperCase().padStart(10, '0')}`;
             readout.textContent = `DATA ${addrInput.value} | hex ${hex}`;
+            const descEl = mount.querySelector('#tools-builder-desc');
+            descEl.textContent = BUILDER_DESCRIPTIONS[-1] || '';
             return `DATA ${addrInput.value}`;
         }
 
@@ -205,6 +234,8 @@ export function initToolsUI() {
         const mnemonic = op.needsAddress ? op.mnemonic.replace('X', String(address)) : op.mnemonic;
 
         readout.textContent = `${mnemonic} | binary ${binary} | hex ${hex}`;
+        const descEl = mount.querySelector('#tools-builder-desc');
+        descEl.textContent = BUILDER_DESCRIPTIONS[opcode] || '';
         return mnemonic;
     };
 
