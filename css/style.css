@@ -1308,19 +1308,58 @@ code, pre, .mono {
 
 .asm-line-numbers div {
     height: 1.45em;
+    cursor: help;
+}
+
+.asm-line-numbers div[title]:hover {
+    color: #58a6ff;
+    background: rgba(56, 139, 253, 0.08);
 }
 
 .asm-line-numbers div.error {
     color: #f85149;
     font-weight: 700;
-    background: rgba(248, 81, 73, 0.1);
+    background: rgba(248, 81, 73, 0.15);
     border-radius: 2px;
+}
+
+.asm-help-hint {
+    font-size: 0.68rem;
+    color: #6e7681;
+    align-self: center;
+    margin-left: 0.5rem;
 }
 
 .asm-editor-area {
     flex: 1;
     min-width: 0;
     position: relative;
+}
+
+.asm-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0.45rem 0.5rem;
+    font-family: var(--color-mono);
+    font-size: 0.8rem;
+    line-height: 1.45;
+    white-space: pre;
+    overflow: hidden;
+    pointer-events: none;
+    color: transparent;
+    border: none;
+    tab-size: 4;
+}
+
+.asm-line-error {
+    background: rgba(248, 81, 73, 0.15);
+    border-bottom: 2px wavy #f85149;
+    display: inline-block;
+    width: 100%;
 }
 
 .asm-editor-area textarea {
@@ -1339,6 +1378,8 @@ code, pre, .mono {
     white-space: pre;
     overflow-x: auto;
     tab-size: 4;
+    position: relative;
+    z-index: 1;
 }
 
 .asm-errors {

@@ -244,6 +244,7 @@
                 <div class="asm-editor-wrap" id="asm-editor-wrap">
                     <div class="asm-line-numbers" id="asm-line-numbers"></div>
                     <div class="asm-editor-area">
+                        <pre class="asm-highlight" id="asm-highlight" aria-hidden="true"></pre>
                         <textarea id="tools-editor-source" rows="16" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"></textarea>
                         <div class="asm-errors" id="asm-errors"></div>
                     </div>
@@ -251,6 +252,7 @@
                 </div>
                 <div class="tools-actions">
                     <button id="tools-assemble-load" type="button">Assemble &amp; Load (Ctrl+Enter)</button>
+                    <span class="asm-help-hint">Hover line numbers for help</span>
                 </div>
                 <div class="tools-readout" id="tools-editor-status"></div>
             </div>
@@ -465,6 +467,7 @@
         const lineNumbersEl = mount.querySelector('#asm-line-numbers');
         const errorsEl = mount.querySelector('#asm-errors');
         const autocompleteEl = mount.querySelector('#asm-autocomplete');
+        const highlightEl = mount.querySelector('#asm-highlight');
 
         const ASM_KEYWORDS = [
             'HALT', 'LOAD M(', 'LOAD -M(', 'LOAD |M(', 'LOAD -|M(',
@@ -475,30 +478,81 @@
             'LSH', 'RSH', 'ORG ', 'DATA '
         ];
 
+        const ISA_HELP = {
+            'HALT': 'Stop execution',
+            'LOAD M': 'AC \u2190 M(X) \u2014 Load memory into accumulator',
+            'LOAD -': 'AC \u2190 -M(X) \u2014 Load negated memory value',
+            'LOAD |': 'AC \u2190 |M(X)| \u2014 Load absolute value',
+            'LOAD -|': 'AC \u2190 -|M(X)| \u2014 Load negated absolute value',
+            'LOAD MQ,': 'MQ \u2190 M(X) \u2014 Load memory into MQ register',
+            'LOAD MQ': 'AC \u2190 MQ \u2014 Transfer MQ to accumulator',
+            'ADD': 'AC \u2190 AC + M(X) \u2014 Add memory to accumulator',
+            'ADD |': 'AC \u2190 AC + |M(X)| \u2014 Add absolute value',
+            'SUB': 'AC \u2190 AC - M(X) \u2014 Subtract memory from accumulator',
+            'SUB |': 'AC \u2190 AC - |M(X)| \u2014 Subtract absolute value',
+            'MUL': 'AC:MQ \u2190 MQ \u00d7 M(X) \u2014 Multiply (80-bit result)',
+            'DIV': 'MQ \u2190 AC/M(X), AC \u2190 remainder \u2014 Integer division',
+            'LSH': 'AC \u2190 AC \u00d7 2 \u2014 Left shift one bit',
+            'RSH': 'AC \u2190 AC / 2 \u2014 Right shift one bit',
+            'STOR M(X,8': 'Replace left address field at M(X) with AC[28:39]',
+            'STOR M(X,28': 'Replace right address field at M(X) with AC[28:39]',
+            'STOR': 'M(X) \u2190 AC \u2014 Store accumulator to memory',
+            'JUMP+': 'If AC \u2265 0, jump to instruction at M(X)',
+            'JUMP': 'Unconditional jump to instruction at M(X)',
+            'ORG': 'Set assembly origin address (ORG addr)',
+            'DATA': 'Store raw 40-bit data value (DATA value)'
+        };
+
+        function getHelpFor(lineText) {
+            var stripped = lineText.replace(/;.*/, '').trim().toUpperCase();
+            if (!stripped) { return ''; }
+            var keys = Object.keys(ISA_HELP).sort(function(a, b) { return b.length - a.length; });
+            for (var k = 0; k < keys.length; k++) {
+                if (stripped.startsWith(keys[k])) { return ISA_HELP[keys[k]]; }
+            }
+            return '';
+        }
+
         const updateLineNumbers = () => {
-            const lineCount = editor.value.split('\n').length;
-            let html = '';
-            for (let i = 1; i <= lineCount; i += 1) {
-                html += '<div>' + i + '</div>';
+            var lines = editor.value.split('\n');
+            var html = '';
+            for (var i = 0; i < lines.length; i += 1) {
+                var help = getHelpFor(lines[i]);
+                html += '<div' + (help ? ' title="' + help + '"' : '') + '>' + (i + 1) + '</div>';
             }
             lineNumbersEl.innerHTML = html;
+        };
+
+        const updateHighlight = (errorLines) => {
+            var lines = editor.value.split('\n');
+            var html = '';
+            for (var i = 0; i < lines.length; i += 1) {
+                var lineText = lines[i].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                if (errorLines[i + 1]) {
+                    html += '<span class="asm-line-error">' + lineText + '</span>\n';
+                } else {
+                    html += lineText + '\n';
+                }
+            }
+            highlightEl.innerHTML = html;
         };
 
         const validateEditor = () => {
             const result = assembleBasic(editor.value);
             errorsEl.innerHTML = '';
+            var errorLines = {};
             if (!result.success && result.errors && result.errors.length > 0) {
-                const errorLines = {};
                 result.errors.forEach(function(err) { errorLines[err.line] = true; });
                 const lineEls = lineNumbersEl.querySelectorAll('div');
                 lineEls.forEach(function(el, idx) {
                     if (errorLines[idx + 1]) { el.classList.add('error'); }
                 });
-                errorsEl.innerHTML = result.errors.slice(0, 3).map(function(e) {
-                    return '<div class="asm-error-msg">Line ' + e.line + ': ' + e.message + '</div>';
+                errorsEl.innerHTML = result.errors.slice(0, 5).map(function(e) {
+                    return '<div class="asm-error-msg">\u26a0 Line ' + e.line + ': ' + e.message + '</div>';
                 }).join('');
             }
-            editorStatus.textContent = (result.success) ? 'Ready: ' + result.words.length + ' words' : '';
+            updateHighlight(errorLines);
+            editorStatus.textContent = (result.success) ? '\u2713 Ready: ' + result.words.length + ' words' : '';
         };
 
         var acVisible = false, acItems = [], acIndex = 0;
@@ -571,7 +625,7 @@
         editor.addEventListener('input', () => {
             updateLineNumbers(); validateEditor(); updateAutocomplete();
         });
-        editor.addEventListener('scroll', () => { lineNumbersEl.scrollTop = editor.scrollTop; });
+        editor.addEventListener('scroll', () => { lineNumbersEl.scrollTop = editor.scrollTop; highlightEl.scrollTop = editor.scrollTop; highlightEl.scrollLeft = editor.scrollLeft; });
         editor.addEventListener('click', hideAutocomplete);
         editor.addEventListener('blur', () => setTimeout(hideAutocomplete, 150));
         autocompleteEl.addEventListener('mousedown', (event) => {

@@ -121,6 +121,7 @@ function buildPanelHtml() {
             <div class="asm-editor-wrap" id="asm-editor-wrap">
                 <div class="asm-line-numbers" id="asm-line-numbers"></div>
                 <div class="asm-editor-area">
+                    <pre class="asm-highlight" id="asm-highlight" aria-hidden="true"></pre>
                     <textarea id="tools-editor-source" rows="16" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"></textarea>
                     <div class="asm-errors" id="asm-errors"></div>
                 </div>
@@ -128,6 +129,7 @@ function buildPanelHtml() {
             </div>
             <div class="tools-actions">
                 <button id="tools-assemble-load" type="button">Assemble &amp; Load (Ctrl+Enter)</button>
+                <span class="asm-help-hint">Hover mnemonics in line numbers for help</span>
             </div>
             <div class="tools-readout" id="tools-editor-status"></div>
         </div>
@@ -351,6 +353,7 @@ export function initToolsUI() {
     const lineNumbersEl = mount.querySelector('#asm-line-numbers');
     const errorsEl = mount.querySelector('#asm-errors');
     const autocompleteEl = mount.querySelector('#asm-autocomplete');
+    const highlightEl = mount.querySelector('#asm-highlight');
 
     const ASM_KEYWORDS = [
         'HALT', 'LOAD M(', 'LOAD -M(', 'LOAD |M(', 'LOAD -|M(',
@@ -361,20 +364,72 @@ export function initToolsUI() {
         'LSH', 'RSH', 'ORG ', 'DATA '
     ];
 
+    const ISA_HELP = {
+        'HALT': 'Stop execution',
+        'LOAD': 'AC \u2190 M(X) — Load memory into accumulator',
+        'LOAD M': 'AC \u2190 M(X) — Load memory into accumulator',
+        'LOAD -': 'AC \u2190 -M(X) — Load negated memory value',
+        'LOAD |': 'AC \u2190 |M(X)| — Load absolute value',
+        'LOAD -|': 'AC \u2190 -|M(X)| — Load negated absolute value',
+        'LOAD MQ': 'AC \u2190 MQ — Transfer MQ to accumulator',
+        'LOAD MQ,': 'MQ \u2190 M(X) — Load memory into MQ register',
+        'ADD': 'AC \u2190 AC + M(X) — Add memory to accumulator',
+        'ADD |': 'AC \u2190 AC + |M(X)| — Add absolute value',
+        'SUB': 'AC \u2190 AC - M(X) — Subtract memory from accumulator',
+        'SUB |': 'AC \u2190 AC - |M(X)| — Subtract absolute value',
+        'MUL': 'AC:MQ \u2190 MQ \u00d7 M(X) — Multiply (80-bit result)',
+        'DIV': 'MQ \u2190 AC/M(X), AC \u2190 remainder — Integer division',
+        'LSH': 'AC \u2190 AC \u00d7 2 — Left shift one bit',
+        'RSH': 'AC \u2190 AC / 2 — Right shift one bit',
+        'STOR': 'M(X) \u2190 AC — Store accumulator to memory',
+        'STOR M(X,8': 'Replace left address field at M(X) with AC[28:39]',
+        'STOR M(X,28': 'Replace right address field at M(X) with AC[28:39]',
+        'JUMP': 'Unconditional jump to instruction at M(X)',
+        'JUMP+': 'If AC \u2265 0, jump to instruction at M(X)',
+        'ORG': 'Set assembly origin address (ORG addr)',
+        'DATA': 'Store raw 40-bit data value (DATA value)'
+    };
+
+    function getHelpFor(lineText) {
+        const stripped = lineText.replace(/;.*/, '').trim().toUpperCase();
+        if (!stripped) { return ''; }
+        // Try longest prefix match
+        const keys = Object.keys(ISA_HELP).sort((a, b) => b.length - a.length);
+        for (const key of keys) {
+            if (stripped.startsWith(key)) { return ISA_HELP[key]; }
+        }
+        return '';
+    }
+
     const updateLineNumbers = () => {
-        const lineCount = editor.value.split('\n').length;
+        const lines = editor.value.split('\n');
         let html = '';
-        for (let i = 1; i <= lineCount; i += 1) {
-            html += `<div>${i}</div>`;
+        for (let i = 0; i < lines.length; i += 1) {
+            const help = getHelpFor(lines[i]);
+            html += `<div${help ? ` title="${help}"` : ''}>${i + 1}</div>`;
         }
         lineNumbersEl.innerHTML = html;
+    };
+
+    const updateHighlight = (errorLines) => {
+        const lines = editor.value.split('\n');
+        let html = '';
+        for (let i = 0; i < lines.length; i += 1) {
+            const lineText = lines[i].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            if (errorLines.has(i + 1)) {
+                html += `<span class="asm-line-error">${lineText}</span>\n`;
+            } else {
+                html += lineText + '\n';
+            }
+        }
+        highlightEl.innerHTML = html;
     };
 
     const validateEditor = () => {
         const result = assemble(editor.value);
         errorsEl.innerHTML = '';
+        const errorLines = new Set();
         if (!result.success && result.errors.length > 0) {
-            const errorLines = new Set();
             result.errors.forEach((err) => {
                 errorLines.add(err.line);
             });
@@ -384,12 +439,12 @@ export function initToolsUI() {
                     el.classList.add('error');
                 }
             });
-            const first = result.errors[0];
-            errorsEl.innerHTML = result.errors.slice(0, 3).map((e) =>
-                `<div class="asm-error-msg">Line ${e.line}: ${e.message}</div>`
+            errorsEl.innerHTML = result.errors.slice(0, 5).map((e) =>
+                `<div class="asm-error-msg">\u26a0 Line ${e.line}: ${e.message}</div>`
             ).join('');
         }
-        editorStatus.textContent = result.success ? `Ready: ${result.words.length} words` : '';
+        updateHighlight(errorLines);
+        editorStatus.textContent = result.success ? `\u2713 Ready: ${result.words.length} words` : '';
     };
 
     let acVisible = false;
@@ -494,6 +549,8 @@ export function initToolsUI() {
 
     editor.addEventListener('scroll', () => {
         lineNumbersEl.scrollTop = editor.scrollTop;
+        highlightEl.scrollTop = editor.scrollTop;
+        highlightEl.scrollLeft = editor.scrollLeft;
     });
 
     editor.addEventListener('click', hideAutocomplete);
