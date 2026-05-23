@@ -192,6 +192,22 @@ function parseInstruction(text, labels, warnings, line, errors) {
         return { opcode: entry.opcode, address: 0 };
     }
 
+    // LOAD MQ,M(X) — comma-separated form
+    const loadMqMatch = normalized.match(/^LOAD\s+MQ\s*,\s*M\(([^)]+)\)$/i);
+    if (loadMqMatch) {
+        const token = loadMqMatch[1].trim();
+        const resolved = resolveAddressToken(token, labels);
+        if (!resolved.ok) {
+            errors.push({ line, message: resolved.message });
+            return null;
+        }
+        if (!validateAddress(resolved.value)) {
+            errors.push({ line, message: `Invalid address: ${resolved.value}` });
+            return null;
+        }
+        return { opcode: OPCODE_BY_MNEMONIC['LOAD MQ,M(X)'].opcode, address: resolved.value };
+    }
+
     const smartJumpMatch = normalized.match(/^(JUMP\+?|JUMP)\s+([A-Za-z_][A-Za-z0-9_]*)$/i);
     if (smartJumpMatch) {
         const jumpKind = smartJumpMatch[1].toUpperCase();
@@ -243,6 +259,24 @@ function parseInstruction(text, labels, warnings, line, errors) {
             return { opcode: OPCODE_BY_MNEMONIC[key].opcode, address: resolved.value };
         }
 
+        // Try addr-modify variant first when arg contains comma (e.g. STOR M(3,8:19))
+        if (arg.includes(',')) {
+            const keyAddrModify = `${opStem} M(X,${arg.split(',')[1].trim()})`;
+            if (OPCODE_BY_MNEMONIC[keyAddrModify]) {
+                const token = arg.split(',')[0].trim();
+                const resolved = resolveAddressToken(token, labels);
+                if (!resolved.ok) {
+                    errors.push({ line, message: resolved.message });
+                    return null;
+                }
+                if (!validateAddress(resolved.value)) {
+                    errors.push({ line, message: `Invalid address: ${resolved.value}` });
+                    return null;
+                }
+                return { opcode: OPCODE_BY_MNEMONIC[keyAddrModify].opcode, address: resolved.value };
+            }
+        }
+
         const keyBase = `${opStem} M(X)`;
         if (OPCODE_BY_MNEMONIC[keyBase]) {
             const resolved = resolveAddressToken(arg, labels);
@@ -255,21 +289,6 @@ function parseInstruction(text, labels, warnings, line, errors) {
                 return null;
             }
             return { opcode: OPCODE_BY_MNEMONIC[keyBase].opcode, address: resolved.value };
-        }
-
-        const keyAddrModify = `${opStem} M(X,${arg.includes(',') ? arg.split(',')[1].trim() : ''})`;
-        if (OPCODE_BY_MNEMONIC[keyAddrModify]) {
-            const token = arg.split(',')[0].trim();
-            const resolved = resolveAddressToken(token, labels);
-            if (!resolved.ok) {
-                errors.push({ line, message: resolved.message });
-                return null;
-            }
-            if (!validateAddress(resolved.value)) {
-                errors.push({ line, message: `Invalid address: ${resolved.value}` });
-                return null;
-            }
-            return { opcode: OPCODE_BY_MNEMONIC[keyAddrModify].opcode, address: resolved.value };
         }
     }
 
