@@ -78,7 +78,7 @@ export function renderTape(words, options = {}) {
         const rightHalf = value & 0xFFFFFn;
 
         const block = document.createElement('div');
-        block.className = 'tape-word';
+        block.className = 'tape-word tape-entering';
         block.dataset.addr = String(entry.addr);
 
         const leftBits = halfToBits20(leftHalf);
@@ -120,6 +120,8 @@ export async function animateLoad(words, onWord) {
     if (!tapeContainer) {
         return;
     }
+    const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+    strip.classList.add('feeding');
     const blocks = tapeContainer.querySelectorAll('.tape-word');
     for (let i = 0; i < blocks.length; i += 1) {
         blocks[i].classList.add('tape-consumed');
@@ -128,6 +130,8 @@ export async function animateLoad(words, onWord) {
         }
         await delay(50);
     }
+    strip.classList.remove('feeding');
+}
 }
 
 export async function runTapeLoadSequence(words, options = {}) {

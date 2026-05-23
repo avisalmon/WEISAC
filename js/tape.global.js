@@ -88,7 +88,7 @@
             const rightHalf = value & 0xFFFFFn;
 
             const block = document.createElement('div');
-            block.className = 'tape-word';
+            block.className = 'tape-word tape-entering';
 
             const leftBits = halfToBits20(leftHalf);
             block.appendChild(createTapeRow(leftBits, decodeHalf(leftHalf), showHelp));
@@ -130,7 +130,8 @@
             return;
         }
 
-        tapeContainer.classList.add('feeding');
+        const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+        strip.classList.add('feeding');
         const pulses = 10;
         for (let i = 0; i < pulses; i += 1) {
             if (onPulse) {
@@ -138,7 +139,7 @@
             }
             await delay(90);
         }
-        tapeContainer.classList.remove('feeding');
+        strip.classList.remove('feeding');
     }
 
     async function runTapeLoadSequence(words, options) {
@@ -164,6 +165,8 @@
         if (!tapeContainer) {
             return;
         }
+        const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+        strip.classList.add('feeding');
         const blocks = tapeContainer.querySelectorAll('.tape-word');
         for (let i = 0; i < blocks.length; i += 1) {
             blocks[i].classList.add('tape-consumed');
@@ -172,6 +175,7 @@
             }
             await delay(50);
         }
+        strip.classList.remove('feeding');
     }
 
     function renderTapeFromMemory(memory) {
