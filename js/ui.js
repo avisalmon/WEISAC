@@ -463,12 +463,24 @@ export function initSimulatorUI() {
         renderAll();
     });
 
+    let lastLoadClick = 0;
     bind('sim-btn-load', async () => {
         if (machine.state === 'off') {
             return;
         }
         playButtonClick();
         runAborted = false;
+
+        const now = Date.now();
+        const isDoubleClick = (now - lastLoadClick) < 400;
+        lastLoadClick = now;
+
+        if (isDoubleClick) {
+            // Skip animation on double-click
+            pushLog('TAPE LOADED (skip)');
+            renderAll();
+            return;
+        }
 
         // Animate tape feed (data already in memory from Builder pokes)
         pushLog('LOADING TAPE...');

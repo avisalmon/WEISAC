@@ -34,21 +34,13 @@
         tapeContainer = element;
     }
 
-    function halfToByteRows(halfWord) {
-        const padded = (halfWord & 0xFFFFFn) << 4n;
-        const rows = [];
-
-        for (let row = 0; row < 3; row += 1) {
-            const bits = [];
-            const byteShift = BigInt((2 - row) * 8);
-            const byteValue = Number((padded >> byteShift) & 0xFFn);
-            for (let bit = 7; bit >= 0; bit -= 1) {
-                bits.push((byteValue >> bit) & 1 ? 1 : 0);
-            }
-            rows.push(bits);
+    function halfToBits20(halfWord) {
+        const val = Number(halfWord & 0xFFFFFn);
+        const bits = [];
+        for (let i = 19; i >= 0; i -= 1) {
+            bits.push((val >> i) & 1);
         }
-
-        return rows;
+        return bits;
     }
 
     function decodeHalf(halfWord) {
@@ -98,14 +90,16 @@
             const block = document.createElement('div');
             block.className = 'tape-word';
 
-            const leftRows = halfToByteRows(leftHalf).map((bits) => createTapeRow(bits, decodeHalf(leftHalf), showHelp));
+            const leftBits = halfToBits20(leftHalf);
+            block.appendChild(createTapeRow(leftBits, decodeHalf(leftHalf), showHelp));
+
             const sprocket = document.createElement('div');
             sprocket.className = 'tape-sprocket';
-            const rightRows = halfToByteRows(rightHalf).map((bits) => createTapeRow(bits, decodeHalf(rightHalf), showHelp));
-
-            leftRows.forEach((row) => block.appendChild(row));
             block.appendChild(sprocket);
-            rightRows.forEach((row) => block.appendChild(row));
+
+            const rightBits = halfToBits20(rightHalf);
+            block.appendChild(createTapeRow(rightBits, decodeHalf(rightHalf), showHelp));
+
             tapeContainer.appendChild(block);
         });
     }

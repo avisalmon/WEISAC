@@ -444,12 +444,23 @@
             renderAll();
         });
 
+        let lastLoadClick = 0;
         bind('sim-btn-load', async () => {
             if (sim.machine.state === 'off') {
                 return;
             }
             audio.playButtonClick();
             runAborted = false;
+
+            const now = Date.now();
+            const isDoubleClick = (now - lastLoadClick) < 400;
+            lastLoadClick = now;
+
+            if (isDoubleClick) {
+                pushLog('TAPE LOADED (skip)');
+                renderAll();
+                return;
+            }
 
             // Animate tape feed (data already in memory from Builder pokes)
             pushLog('LOADING TAPE...');

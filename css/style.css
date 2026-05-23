@@ -1592,15 +1592,15 @@ code, pre, .mono {
 
 .tape-row {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 2px;
+    grid-template-columns: repeat(20, 1fr);
+    gap: 1px;
     margin-bottom: 3px;
     justify-content: start;
 }
 
 .tape-bit {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     display: block;
     border: 1px solid #9d9d9d;
