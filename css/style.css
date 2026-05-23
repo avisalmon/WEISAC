@@ -1217,11 +1217,11 @@ code, pre, .mono {
 
 .tools-builder-desc {
     font-size: 0.72rem;
-    color: #a0b0c4;
+    color: #6b7d8f;
     line-height: 1.4;
     padding: 0.3rem 0.45rem;
     margin-top: 0.2rem;
-    border-left: 2px solid rgba(88, 166, 255, 0.3);
+    border-left: 2px solid rgba(88, 166, 255, 0.2);
     min-height: 1.4em;
 }
 
