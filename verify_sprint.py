@@ -553,12 +553,12 @@ def verify_sprint_12():
     checks.append({"id": "12.3", "name": "ARIA labels", "pass": has_aria,
                    "detail": "ARIA attributes found" if has_aria else "No ARIA labels"})
     
-    has_responsive = "@media" in open(CSS / "style.css", "r").read() if os.path.isfile(CSS / "style.css") else False
+    has_responsive = "@media" in open(CSS / "style.css", "r", encoding="utf-8").read() if os.path.isfile(CSS / "style.css") else False
     checks.append({"id": "12.1", "name": "Responsive layout", "pass": has_responsive,
                    "detail": "Media queries found" if has_responsive else "No media queries"})
     
     has_reduced_motion = "prefers-reduced-motion" in (
-        open(CSS / "style.css", "r").read() if os.path.isfile(CSS / "style.css") else ""
+        open(CSS / "style.css", "r", encoding="utf-8").read() if os.path.isfile(CSS / "style.css") else ""
     )
     checks.append({"id": "12.5", "name": "Reduced motion support", "pass": has_reduced_motion,
                    "detail": "prefers-reduced-motion found" if has_reduced_motion else "No reduced motion support"})

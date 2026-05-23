@@ -1885,3 +1885,24 @@ code, pre, .mono {
         grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
+
+/* Reduced motion: disable animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .sim-tape-strip {
+        animation: none !important;
+    }
+
+    .sim-indicator.on {
+        transition: none !important;
+    }
+
+    .tape-bit.on.punched {
+        transition: none !important;
+    }
+}

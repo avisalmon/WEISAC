@@ -1,56 +1,20 @@
 {
-  "timestamp": "2026-05-20T11:57:27.416003",
+  "timestamp": "2026-05-23T11:46:44.973197",
   "summary": {
     "total": 13,
-    "passed": 5,
-    "failed": 8
+    "passed": 10,
+    "failed": 3
   },
   "sprints": {
     "0": {
       "name": "Project Skeleton",
-      "passed": true,
+      "passed": false,
       "checks": [
         {
-          "id": "0.1",
-          "name": "HTML skeleton",
-          "pass": true,
-          "detail": "OK (631 lines): C:\\Projects\\VEIZAC\\index.html"
-        },
-        {
-          "id": "0.2",
-          "name": "Tab navigation elements",
-          "pass": true,
-          "detail": "All tab elements present"
-        },
-        {
-          "id": "0.3",
-          "name": "CSS foundation",
-          "pass": true,
-          "detail": "OK (815 lines): C:\\Projects\\VEIZAC\\css\\style.css"
-        },
-        {
-          "id": "0.4",
-          "name": "Folder structure",
-          "pass": true,
-          "detail": "css/, js/, images/ exist"
-        },
-        {
-          "id": "0.6",
-          "name": "No-framework rule",
-          "pass": true,
-          "detail": "No CDN links"
-        },
-        {
-          "id": "0.7",
-          "name": "Favicon and meta",
-          "pass": true,
-          "detail": "Title and OG tags present"
-        },
-        {
-          "id": "0.2b",
-          "name": "Tab JS file",
-          "pass": true,
-          "detail": "OK (97 lines): C:\\Projects\\VEIZAC\\js\\main.js"
+          "id": "0.ERR",
+          "name": "Verification error",
+          "pass": false,
+          "detail": "'charmap' codec can't decode byte 0x90 in position 35277: character maps to <undefined>"
         }
       ]
     },
@@ -62,7 +26,7 @@
           "id": "1.0",
           "name": "index.html has content",
           "pass": true,
-          "detail": "OK (631 lines): C:\\Projects\\VEIZAC\\index.html"
+          "detail": "OK (709 lines): C:\\Projects\\VEIZAC\\index.html"
         },
         {
           "id": "1.1",
@@ -164,265 +128,241 @@
     },
     "4": {
       "name": "Training 4-6",
-      "passed": true,
+      "passed": false,
       "checks": [
         {
-          "id": "4.1",
-          "name": "Lesson 4: Arithmetic",
-          "pass": true,
-          "detail": "Arithmetic lesson content found"
-        },
-        {
-          "id": "4.2",
-          "name": "Lesson 5: Branching",
-          "pass": true,
-          "detail": "Branching lesson content found"
-        },
-        {
-          "id": "4.3",
-          "name": "Lesson 6: Self-modifying",
-          "pass": true,
-          "detail": "Self-modifying lesson found"
-        },
-        {
-          "id": "4.4",
-          "name": "Progress persistence",
-          "pass": true,
-          "detail": "localStorage used"
-        },
-        {
-          "id": "4.T",
-          "name": "Sprint 4 tests exist",
-          "pass": true,
-          "detail": "OK (225 lines): C:\\Projects\\VEIZAC\\tests\\sprint-4.test.html"
+          "id": "4.ERR",
+          "name": "Verification error",
+          "pass": false,
+          "detail": "'charmap' codec can't decode byte 0x90 in position 16508: character maps to <undefined>"
         }
       ]
     },
     "5": {
       "name": "Simulator Core",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "5.1",
           "name": "simulator.js exists",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\simulator.js"
+          "pass": true,
+          "detail": "OK (352 lines): C:\\Projects\\VEIZAC\\js\\simulator.js"
         },
         {
           "id": "5.1b",
-          "name": "Feature 5.1b",
-          "pass": false,
-          "detail": "simulator.js missing"
+          "name": "Machine model (memory, BigInt)",
+          "pass": true,
+          "detail": "Machine model found"
         },
         {
           "id": "5.2",
-          "name": "Feature 5.2",
-          "pass": false,
-          "detail": "simulator.js missing"
+          "name": "Instruction decode",
+          "pass": true,
+          "detail": "Decode logic found"
         },
         {
           "id": "5.3",
-          "name": "Feature 5.3",
-          "pass": false,
-          "detail": "simulator.js missing"
+          "name": "Instructions (10/10 keywords)",
+          "pass": true,
+          "detail": "Found 10/10 instruction keywords"
         },
         {
           "id": "5.4",
-          "name": "Feature 5.4",
-          "pass": false,
-          "detail": "simulator.js missing"
+          "name": "Execution cycle",
+          "pass": true,
+          "detail": "Step/execute found"
         },
         {
           "id": "5.5",
-          "name": "Feature 5.5",
-          "pass": false,
-          "detail": "simulator.js missing"
+          "name": "State lifecycle (4/4)",
+          "pass": true,
+          "detail": "Found 4/4 states"
         },
         {
           "id": "5.8",
-          "name": "Feature 5.8",
-          "pass": false,
-          "detail": "simulator.js missing"
+          "name": "API exports",
+          "pass": true,
+          "detail": "ES module exports found"
         },
         {
           "id": "5.T",
           "name": "Sprint 5 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-5.test.html"
+          "pass": true,
+          "detail": "OK (223 lines): C:\\Projects\\VEIZAC\\tests\\sprint-5.test.html"
         }
       ]
     },
     "6": {
       "name": "Assembler",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "6.1",
           "name": "assembler.js exists",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\assembler.js"
+          "pass": true,
+          "detail": "OK (393 lines): C:\\Projects\\VEIZAC\\js\\assembler.js"
         },
         {
           "id": "6.1b",
-          "name": "Feature 6.1b",
-          "pass": false,
-          "detail": "assembler.js missing"
+          "name": "Parsing logic",
+          "pass": true,
+          "detail": "Parser found"
         },
         {
           "id": "6.2",
-          "name": "Feature 6.2",
-          "pass": false,
-          "detail": "assembler.js missing"
+          "name": "Two-pass assembly",
+          "pass": true,
+          "detail": "Two-pass logic found"
         },
         {
           "id": "6.5",
-          "name": "Feature 6.5",
-          "pass": false,
-          "detail": "assembler.js missing"
+          "name": "Disassemble function",
+          "pass": true,
+          "detail": "Disassembler found"
         },
         {
           "id": "6.4",
-          "name": "Feature 6.4",
-          "pass": false,
-          "detail": "assembler.js missing"
+          "name": "API exports",
+          "pass": true,
+          "detail": "Exports found"
         },
         {
           "id": "6.T",
           "name": "Sprint 6 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-6.test.html"
+          "pass": true,
+          "detail": "OK (247 lines): C:\\Projects\\VEIZAC\\tests\\sprint-6.test.html"
         }
       ]
     },
     "7": {
       "name": "Panel UI",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "7.1",
           "name": "ui.js exists",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\ui.js"
+          "pass": true,
+          "detail": "OK (684 lines): C:\\Projects\\VEIZAC\\js\\ui.js"
         },
         {
           "id": "7.1b",
           "name": "Panel layout HTML",
-          "pass": false,
-          "detail": "Simulator tab empty"
+          "pass": true,
+          "detail": "Simulator section: 4941 chars"
         },
         {
           "id": "7.3",
           "name": "Register display",
-          "pass": false,
-          "detail": "No register display"
+          "pass": true,
+          "detail": "Register elements found"
         },
         {
           "id": "7.4",
           "name": "Memory view",
-          "pass": false,
-          "detail": "No memory view"
+          "pass": true,
+          "detail": "Memory view found"
         },
         {
           "id": "7.6",
           "name": "Control buttons",
-          "pass": false,
-          "detail": "No control buttons"
+          "pass": true,
+          "detail": "Control buttons found"
         },
         {
           "id": "7.T",
           "name": "Sprint 7 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-7.test.html"
+          "pass": true,
+          "detail": "OK (98 lines): C:\\Projects\\VEIZAC\\tests\\sprint-7.test.html"
         }
       ]
     },
     "8": {
       "name": "Sound",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "8.1",
           "name": "audio.js exists",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\audio.js"
+          "pass": true,
+          "detail": "OK (151 lines): C:\\Projects\\VEIZAC\\js\\audio.js"
         },
         {
           "id": "8.1b",
           "name": "Web Audio API",
-          "pass": false,
-          "detail": "audio.js missing"
+          "pass": true,
+          "detail": "AudioContext found"
         },
         {
           "id": "8.2",
           "name": "Sound synthesis",
-          "pass": false,
-          "detail": "audio.js missing"
+          "pass": true,
+          "detail": "Oscillator found"
         }
       ]
     },
     "9": {
       "name": "Paper Tape",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "9.1",
           "name": "tape.js exists",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\tape.js"
+          "pass": true,
+          "detail": "OK (138 lines): C:\\Projects\\VEIZAC\\js\\tape.js"
         },
         {
           "id": "9.2",
           "name": "Tape animation",
-          "pass": false,
-          "detail": "tape.js missing"
+          "pass": true,
+          "detail": "Animation logic found"
         }
       ]
     },
     "10": {
       "name": "Tools",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "10.1",
           "name": "tools.js exists",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\tools.js"
+          "pass": true,
+          "detail": "OK (623 lines): C:\\Projects\\VEIZAC\\js\\tools.js"
         },
         {
           "id": "10.2",
           "name": "Instruction Builder",
-          "pass": false,
-          "detail": "tools.js missing"
+          "pass": true,
+          "detail": "Builder found"
         },
         {
           "id": "10.4",
           "name": "Assembly Editor",
-          "pass": false,
-          "detail": "tools.js missing"
+          "pass": true,
+          "detail": "Editor found"
         },
         {
           "id": "10.T",
           "name": "Sprint 10 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-10.test.html"
+          "pass": true,
+          "detail": "OK (72 lines): C:\\Projects\\VEIZAC\\tests\\sprint-10.test.html"
         }
       ]
     },
     "11": {
       "name": "Examples",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "id": "11.1",
           "name": "Example programs exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\js\\examples.js"
+          "pass": true,
+          "detail": "OK (206 lines): C:\\Projects\\VEIZAC\\js\\examples.js"
         },
         {
           "id": "11.T",
           "name": "Sprint 11 tests exist",
-          "pass": false,
-          "detail": "MISSING: C:\\Projects\\VEIZAC\\tests\\sprint-11.test.html"
+          "pass": true,
+          "detail": "OK (109 lines): C:\\Projects\\VEIZAC\\tests\\sprint-11.test.html"
         }
       ]
     },
@@ -431,22 +371,10 @@
       "passed": false,
       "checks": [
         {
-          "id": "12.3",
-          "name": "ARIA labels",
+          "id": "12.ERR",
+          "name": "Verification error",
           "pass": false,
-          "detail": "No ARIA labels"
-        },
-        {
-          "id": "12.1",
-          "name": "Responsive layout",
-          "pass": true,
-          "detail": "Media queries found"
-        },
-        {
-          "id": "12.5",
-          "name": "Reduced motion support",
-          "pass": false,
-          "detail": "No reduced motion support"
+          "detail": "'charmap' codec can't decode byte 0x8f in position 34196: character maps to <undefined>"
         }
       ]
     }

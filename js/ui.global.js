@@ -428,12 +428,14 @@
                     if (el && id !== 'light-power') { el.classList.remove('on'); }
                 }
                 await sim.powerOn();
+                audio.playPowerOnStartup();
                 audio.startIdleHum();
                 pushLog('READY');
             } else {
                 sim.powerOff();
                 audio.stopRunClicks();
                 audio.stopIdleHum();
+                audio.playPowerOffSound();
                 if (tape && tape.renderTapeFromMemory) { tape.renderTapeFromMemory(sim.machine.memory); }
                 pushLog('POWER OFF');
                 if (uiPollTimer) {
