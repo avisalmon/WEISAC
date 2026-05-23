@@ -385,6 +385,7 @@ export function initSimulatorUI() {
             powerOff();
             stopRunClicks();
             stopIdleHum();
+            renderTapeFromMemory(machine.memory);
             pushLog('POWER OFF');
             if (uiPollTimer) {
                 clearInterval(uiPollTimer);
@@ -394,14 +395,28 @@ export function initSimulatorUI() {
         renderAll();
     });
 
-    bind('sim-btn-load', async (event) => {
+    bind('sim-btn-load', async () => {
         if (machine.state === 'off') {
             return;
         }
         playButtonClick();
-        const words = buildSampleProgram();
-        const skipAnimation = event && event.detail > 1;
-        await performLoadSequence(words, 'Add Two Numbers', skipAnimation);
+        runAborted = false;
+
+        // Animate tape feed (data already in memory from Builder pokes)
+        pushLog('LOADING TAPE...');
+        startRunClicks(20);
+        await animateLoad([], () => {
+            if (!runAborted) {
+                playMemoryTick();
+            }
+        });
+        stopRunClicks();
+
+        if (!runAborted) {
+            pushLog('TAPE LOADED');
+            playButtonClick();
+        }
+        renderAll();
     });
 
     bind('sim-btn-step', () => {
@@ -419,57 +434,13 @@ export function initSimulatorUI() {
         playButtonClick();
         runAborted = false;
 
-        // Snapshot memory as tape words (addr 0 to last non-zero)
-        let lastNonZero = -1;
-        for (let i = machine.memory.length - 1; i >= 0; i -= 1) {
-            if (machine.memory[i] !== 0n) {
-                lastNonZero = i;
-                break;
-            }
-        }
-        if (lastNonZero < 0) {
-            pushLog('RUN blocked: memory is empty');
-            return;
-        }
-        const tapeWords = [];
-        for (let a = 0; a <= lastNonZero; a += 1) {
-            tapeWords.push({ addr: a, value: machine.memory[a] });
-        }
-
-        // Clear memory and render tape
-        reset();
-        for (let i = 0; i < machine.memory.length; i += 1) {
-            machine.memory[i] = 0n;
-        }
-        renderAll();
-        pushLog('LOADING TAPE...');
-        startRunClicks(20);
-
-        // Phase 1: Feed tape into memory at 20 words/sec (50ms per word)
-        await animateLoad(tapeWords, (word) => {
-            if (runAborted) {
-                return;
-            }
-            machine.memory[word.addr & 0x3FF] = BigInt(word.value);
-            loadFlashAddr = word.addr;
-            renderAll();
-            playMemoryTick();
-        });
-
-        if (runAborted) {
-            stopRunClicks();
-            pushLog('STOP (during load)');
-            renderAll();
-            return;
-        }
-
-        loadFlashAddr = null;
-        renderAll();
-        pushLog('TAPE LOADED. EXECUTING...');
-
-        // Phase 2: Execute at 100 instructions/sec (10ms per step)
+        // Jump to address 0 and execute at 100 inst/sec
         machine.pc = { addr: 0, side: 'left' };
         machine.state = 'ready';
+        machine.error = null;
+        renderAll();
+        pushLog('RUN');
+        startRunClicks(20);
         const execDelay = (ms) => new Promise((r) => setTimeout(r, ms));
 
         while (!runAborted && machine.state !== 'halted' && machine.state !== 'error' && machine.state !== 'off') {
@@ -517,9 +488,32 @@ export function initSimulatorUI() {
             return;
         }
         playButtonClick();
-        reset();
+        // Reset only zeroes PC, memory preserved
+        machine.pc = { addr: 0, side: 'left' };
+        machine.state = 'ready';
+        machine.error = null;
+        machine.ac = 0n;
+        machine.mq = 0n;
         startIdleHum();
-        pushLog('RESET');
+        pushLog('RESET (PC=0, memory preserved)');
+        renderAll();
+    });
+
+    bind('sim-btn-clear', () => {
+        if (machine.state === 'off') {
+            return;
+        }
+        playButtonClick();
+        for (let i = 0; i < machine.memory.length; i += 1) {
+            machine.memory[i] = 0n;
+        }
+        machine.pc = { addr: 0, side: 'left' };
+        machine.state = 'ready';
+        machine.error = null;
+        machine.ac = 0n;
+        machine.mq = 0n;
+        renderTapeFromMemory(machine.memory);
+        pushLog('MEMORY CLEARED');
         renderAll();
     });
 

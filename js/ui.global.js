@@ -375,14 +375,30 @@
             renderAll();
         });
 
-        bind('sim-btn-load', async (event) => {
+        bind('sim-btn-load', async () => {
             if (sim.machine.state === 'off') {
                 return;
             }
             audio.playButtonClick();
-            const words = buildSampleProgram();
-            const skipAnimation = event && event.detail > 1;
-            await performLoadSequence(words, 'Add Two Numbers', skipAnimation);
+            runAborted = false;
+
+            // Animate tape feed (data already in memory from Builder pokes)
+            pushLog('LOADING TAPE...');
+            audio.startRunClicks(20);
+            if (tape && tape.animateLoad) {
+                await tape.animateLoad([], () => {
+                    if (!runAborted) {
+                        audio.playMemoryTick();
+                    }
+                });
+            }
+            audio.stopRunClicks();
+
+            if (!runAborted) {
+                pushLog('TAPE LOADED');
+                audio.playButtonClick();
+            }
+            renderAll();
         });
 
         bind('sim-btn-step', () => {
@@ -400,61 +416,13 @@
             audio.playButtonClick();
             runAborted = false;
 
-            // Snapshot memory as tape words
-            let lastNonZero = -1;
-            for (let i = sim.machine.memory.length - 1; i >= 0; i -= 1) {
-                if (sim.machine.memory[i] !== 0n) {
-                    lastNonZero = i;
-                    break;
-                }
-            }
-            if (lastNonZero < 0) {
-                pushLog('RUN blocked: memory is empty');
-                return;
-            }
-            const tapeWords = [];
-            for (let a = 0; a <= lastNonZero; a += 1) {
-                tapeWords.push({ addr: a, value: sim.machine.memory[a] });
-            }
-
-            // Clear memory and reset
-            sim.reset();
-            for (let i = 0; i < sim.machine.memory.length; i += 1) {
-                sim.machine.memory[i] = 0n;
-            }
-            renderAll();
-            pushLog('LOADING TAPE...');
-            audio.startRunClicks(20);
-
-            // Phase 1: Feed tape at 20 words/sec
-            if (tape && tape.animateLoad) {
-                await tape.animateLoad(tapeWords, (word) => {
-                    if (runAborted) { return; }
-                    sim.machine.memory[word.addr & 0x3FF] = BigInt(word.value);
-                    loadFlashAddr = word.addr;
-                    renderAll();
-                    audio.playMemoryTick();
-                });
-            } else {
-                tapeWords.forEach((word) => {
-                    sim.machine.memory[word.addr & 0x3FF] = BigInt(word.value);
-                });
-            }
-
-            if (runAborted) {
-                audio.stopRunClicks();
-                pushLog('STOP (during load)');
-                renderAll();
-                return;
-            }
-
-            loadFlashAddr = null;
-            renderAll();
-            pushLog('TAPE LOADED. EXECUTING...');
-
-            // Phase 2: Execute at 100 inst/sec
+            // Jump to address 0 and execute at 100 inst/sec
             sim.machine.pc = { addr: 0, side: 'left' };
             sim.machine.state = 'ready';
+            sim.machine.error = null;
+            renderAll();
+            pushLog('RUN');
+            audio.startRunClicks(20);
             const execDelay = (ms) => new Promise((r) => setTimeout(r, ms));
 
             while (!runAborted && sim.machine.state !== 'halted' && sim.machine.state !== 'error' && sim.machine.state !== 'off') {
@@ -502,9 +470,32 @@
                 return;
             }
             audio.playButtonClick();
-            sim.reset();
+            // Reset only zeroes PC, memory preserved
+            sim.machine.pc = { addr: 0, side: 'left' };
+            sim.machine.state = 'ready';
+            sim.machine.error = null;
+            sim.machine.ac = 0n;
+            sim.machine.mq = 0n;
             audio.startIdleHum();
-            pushLog('RESET');
+            pushLog('RESET (PC=0, memory preserved)');
+            renderAll();
+        });
+
+        bind('sim-btn-clear', () => {
+            if (sim.machine.state === 'off') {
+                return;
+            }
+            audio.playButtonClick();
+            for (let i = 0; i < sim.machine.memory.length; i += 1) {
+                sim.machine.memory[i] = 0n;
+            }
+            sim.machine.pc = { addr: 0, side: 'left' };
+            sim.machine.state = 'ready';
+            sim.machine.error = null;
+            sim.machine.ac = 0n;
+            sim.machine.mq = 0n;
+            if (tape && tape.renderTapeFromMemory) { tape.renderTapeFromMemory(sim.machine.memory); }
+            pushLog('MEMORY CLEARED');
             renderAll();
         });
 

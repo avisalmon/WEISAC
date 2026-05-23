@@ -261,8 +261,13 @@ export function powerOff() {
         clearInterval(runTimer);
         runTimer = null;
     }
+    machine.memory = new Array(MEMORY_SIZE).fill(0n);
+    machine.ac = 0n;
+    machine.mq = 0n;
+    machine.pc = { addr: 0, side: 'left' };
     machine.state = 'off';
     machine.error = null;
+    machine.stepCount = 0;
 }
 
 export function reset() {
