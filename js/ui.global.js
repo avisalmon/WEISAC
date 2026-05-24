@@ -218,10 +218,10 @@
 
         // Speed dial: 5 positions
         const SPEED_SETTINGS = [
-            { label: 'SLOW', delay: 200 },
-            { label: 'NORMAL', delay: 50 },
-            { label: '10x', delay: 5 },
-            { label: '100x', delay: 0.5 },
+            { label: '5 inst/sec', delay: 200 },
+            { label: '20 inst/sec', delay: 50 },
+            { label: '200 inst/sec', delay: 5 },
+            { label: '~1000 inst/sec (WEIZAC)', delay: 1 },
             { label: 'MAX', delay: 0 }
         ];
         let speedIndex = 1;
