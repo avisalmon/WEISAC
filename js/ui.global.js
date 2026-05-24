@@ -216,16 +216,27 @@
         let builderTargetAddr = null;
         const breakpoints = new Set();
 
-        // Speed dial: 5 positions
-        const SPEED_SETTINGS = [
-            { label: '5 inst/sec', delay: 200 },
-            { label: '20 inst/sec', delay: 50 },
-            { label: '200 inst/sec', delay: 5 },
-            { label: '~1000 inst/sec (WEIZAC)', delay: 1 },
-            { label: 'MAX', delay: 0 }
-        ];
-        let speedIndex = 1;
-        const getSpeedDelay = () => SPEED_SETTINGS[speedIndex].delay;
+        // Speed dial: continuous range, default 100 inst/sec, max 5000 (WEIZAC 1955)
+        let instPerSec = 100;
+        const getSpeedDelay = () => instPerSec > 0 ? Math.max(0, 1000 / instPerSec) : 0;
+
+        const speedKnob = document.getElementById('sim-speed-knob');
+        const speedLabel = document.getElementById('sim-speed-label');
+        const updateSpeedLabel = () => {
+            if (!speedLabel) { return; }
+            if (instPerSec >= 5000) {
+                speedLabel.textContent = '5000 inst/sec (WEIZAC 1955)';
+            } else {
+                speedLabel.textContent = instPerSec + ' inst/sec';
+            }
+        };
+        if (speedKnob) {
+            speedKnob.addEventListener('input', () => {
+                instPerSec = Number(speedKnob.value);
+                updateSpeedLabel();
+            });
+        }
+        updateSpeedLabel();
 
         const applyAuthenticMode = () => {
             if (simulatorShell) {
@@ -730,16 +741,6 @@
                 }
             }
         });
-
-        // Speed dial
-        const speedKnob = document.getElementById('sim-speed-knob');
-        const speedLabel = document.getElementById('sim-speed-label');
-        if (speedKnob) {
-            speedKnob.addEventListener('input', () => {
-                speedIndex = Number(speedKnob.value);
-                if (speedLabel) { speedLabel.textContent = SPEED_SETTINGS[speedIndex].label; }
-            });
-        }
 
         // Virtual scroll for memory
         memRows.addEventListener('scroll', () => {
