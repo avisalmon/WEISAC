@@ -1764,7 +1764,7 @@ code, pre, .mono {
 .sim-speed-dial .speed-label {
     font-family: var(--color-mono);
     font-size: 0.72rem;
-    color: #f0d97b;
+    color: #1d1d1d;
     min-width: 80px;
 }
 
