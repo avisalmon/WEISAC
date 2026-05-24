@@ -456,7 +456,7 @@
         });
 
         let lastLoadClick = 0;
-        bind('sim-btn-load', async () => {
+        const handleLoad = async (event) => {
             if (sim.machine.state === 'off') {
                 return;
             }
@@ -490,7 +490,9 @@
                 audio.playButtonClick();
             }
             renderAll();
-        });
+        };
+        bind('sim-btn-load', handleLoad);
+        bind('sim-btn-tape-load', handleLoad);
 
         bind('sim-btn-step', () => {
             if (sim.machine.state === 'off') {

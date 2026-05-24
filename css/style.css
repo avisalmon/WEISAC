@@ -1897,6 +1897,34 @@ code, pre, .mono {
     to   { background-position-y: 14px; }
 }
 
+.sim-tape-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+}
+
+.sim-tape-header h3 {
+    margin: 0;
+}
+
+.sim-tape-load-btn {
+    border: 1px solid #8d8d8d;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #f1f1f1, #c9c9c9);
+    color: #1d1d1d;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+}
+
+.sim-tape-load-btn:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
 .sim-tape-note {
     margin-top: 0.5rem;
     font-size: 0.75rem;
@@ -1915,9 +1943,22 @@ code, pre, .mono {
 
 .tape-word.tape-consumed {
     opacity: 0;
-    transform: translateY(-30px) scaleY(0.3) perspective(200px) rotateX(60deg);
+    transform: translateY(-40px) scaleY(0.1) scaleX(0.85) perspective(300px) rotateX(75deg);
     max-height: 0;
     margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom-color: transparent;
+    filter: blur(0.5px);
+}
+
+/* After full tape is read, the strip "swallows" the last bit */
+.sim-tape-strip.tape-swallowed {
+    max-height: 24px;
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sim-tape-strip.tape-swallowed::after {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
 .tape-word.tape-entering {

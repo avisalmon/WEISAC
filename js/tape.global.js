@@ -90,6 +90,7 @@
         const showHelp = opts.showHelp !== false;
 
         const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
+        strip.classList.remove('tape-swallowed');
         strip.classList.add('feeding');
         tapeContainer.innerHTML = '';
 
@@ -176,18 +177,22 @@
         }
         const strip = tapeContainer.closest('.sim-tape-strip') || tapeContainer;
         strip.classList.add('feeding');
+        strip.classList.remove('tape-swallowed');
         const blocks = tapeContainer.querySelectorAll('.tape-word');
         for (let i = 0; i < blocks.length; i += 1) {
             // Accelerating read speed — gets faster as tape is consumed
             const progress = i / blocks.length;
-            const readDelay = Math.max(20, Math.floor(80 * (1 - progress * 0.6)));
+            const readDelay = Math.max(15, Math.floor(90 * (1 - progress * 0.75)));
             blocks[i].classList.add('tape-consumed');
             if (onWord) {
                 onWord(words[i], i);
             }
             await delay(readDelay);
         }
+        // Swallow: strip collapses after last word is consumed
         strip.classList.remove('feeding');
+        strip.classList.add('tape-swallowed');
+        await delay(800);
     }
 
     function renderTapeFromMemory(memory) {
