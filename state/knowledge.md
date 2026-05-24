@@ -466,3 +466,8 @@ Findings:
 - Replaced inline external body links with numbered `#ref-*` citations so external URLs are centralized in the References list.
 - Added references for the Weizmann Institute, Institute for Advanced Study, Gerald Estrin, Thelma Estrin, and CDC 1604.
 - Verified `index.html` has no diagnostics, no hard-coded absolute local/GitHub Pages links, and external `href` URLs only appear inside the References list.
+
+## Iteration Note - Authentic Mode Default Off
+- Changed simulator Authentic Mode default from on to off for first-time visitors in `js/ui.js` and `js/ui.global.js`.
+- Existing saved `localStorage` preference `veizac.authenticMode` is still respected after a user toggles the mode.
+- Verified both UI runtime files have no diagnostics and no remaining default-on initialization path.

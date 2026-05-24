@@ -115,13 +115,13 @@
 
         let uiPollTimer = null;
         let runAborted = false;
-        let authenticMode = true;
+        let authenticMode = false;
 
         try {
             const savedAuthentic = localStorage.getItem('veizac.authenticMode');
-            authenticMode = savedAuthentic === null ? true : savedAuthentic === '1';
+            authenticMode = savedAuthentic === null ? false : savedAuthentic === '1';
         } catch (e) {
-            authenticMode = true;
+            authenticMode = false;
         }
 
         const syncMuteButton = () => {
