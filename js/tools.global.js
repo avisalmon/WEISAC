@@ -143,9 +143,9 @@
         return `
             <div class="tools-toolbar" id="tools-toolbar">
                 <button id="tools-toggle" type="button">TOOLS</button>
-                <button class="tools-tab active" data-tools-tab="builder" type="button">Instruction Builder</button>
+                <button class="tools-tab active" data-tools-tab="editor" type="button">Assembly Editor</button>
+                <button class="tools-tab" data-tools-tab="builder" type="button">Instruction Builder</button>
                 <button class="tools-tab" data-tools-tab="translator" type="button">Binary Translator</button>
-                <button class="tools-tab" data-tools-tab="editor" type="button">Assembly Editor</button>
                 <button class="tools-tab" data-tools-tab="inspector" type="button">Word Inspector</button>
                 <button class="tools-tab" data-tools-tab="trace" type="button">Execution Trace</button>
             </div>
@@ -661,7 +661,7 @@
         });
 
         updateBuilderReadout();
-        setActiveTab(mount, 'builder');
+        setActiveTab(mount, 'editor');
     }
 
     window.VEIZACTools = {

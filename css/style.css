@@ -1174,14 +1174,44 @@ code, pre, .mono {
     display: none;
 }
 
+.sim-tools-overlay.collapsed .tools-tab {
+    display: none;
+}
+
 .tools-toolbar {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
     margin-bottom: 0.5rem;
+    align-items: center;
 }
 
-.tools-toolbar button {
+#tools-toggle {
+    border: 2px solid #f0d97b;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #3a3520, #1d1a0e);
+    color: #f0d97b;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.4rem;
+}
+
+#tools-toggle:hover {
+    background: linear-gradient(180deg, #4a4520, #2d2a1e);
+    box-shadow: 0 0 8px rgba(240, 217, 123, 0.4);
+}
+
+.sim-tools-overlay.collapsed #tools-toggle {
+    background: linear-gradient(180deg, #1a2a1a, #0d1a0d);
+    border-color: #4ade80;
+    color: #4ade80;
+}
+
+.tools-toolbar button.tools-tab {
     border: 1px solid #9eb0c7;
     border-radius: 7px;
     background: linear-gradient(180deg, #ecf3fc, #c9d8ea);
