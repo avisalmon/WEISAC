@@ -460,3 +460,9 @@ Findings:
 - Aligned user-facing site HTML, dashboard HTML, README, and project docs from `VEIZAC` to `WEIZAC`.
 - Left actual filesystem paths such as `c:\Projects\VEIZAC` and internal JavaScript API/localStorage/event identifiers unchanged to avoid breaking runtime behavior.
 - Verified `index.html` and `docs/dashboard.html` have no diagnostics and that common misspellings do not appear.
+
+## Iteration Note - Link Reference Cleanup
+- Audited live-site links in root `index.html`.
+- Replaced inline external body links with numbered `#ref-*` citations so external URLs are centralized in the References list.
+- Added references for the Weizmann Institute, Institute for Advanced Study, Gerald Estrin, Thelma Estrin, and CDC 1604.
+- Verified `index.html` has no diagnostics, no hard-coded absolute local/GitHub Pages links, and external `href` URLs only appear inside the References list.
