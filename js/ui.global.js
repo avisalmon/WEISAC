@@ -163,9 +163,10 @@
 
         const formatTraceLine = (trace) => {
             const pc = `[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}]`;
+            const mnem = trace.mnemonic.padEnd(18);
             const acHex = trace.ac.toString(16).toUpperCase().padStart(10, '0');
             const mqHex = trace.mq.toString(16).toUpperCase().padStart(10, '0');
-            return `${pc} ${trace.mnemonic}  AC=${acHex} MQ=${mqHex}`;
+            return `${pc}\t${mnem}\tAC=${acHex}\tMQ=${mqHex}`;
         };
 
         const scrollToAddress = (addr) => {

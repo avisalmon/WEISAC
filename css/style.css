@@ -1801,6 +1801,8 @@ code, pre, .mono {
     font-size: 0.72rem;
     color: #86df86;
     white-space: pre;
+    tab-size: 22;
+    -moz-tab-size: 22;
 }
 
 .sim-log-row {
