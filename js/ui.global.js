@@ -502,7 +502,7 @@
             doStep();
         });
 
-        bind('sim-btn-run', async () => {
+        const handleRun = async () => {
             if (sim.machine.state === 'off') {
                 return;
             }
@@ -547,7 +547,9 @@
                 pushLog('STOP (user)');
             }
             renderAll();
-        });
+        };
+        bind('sim-btn-run', handleRun);
+        bind('sim-btn-tape-run', handleRun);
 
         bind('sim-btn-stop', () => {
             audio.playButtonClick();

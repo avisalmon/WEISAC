@@ -1925,6 +1925,30 @@ code, pre, .mono {
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
+.sim-tape-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+}
+
+.sim-tape-run-btn {
+    border: 1px solid #8d8d8d;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #f1f1f1, #c9c9c9);
+    color: #1d1d1d;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+}
+
+.sim-tape-run-btn:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
 .sim-tape-note {
     margin-top: 0.5rem;
     font-size: 0.75rem;
