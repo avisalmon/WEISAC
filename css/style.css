@@ -263,12 +263,12 @@ code, pre, .mono {
 
 .isa-header {
     margin-bottom: 2rem;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.28);
     padding-bottom: 1.5rem;
 }
 
 .isa-kicker {
-    color: var(--color-accent);
+    color: #fff;
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.8rem;
@@ -278,13 +278,16 @@ code, pre, .mono {
 
 .isa-header h2 {
     font-size: 2.2rem;
-    color: var(--color-header-bg);
+    color: #fff;
     margin-bottom: 0.5rem;
 }
 
-.isa-header p,
 .isa-section p {
     color: #444;
+}
+
+.isa-header p {
+    color: #fff;
 }
 
 .isa-section {

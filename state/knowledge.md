@@ -471,3 +471,10 @@ Findings:
 - Changed simulator Authentic Mode default from on to off for first-time visitors in `js/ui.js` and `js/ui.global.js`.
 - Existing saved `localStorage` preference `veizac.authenticMode` is still respected after a user toggles the mode.
 - Verified both UI runtime files have no diagnostics and no remaining default-on initialization path.
+
+## Iteration Note - Link Audit and ISA Contrast
+- Fixed Home Credits links so Weizmann Institute and IEEE Milestone open directly in a new tab instead of jumping to hidden History references.
+- Updated IEEE reference URL to the working ETHW milestone page.
+- Replaced missing `images/favicon.ico` reference with existing `images/weizac-machine.svg` favicon asset.
+- Changed ISA header kicker, title, and intro text to white for readability on the dark background.
+- Verified `index.html` and `css/style.css` have no diagnostics; link audit found 0 missing local resources, 0 missing hash targets, 0 external new-tab attribute failures, and 0 external reachability failures across 18 unique external URLs.
