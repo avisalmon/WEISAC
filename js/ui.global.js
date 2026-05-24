@@ -161,6 +161,13 @@
             }
         };
 
+        const formatTraceLine = (trace) => {
+            const pc = `[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}]`;
+            const acHex = trace.ac.toString(16).toUpperCase().padStart(10, '0');
+            const mqHex = trace.mq.toString(16).toUpperCase().padStart(10, '0');
+            return `${pc} ${trace.mnemonic}  AC=${acHex} MQ=${mqHex}`;
+        };
+
         const scrollToAddress = (addr) => {
             const rowHeight = 24;
             memRows.scrollTop = Math.max(0, addr * rowHeight - memRows.clientHeight / 2);
@@ -326,7 +333,7 @@
             const trace = sim.step();
             renderAll();
             if (trace) {
-                pushLog(`[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}] ${trace.mnemonic}`);
+                pushLog(formatTraceLine(trace));
                 audio.playStepClick();
                 if (trace.memWrite) {
                     audio.playMemoryTick();
@@ -512,7 +519,7 @@
                 const currentDelay = getSpeedDelay();
                 if (currentDelay >= 5) { renderAll(); }
                 if (trace) {
-                    pushLog(`[${String(trace.pc.addr).padStart(3, '0')} ${trace.pc.side === 'left' ? 'L' : 'R'}] ${trace.mnemonic}`);
+                    pushLog(formatTraceLine(trace));
                     if (breakpoints.has(trace.pc.addr)) {
                         pushLog(`BREAKPOINT at ${String(trace.pc.addr).padStart(3, '0')}`);
                         runAborted = true;

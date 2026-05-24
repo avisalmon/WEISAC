@@ -1798,8 +1798,9 @@ code, pre, .mono {
     border-radius: 8px;
     padding: 0.5rem;
     font-family: var(--color-mono);
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     color: #86df86;
+    white-space: pre;
 }
 
 .sim-log-row {
