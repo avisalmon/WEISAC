@@ -1621,9 +1621,9 @@ code, pre, .mono {
 
 .sim-indicators {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.4rem;
-    margin-top: 0.9rem;
+    margin-top: 0.5rem;
 }
 
 .sim-light {
@@ -1644,9 +1644,10 @@ code, pre, .mono {
 
 .sim-controls {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: auto repeat(6, minmax(0, 1fr));
     gap: 0.5rem;
-    margin-top: 0.9rem;
+    margin-top: 0.5rem;
+    align-items: center;
 }
 
 .sim-controls button {
@@ -1657,6 +1658,54 @@ code, pre, .mono {
     font-weight: 700;
     padding: 0.45rem 0.3rem;
     cursor: pointer;
+}
+
+/* Power button: larger, prominent, with call-to-action pulse on load */
+.sim-controls button.power-cta {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #4ade80, #16a34a);
+    color: #fff;
+    border: 2px solid #15803d;
+    box-shadow: 0 0 12px rgba(74, 222, 128, 0.5);
+    animation: power-pulse 1.8s ease-in-out infinite;
+    position: relative;
+}
+
+.sim-controls button.power-cta::after {
+    content: '▶ Press to start';
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    font-weight: 400;
+    color: #4ade80;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    animation: power-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes power-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.8), 0 0 40px rgba(74, 222, 128, 0.3); }
+}
+
+/* Once powered on, remove the CTA styling */
+.sim-controls button.power-cta.powered {
+    padding: 0.45rem 0.3rem;
+    font-size: inherit;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #f87171, #dc2626);
+    color: #fff;
+    border: 1px solid #991b1b;
+    box-shadow: none;
+    animation: none;
+}
+
+.sim-controls button.power-cta.powered::after {
+    display: none;
 }
 
 .sim-controls button:hover {
@@ -1918,7 +1967,7 @@ code, pre, .mono {
     }
 
     .sim-indicators {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 }
 
@@ -1946,5 +1995,13 @@ code, pre, .mono {
         transition: none !important;
         transform: none !important;
         opacity: 0.15 !important;
+    }
+
+    .sim-controls button.power-cta {
+        animation: none !important;
+        box-shadow: 0 0 12px rgba(74, 222, 128, 0.6);
+    }
+    .sim-controls button.power-cta::after {
+        animation: none !important;
     }
 }

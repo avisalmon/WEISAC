@@ -678,6 +678,30 @@
                     </div>
                 </header>
 
+                <div class="sim-controls" aria-label="Controls">
+                    <button id="sim-btn-power" type="button" class="power-cta">POWER</button>
+                    <button id="sim-btn-load" type="button">LOAD</button>
+                    <button id="sim-btn-step" type="button">STEP</button>
+                    <button id="sim-btn-run" type="button">RUN</button>
+                    <button id="sim-btn-stop" type="button">STOP</button>
+                    <button id="sim-btn-reset" type="button">RESET</button>
+                    <button id="sim-btn-clear" type="button">CLEAR</button>
+                </div>
+
+                <div class="sim-indicators" aria-label="Indicator lights">
+                    <span id="light-power" class="sim-light">POWER</span>
+                    <span id="light-halt" class="sim-light">HALT</span>
+                    <span id="light-error" class="sim-light">ERROR</span>
+                    <span id="light-left" class="sim-light">LEFT</span>
+                    <span id="light-right" class="sim-light">RIGHT</span>
+                </div>
+
+                <div class="sim-speed-dial" aria-label="Speed control">
+                    <label for="sim-speed-knob">Speed</label>
+                    <input id="sim-speed-knob" type="range" min="0" max="4" step="1" value="1">
+                    <span class="speed-label" id="sim-speed-label">1955 FEEL</span>
+                </div>
+
                 <div id="sim-tools-overlay" class="sim-tools-overlay" aria-label="Modern tools overlay"></div>
 
                 <div class="sim-panel-grid" id="sim-panel-grid">
@@ -712,33 +736,6 @@
                         <div id="sim-tape-strip" class="sim-tape-strip" title="simplified visualization"></div>
                         <p class="sim-tape-note">Double-click LOAD to skip tape animation.</p>
                     </div>
-                </div>
-
-                <div class="sim-indicators" aria-label="Indicator lights">
-                    <span id="light-power" class="sim-light">POWER</span>
-                    <span id="light-fetch" class="sim-light">FETCH</span>
-                    <span id="light-exec" class="sim-light">EXEC</span>
-                    <span id="light-store" class="sim-light">STORE</span>
-                    <span id="light-halt" class="sim-light">HALT</span>
-                    <span id="light-error" class="sim-light">ERROR</span>
-                    <span id="light-left" class="sim-light">LEFT</span>
-                    <span id="light-right" class="sim-light">RIGHT</span>
-                </div>
-
-                <div class="sim-controls" aria-label="Controls">
-                    <button id="sim-btn-power" type="button">POWER</button>
-                    <button id="sim-btn-load" type="button">LOAD</button>
-                    <button id="sim-btn-step" type="button">STEP</button>
-                    <button id="sim-btn-run" type="button">RUN</button>
-                    <button id="sim-btn-stop" type="button">STOP</button>
-                    <button id="sim-btn-reset" type="button">RESET</button>
-                    <button id="sim-btn-clear" type="button">CLEAR</button>
-                </div>
-
-                <div class="sim-speed-dial" aria-label="Speed control">
-                    <label for="sim-speed-knob">Speed</label>
-                    <input id="sim-speed-knob" type="range" min="0" max="4" step="1" value="1">
-                    <span class="speed-label" id="sim-speed-label">1955 FEEL</span>
                 </div>
 
                 <div class="sim-log" aria-label="Execution log">

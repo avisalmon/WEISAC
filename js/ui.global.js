@@ -201,9 +201,6 @@
             set('light-error', state.state === 'error');
             set('light-left', state.pc.side === 'left');
             set('light-right', state.pc.side === 'right');
-            set('light-fetch', state.state === 'running', state.state === 'running');
-            set('light-exec', state.state === 'running', state.state === 'running');
-            set('light-store', state.lastWrite !== undefined && state.lastWrite !== null);
         };
 
         let loadFlashAddr = null;
@@ -417,10 +414,12 @@
         bind('sim-btn-power', async () => {
             audio.playButtonClick();
             await activateAudio();
+            const powerBtn = document.getElementById('sim-btn-power');
             if (sim.machine.state === 'off') {
                 pushLog('POWER ON: warming up');
+                if (powerBtn) { powerBtn.classList.add('powered'); }
                 // Flicker lights sequentially
-                const lights = ['light-power', 'light-fetch', 'light-exec', 'light-store', 'light-left', 'light-right'];
+                const lights = ['light-power', 'light-halt', 'light-left', 'light-right'];
                 for (const id of lights) {
                     const el = document.getElementById(id);
                     if (el) { el.classList.add('on'); }
@@ -433,6 +432,7 @@
                 pushLog('READY');
             } else {
                 sim.powerOff();
+                if (powerBtn) { powerBtn.classList.remove('powered'); }
                 audio.stopRunClicks();
                 audio.stopIdleHum();
                 audio.playPowerOffSound();
