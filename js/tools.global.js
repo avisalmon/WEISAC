@@ -193,7 +193,7 @@
                     <div class="asm-line-numbers" id="asm-line-numbers"></div>
                     <div class="asm-editor-area">
                         <pre class="asm-highlight" id="asm-highlight" aria-hidden="true"></pre>
-                        <textarea id="tools-editor-source" rows="16" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"></textarea>
+                        <textarea id="tools-editor-source" rows="12" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"></textarea>
                         <div class="asm-errors" id="asm-errors"></div>
                     </div>
                     <div class="asm-autocomplete" id="asm-autocomplete" hidden></div>

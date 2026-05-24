@@ -1331,6 +1331,8 @@ code, pre, .mono {
     overflow: hidden;
     width: 100%;
     min-width: 0;
+    max-height: 260px;
+    overflow-y: auto;
 }
 
 .asm-line-numbers {
