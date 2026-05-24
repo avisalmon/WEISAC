@@ -1,8 +1,8 @@
-# VEIZAC — Execution Program
+# WEIZAC Execution Program
 
 ## What This File Is
 
-This is the master execution plan for building the VEIZAC project. An AI agent reads this
+This is the master execution plan for building the WEIZAC project. An AI agent reads this
 file and executes it sprint by sprint. The backlog (`docs/backlog.md`) is the compass — this
 file is the process that walks the compass.
 

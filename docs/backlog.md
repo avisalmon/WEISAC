@@ -1,4 +1,4 @@
-# VEIZAC Design Backlog
+# WEIZAC Design Backlog
 
 ## How to Use This Document
 
@@ -20,17 +20,17 @@ Status tracks progress: `[ ]` not started, `[~]` in progress, `[x]` done.
 | 0.4 | Folder structure | `docs/css/`, `docs/js/`, `docs/images/` directories exist. All asset paths relative. | [spec.md](spec.md) §Structure | `[x]` |
 | 0.5 | GitHub Pages deploy | Site serves from `/docs` on `main` branch. Visiting the URL shows the 4-tab shell. | [spec.md](spec.md) §Technology | `[x]` |
 | 0.6 | No-framework rule | Zero external dependencies. No CDN links. No build step. View source = ship source. | [spec.md](spec.md) §Technology | `[x]` |
-| 0.7 | Favicon and meta | Page title "VEIZAC", meta description, Open Graph tags for social sharing | [spec.md](spec.md) §Header | `[x]` |
+| 0.7 | Favicon and meta | Page title "WEIZAC", meta description, Open Graph tags for social sharing | [spec.md](spec.md) §Header | `[x]` |
 
 ---
 
 ## Sprint 1 — Home Tab
 
-**Goal:** Visitor lands on a polished Home page that explains what VEIZAC is and invites exploration.
+**Goal:** Visitor lands on a polished Home page that explains what WEIZAC is and invites exploration.
 
 | # | Feature | Acceptance Criteria | Spec Ref | Status |
 |---|---------|-------------------|----------|--------|
-| 1.1 | Hero section | Title "VEIZAC" (stylized), subtitle "The WEIZAC Computer: History and Simulator" | [spec.md](spec.md) �Header | `[x]` |
+| 1.1 | Hero section | Title "WEIZAC" (stylized), subtitle "The WEIZAC Computer: History and Simulator" | [spec.md](spec.md) �Header | `[x]` |
 | 1.2 | Intro paragraph | Brief text: Israel's first computer, 1955, IAS architecture. Key facts: 40-bit word, 21 instructions, built from schematics without parts | [spec.md](spec.md) �Tab: Home | `[x]` |
 | 1.3 | Historical images | 2-3 images with captions. Images in `docs/images/`, public domain or credited. Alt text on all images. | [spec.md](spec.md) �Tab: Home | `[x]` |
 | 1.4 | Credits and links | Link to Weizmann Institute and IEEE Milestone. Attribution for images. | [spec.md](spec.md) �Tab: Home, [history.md](history.md) �References | `[x]` |

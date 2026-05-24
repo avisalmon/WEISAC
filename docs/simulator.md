@@ -1,4 +1,4 @@
-# VEIZAC Simulator — Implementation Specification
+# WEIZAC Simulator Implementation Specification
 
 ## Purpose
 

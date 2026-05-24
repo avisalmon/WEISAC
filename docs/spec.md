@@ -1,4 +1,4 @@
-# VEIZAC Site Specification
+# WEIZAC Site Specification
 
 ## Overview
 A static single-page website hosted on GitHub Pages. The site presents the history of the
@@ -25,7 +25,7 @@ docs/
 ## Page Layout
 
 ### Header
-- Title: "VEIZAC" (stylized)
+- Title: "WEIZAC" (stylized)
 - Subtitle: "The WEIZAC Computer: History and Simulator"
 
 ### Tab Navigation

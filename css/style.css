@@ -126,6 +126,39 @@ code, pre, .mono {
     margin-bottom: 1rem;
 }
 
+.home-origin {
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.home-origin-photo {
+    margin: 0;
+    text-align: center;
+}
+
+.home-origin-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    display: block;
+}
+
+.home-origin-photo figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+}
+
+.home-origin-text p:first-child {
+    font-size: 1.08rem;
+    color: var(--color-header-bg);
+}
+
 .home-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -222,6 +255,150 @@ code, pre, .mono {
     color: #666;
 }
 
+/* ISA Tab */
+.isa-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.isa-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1.5rem;
+}
+
+.isa-kicker {
+    color: var(--color-accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+}
+
+.isa-header h2 {
+    font-size: 2.2rem;
+    color: var(--color-header-bg);
+    margin-bottom: 0.5rem;
+}
+
+.isa-header p,
+.isa-section p {
+    color: #444;
+}
+
+.isa-section {
+    margin-bottom: 2rem;
+}
+
+.isa-section h3 {
+    color: var(--color-header-bg);
+    margin-bottom: 0.75rem;
+    font-size: 1.45rem;
+}
+
+.isa-section h4 {
+    margin: 1.5rem 0 0.75rem;
+    color: var(--color-header-bg);
+    font-size: 1.08rem;
+}
+
+.isa-format {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid #d8d8d8;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1rem 0;
+    background: #fff;
+}
+
+.isa-format-half {
+    padding: 1rem;
+    display: grid;
+    gap: 0.35rem;
+    border-right: 1px solid #d8d8d8;
+}
+
+.isa-format-half:last-child {
+    border-right: none;
+}
+
+.isa-format-half strong {
+    color: var(--color-header-bg);
+}
+
+.isa-format-half span {
+    font-family: var(--color-mono);
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.isa-facts,
+.isa-note-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+}
+
+.isa-facts div,
+.isa-note-grid article {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.isa-facts strong,
+.isa-note-grid h4 {
+    display: block;
+    margin: 0 0 0.35rem;
+    color: var(--color-header-bg);
+}
+
+.isa-facts span,
+.isa-note-grid p {
+    color: #555;
+    font-size: 0.92rem;
+}
+
+.isa-table {
+    min-width: 900px;
+}
+
+.isa-table td:first-child {
+    font-family: var(--color-mono);
+    font-weight: 700;
+    color: var(--color-header-bg);
+}
+
+.isa-table code,
+.isa-code code {
+    font-family: var(--color-mono);
+}
+
+.isa-steps,
+.isa-notes {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1rem 1rem 1rem 2rem;
+}
+
+.isa-steps li,
+.isa-notes li {
+    margin-bottom: 0.5rem;
+}
+
+.isa-code {
+    background: #1f2430;
+    color: #f2f2f2;
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-top: 0.75rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .tab-bar {
@@ -234,6 +411,23 @@ code, pre, .mono {
 
     .tab-panel {
         padding: 1rem;
+    }
+
+    .home-origin {
+        grid-template-columns: 1fr;
+    }
+
+    .isa-format {
+        grid-template-columns: 1fr;
+    }
+
+    .isa-format-half {
+        border-right: none;
+        border-bottom: 1px solid #d8d8d8;
+    }
+
+    .isa-format-half:last-child {
+        border-bottom: none;
     }
 
     header h1 {
@@ -625,6 +819,34 @@ code, pre, .mono {
     margin: 0 1.5rem 1rem 0;
 }
 
+.lang-he .timeline::before {
+    left: auto;
+    right: 60px;
+}
+
+.lang-he .timeline-item {
+    padding-left: 0;
+    padding-right: 100px;
+}
+
+.lang-he .timeline-item::before {
+    left: auto;
+    right: 52px;
+}
+
+.lang-he .timeline-date {
+    left: auto;
+    right: 0;
+}
+
+.lang-he .timeline-content {
+    text-align: right;
+}
+
+.lang-he .person-card p:last-child {
+    text-align: right;
+}
+
 /* ===== HISTORY RESPONSIVE ===== */
 @media (max-width: 768px) {
     .history-title {
@@ -658,6 +880,21 @@ code, pre, .mono {
     .timeline-date {
         width: auto;
         font-size: 0.85rem;
+    }
+
+    .lang-he .timeline::before {
+        left: auto;
+        right: 20px;
+    }
+
+    .lang-he .timeline-item {
+        padding-left: 0;
+        padding-right: 55px;
+    }
+
+    .lang-he .timeline-item::before {
+        left: auto;
+        right: 12px;
     }
 
     .people-grid {

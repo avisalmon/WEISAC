@@ -155,7 +155,7 @@ tests/sprint-5.test.html | 253 ++++++++++++++++++++++++++++++
 ```
 
 ## Sprint 6 — Assembler
-Plan: Implement a two-pass assembler in js/assembler.js that parses VEIZAC syntax (comments, ORG, labels, DATA, mnemonics), resolves smart/explicit jumps, and emits packed 40-bit words. Add a heavy browser test suite in tests/sprint-6.test.html that validates parsing, packing, warnings/errors, disassembly, and execution of the three spec programs using simulator.js.
+Plan: Implement a two-pass assembler in js/assembler.js that parses WEIZAC syntax (comments, ORG, labels, DATA, mnemonics), resolves smart/explicit jumps, and emits packed 40-bit words. Add a heavy browser test suite in tests/sprint-6.test.html that validates parsing, packing, warnings/errors, disassembly, and execution of the three spec programs using simulator.js.
 Files: js/assembler.js, tests/sprint-6.test.html, docs/backlog.md, docs/dashboard.html
 Tests needed: yes (heavy)
 
@@ -418,3 +418,45 @@ Sprint 9: PASSED
 
 **Lessons for future sprints:**
 - Build simulator/tool integration through event/API bridges so UI features remain decoupled and testable.
+
+## Iteration Note — Site Review
+Scope: Read docs/ specifications and current root index.html site, plus CSS/JS runtime modules and generated global UI path.
+Findings:
+- The site has strong historical content and real simulator infrastructure; Sprint 7-11 focused verifiers pass.
+- Current implementation is rooted at index.html/css/js rather than the docs/index.html layout described in docs/program.md and docs/spec.md.
+- `python verify_sprint.py --next` currently fails on Windows with a charmap decode error, even though direct Sprint 7-11 checks pass.
+- Source/global runtime drift exists: js/ui.js speed handling still uses old 5-position settings while js/ui.global.js has the intended continuous 1-5000 inst/sec path.
+- index.html omits FETCH/EXEC/STORE indicator elements that the UX spec and some UI code reference.
+
+## Iteration Note - English History Enrichment
+- Enriched the root `index.html` English History page against local WEIZAC/IAS references and web source checks.
+- Added an ENIAC-to-WEIZAC early electronic computers table with year, build site, main capability, and historical note.
+- Corrected WEIZAC technical wording for initial magnetic drum memory, core memory upgrade, 1958 magnetic tape I/O, 1961 memory expansion, and one-of-a-kind IAS-family compatibility context.
+- Added richer coverage of Pekeris, Chaim Weizmann, Gerald and Thelma Estrin, Ephraim Frei, Micha Kedem, Zvi Riesel, Phillip Rabinowitz, Hans Jarosch, and Yigal Accad.
+- Verified `index.html` has no diagnostics and no em dash characters.
+
+## Iteration Note - Home Personal Origin
+- Updated the Home tab in root `index.html` to open with Avi's visit to the Weizmann Institute and the decision to create the WEIZAC site and simulator.
+- Added `docs/weizac.png` as the personal WEIZAC visit photo in a new `home-origin` block.
+- Added responsive styling in `css/style.css` so the visit photo and introduction sit side-by-side on desktop and stack on mobile.
+- Verified `index.html` and `css/style.css` have no diagnostics.
+
+## Iteration Note - Hebrew History Enrichment
+- Replaced the thin Hebrew History block in root `index.html` with a fuller, easier-to-read Hebrew narrative in Avi's direct conversational style.
+- Added Hebrew sections for WEIZAC's national context, IAS/Princeton origin, ENIAC-to-WEIZAC computer timeline table, advisory committee, Estrins, construction, first calculation, technical specs, science uses, legacy, timeline, and people.
+- Reused historical images in the Hebrew section and added Hebrew captions.
+- Added RTL-specific timeline and people-card styling in `css/style.css`.
+- Verified `index.html` and `css/style.css` have no diagnostics, no em dash characters, one English history block, and one Hebrew history block.
+
+## Iteration Note - ISA Tab
+- Added a new `ISA` tab between Training and Simulator in root `index.html`.
+- Added a full WEIZAC/IAS instruction set architecture section with word format, registers, all 21 instructions, execution cycle, programming notes, and a simple addition example.
+- Added an ISA card to the Home Explore section.
+- Added `css/style.css` rules for ISA format diagrams, fact cards, instruction tables, notes, and code examples.
+- Verified `index.html` and `css/style.css` have no diagnostics, no em dash characters, and all 21 opcode rows are present.
+
+## Iteration Note - WEIZAC Spelling Alignment
+- Confirmed the historical computer spelling is `WEIZAC`.
+- Aligned user-facing site HTML, dashboard HTML, README, and project docs from `VEIZAC` to `WEIZAC`.
+- Left actual filesystem paths such as `c:\Projects\VEIZAC` and internal JavaScript API/localStorage/event identifiers unchanged to avoid breaking runtime behavior.
+- Verified `index.html` and `docs/dashboard.html` have no diagnostics and that common misspellings do not appear.

@@ -1,4 +1,4 @@
-# VEIZAC Simulator — UX Specification
+# WEIZAC Simulator UX Specification
 
 ## Design Philosophy
 

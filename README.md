@@ -1,4 +1,4 @@
-# VEIZAC
+# WEIZAC
 
 WEIZAC computer history and simulator project.
 
