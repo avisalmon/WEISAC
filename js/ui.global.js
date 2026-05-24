@@ -218,8 +218,8 @@
 
         // Speed dial: 5 positions
         const SPEED_SETTINGS = [
-            { label: 'OBSERVE', delay: 200 },
-            { label: '1955 FEEL', delay: 50 },
+            { label: 'SLOW', delay: 200 },
+            { label: 'NORMAL', delay: 50 },
             { label: '10x', delay: 5 },
             { label: '100x', delay: 0.5 },
             { label: 'MAX', delay: 0 }

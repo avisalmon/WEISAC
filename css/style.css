@@ -1755,7 +1755,7 @@ code, pre, .mono {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #d8d8d8;
+    color: #1d1d1d;
 }
 .sim-speed-dial input[type="range"] {
     width: 160px;
